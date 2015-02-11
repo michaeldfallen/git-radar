@@ -1,5 +1,3 @@
-set -e
-
 dot_git=""
 cwd=""
 
@@ -45,7 +43,7 @@ is_repo() {
 
 git_root() {
   if [ -d .git ]; then
-    echo "."
+    echo "$(pwd)"
   else
     echo "$(git rev-parse --show-toplevel 2>/dev/null)"
   fi
@@ -72,10 +70,10 @@ time_to_update() {
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
     local fiveminutes="$((5 * 60))"
     if (( "$timesincelastupdate" > "$5minutes" )); then
-      # time to update return 0 (which is false)
+      # time to update return 0 (which is true)
       return 0
     else
-      # not time to update return 1 (which is true)
+      # not time to update return 1 (which is false)
       return 1
     fi
   else
