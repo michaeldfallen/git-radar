@@ -1,7 +1,19 @@
-
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/git-base.sh"
+
+tmpfile=""
+
+cd_to_tmp() {
+  tmpfile="/tmp/git-prompt-tests-$(time_now)"
+  mkdir -p "$tmpfile"
+  cd "$tmpfile"
+}
+
+rm_tmp() {
+  cd $scriptDir
+  rm -r "$tmpfile"
+}
 
 test_git_root_in_repo() {
   cd $scriptDir
@@ -9,10 +21,18 @@ test_git_root_in_repo() {
   assertEquals "$scriptDir" "$root"
 }
 
+test_git_root_not_in_repo() {
+  cd_to_tmp
+  local root="$(git_root)"
+  assertEquals "" "$root"
+  rm_tmp
+}
+
 test_dot_git_location_not_in_repo() {
-  cd /
+  cd_to_tmp
   local filePath="$(dot_git)"
   assertEquals "" "$filePath"
+  rm_tmp
 }
 
 test_dot_git_location_in_repo() {
@@ -23,8 +43,9 @@ test_dot_git_location_in_repo() {
 }
 
 test_is_repo_not_in_repo() {
-  cd /
+  cd_to_tmp
   assertFalse is_repo
+  rm_tmp
 }
 
 test_is_repo_in_repo() {
