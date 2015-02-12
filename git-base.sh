@@ -1,5 +1,6 @@
 dot_git=""
 cwd=""
+remote=""
 
 in_current_dir() {
   local wd="$(pwd)"
@@ -95,4 +96,57 @@ fetch() {
   local debug="$1"
   git fetch
   debug_print $debug "Finished fetch"
+}
+
+branch_name() {
+  if is_repo; then
+    local localBranch="$(git symbolic-ref --short HEAD)"
+    echo $localBranch
+  fi
+}
+
+is_tracking_remote() {
+  if [[ -n "$(remote_branch_name)" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+remote_branch_name() {
+  if is_repo; then
+    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' | grep "$(branch_name)")"
+    if [[ -n $remoteBranch ]]; then
+      echo $remoteBranch
+      return 0
+    else
+      return 1
+    fi
+  fi
+}
+
+commits_behind_of_remote() {
+  if is_tracking_remote; then
+    set --
+    set -- $(git rev-list --left-right --count $(remote_branch_name)...HEAD)
+    behind=$1
+    ahead=$2
+    set --
+    echo $behind
+  else
+    echo "0"
+  fi
+}
+
+commits_ahead_of_remote() {
+  if is_tracking_remote; then
+    set --
+    set -- $(git rev-list --left-right --count $(remote_branch_name)...HEAD)
+    behind=$1
+    ahead=$2
+    set --
+    echo $ahead
+  else
+    echo "0"
+  fi
 }
