@@ -150,3 +150,29 @@ commits_ahead_of_remote() {
     echo "0"
   fi
 }
+
+remote_behind_of_master() {
+  if is_tracking_remote; then
+    set --
+    set -- $(git rev-list --left-right --count origin/master...$(remote_branch_name))
+    behind=$1
+    ahead=$2
+    set --
+    echo $behind
+  else
+    echo "0"
+  fi
+}
+
+remote_ahead_of_master() {
+  if is_tracking_remote; then
+    set --
+    set -- $(git rev-list --left-right --count origin/master...$(remote_branch_name))
+    behind=$1
+    ahead=$2
+    set --
+    echo $ahead
+  else
+    echo "0"
+  fi
+}
