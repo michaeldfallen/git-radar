@@ -22,7 +22,7 @@ debug_print() {
 }
 
 dot_git() {
-  if [[ in_current_dir && -n "$dot_git" ]]; then
+  if in_current_dir && [[ -n "$dot_git" ]]; then
     # cache dot_git to save calls to rev-parse
     echo $dot_git
   elif [ -d .git ]; then
