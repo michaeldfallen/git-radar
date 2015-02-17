@@ -176,3 +176,15 @@ remote_ahead_of_master() {
     echo "0"
   fi
 }
+
+porcelain_status() {
+  echo "$(git status --porcelain 2>/dev/null)"
+}
+
+untracked_files() {
+  if is_repo; then
+    git_status="$(porcelain_status)"
+    untracked="$(echo "$git_status" | grep -p "?? " | wc -l | grep -oEi '[0-9][0-9]*')"
+    echo "$untracked"
+  fi
+}

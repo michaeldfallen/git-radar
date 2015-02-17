@@ -3,3 +3,4 @@
 ./test-directories.sh
 ./test-commits.sh
 ./test-branches.sh
+./test-files.sh
