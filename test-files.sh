@@ -30,6 +30,46 @@ test_untracked_files() {
   rm_tmp
 }
 
+test_unstaged_modified_files() {
+  cd_to_tmp
+  git init --quiet
+
+  assertEquals "0" "$(unstaged_modified_changes)"
+
+  touch foo
+  touch bar
+  git add .
+  git commit -m "foo and bar" >/dev/null
+
+  echo "foo" >> foo
+  assertEquals "1" "$(unstaged_modified_changes)"
+
+  echo "bar" >> bar
+  assertEquals "2" "$(unstaged_modified_changes)"
+
+  rm_tmp
+}
+
+test_unstaged_deleted_files() {
+  cd_to_tmp
+  git init --quiet
+
+  assertEquals "0" "$(unstaged_deleted_changes)"
+
+  touch foo
+  touch bar
+  git add .
+  git commit -m "foo and bar" >/dev/null
+
+  rm foo
+  assertEquals "1" "$(unstaged_deleted_changes)"
+
+  rm bar
+  assertEquals "2" "$(unstaged_deleted_changes)"
+
+  rm_tmp
+}
+
 test_staged_added_files() {
   cd_to_tmp
   git init --quiet
@@ -109,6 +149,90 @@ test_staged_renamed_files() {
   mv bar bar2
   git add .
   assertEquals "2" "$(staged_renamed_changes)"
+
+  rm_tmp
+}
+
+test_conflicted_both_changes() {
+  cd_to_tmp
+  git init --quiet
+
+  git checkout -b foo --quiet
+  echo "foo" >> foo
+  git add .
+  git commit -m "foo" --quiet
+
+  git checkout -b foo2 --quiet
+  echo "bar" >> foo
+  git add .
+  git commit -m "bar" --quiet
+
+  git checkout foo --quiet
+  echo "foo2" >> foo
+  git add .
+  git commit -m "foo2" --quiet
+
+  assertEquals "0" "$(conflicted_both_changes)"
+
+  git merge foo2 >/dev/null
+
+  assertEquals "1" "$(conflicted_both_changes)"
+
+  rm_tmp
+}
+
+test_conflicted_them_changes() {
+  cd_to_tmp
+  git init --quiet
+
+  git checkout -b foo --quiet
+  echo "foo" >> foo
+  git add .
+  git commit -m "foo" --quiet
+
+  git checkout -b foo2 --quiet
+  rm foo
+  git add .
+  git commit -m "delete foo" --quiet
+
+  git checkout foo --quiet
+  echo "foo2" >> foo
+  git add .
+  git commit -m "foo2" --quiet
+
+  assertEquals "0" "$(conflicted_by_them_changes)"
+
+  git merge foo2 >/dev/null
+
+  assertEquals "1" "$(conflicted_by_them_changes)"
+
+  rm_tmp
+}
+
+test_conflicted_us_changes() {
+  cd_to_tmp
+  git init --quiet
+
+  git checkout -b foo --quiet
+  echo "foo" >> foo
+  git add .
+  git commit -m "foo" --quiet
+
+  git checkout -b foo2 --quiet
+  echo "bar" >> foo
+  git add .
+  git commit -m "bar" --quiet
+
+  git checkout foo --quiet
+  rm foo
+  git add .
+  git commit -m "delete foo" --quiet
+
+  assertEquals "0" "$(conflicted_by_us_changes)"
+
+  git merge foo2 >/dev/null
+
+  assertEquals "1" "$(conflicted_by_us_changes)"
 
   rm_tmp
 }

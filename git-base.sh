@@ -207,3 +207,21 @@ staged_deleted_changes() {
 staged_renamed_changes() {
   echo "$(count_from_porcelain "$git_status" "R[A|M|C|D|U|R ] ")"
 }
+
+unstaged_modified_changes() {
+  echo "$(count_from_porcelain "$git_status" "[A|M|C|D|U|R ]M ")"
+}
+unstaged_deleted_changes() {
+  echo "$(count_from_porcelain "$git_status" "[A|M|C|D|U|R ]D ")"
+}
+
+conflicted_by_us_changes() {
+  echo "$(count_from_porcelain "$git_status" "[A|M|C|D|R ]U ")"
+}
+conflicted_by_them_changes() {
+  echo "$(count_from_porcelain "$git_status" "U[A|M|C|D|R ] ")"
+}
+conflicted_both_changes() {
+  echo "$(count_from_porcelain "$git_status" "UU ")"
+}
+
