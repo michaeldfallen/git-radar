@@ -181,10 +181,29 @@ porcelain_status() {
   echo "$(git status --porcelain 2>/dev/null)"
 }
 
-untracked_files() {
+count_from_porcelain() {
   if is_repo; then
-    git_status="$(porcelain_status)"
-    untracked="$(echo "$git_status" | grep -p "?? " | wc -l | grep -oEi '[0-9][0-9]*')"
-    echo "$untracked"
+    status="$(porcelain_status)"
+    pattern="$2"
+    echo "$(echo "$status" | grep -p "$pattern" | wc -l | grep -oEi '[0-9][0-9]*')"
+  else
+    echo "0"
   fi
+}
+
+untracked_files() {
+  echo "$(count_from_porcelain "$git_status" "?? ")"
+}
+
+staged_added_changes() {
+  echo "$(count_from_porcelain "$git_status" "A[A|M|C|D|U|R ] ")"
+}
+staged_modified_changes() {
+  echo "$(count_from_porcelain "$git_status" "M[A|M|C|D|U|R ] ")"
+}
+staged_deleted_changes() {
+  echo "$(count_from_porcelain "$git_status" "D[A|M|C|D|U|R ] ")"
+}
+staged_renamed_changes() {
+  echo "$(count_from_porcelain "$git_status" "R[A|M|C|D|U|R ] ")"
 }
