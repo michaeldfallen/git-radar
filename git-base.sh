@@ -207,7 +207,7 @@ porcelain_status() {
 count_from_porcelain() {
   if is_repo; then
     status="$(porcelain_status)"
-    pattern="$2"
+    pattern="$1"
     echo "$(echo "$status" | grep -p "$pattern" | wc -l | grep -oEi '[0-9][0-9]*')"
   else
     echo "0"
@@ -215,36 +215,36 @@ count_from_porcelain() {
 }
 
 untracked_files() {
-  echo "$(count_from_porcelain "$git_status" "?? ")"
+  echo "$(count_from_porcelain "?? ")"
 }
 
 staged_added_changes() {
-  echo "$(count_from_porcelain "$git_status" "A[A|M|C|D|U|R ] ")"
+  echo "$(count_from_porcelain "A[A|M|C|D|U|R ] ")"
 }
 staged_modified_changes() {
-  echo "$(count_from_porcelain "$git_status" "M[A|M|C|D|U|R ] ")"
+  echo "$(count_from_porcelain "M[A|M|C|D|U|R ] ")"
 }
 staged_deleted_changes() {
-  echo "$(count_from_porcelain "$git_status" "D[A|M|C|D|U|R ] ")"
+  echo "$(count_from_porcelain "D[A|M|C|D|U|R ] ")"
 }
 staged_renamed_changes() {
-  echo "$(count_from_porcelain "$git_status" "R[A|M|C|D|U|R ] ")"
+  echo "$(count_from_porcelain "R[A|M|C|D|U|R ] ")"
 }
 
 unstaged_modified_changes() {
-  echo "$(count_from_porcelain "$git_status" "[A|M|C|D|U|R ]M ")"
+  echo "$(count_from_porcelain "[A|M|C|D|U|R ]M ")"
 }
 unstaged_deleted_changes() {
-  echo "$(count_from_porcelain "$git_status" "[A|M|C|D|U|R ]D ")"
+  echo "$(count_from_porcelain "[A|M|C|D|U|R ]D ")"
 }
 
 conflicted_by_us_changes() {
-  echo "$(count_from_porcelain "$git_status" "[A|M|C|D|R ]U ")"
+  echo "$(count_from_porcelain "[A|M|C|D|R ]U ")"
 }
 conflicted_by_them_changes() {
-  echo "$(count_from_porcelain "$git_status" "U[A|M|C|D|R ] ")"
+  echo "$(count_from_porcelain "U[A|M|C|D|R ] ")"
 }
 conflicted_both_changes() {
-  echo "$(count_from_porcelain "$git_status" "UU ")"
+  echo "$(count_from_porcelain "UU ")"
 }
 
