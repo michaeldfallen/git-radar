@@ -98,10 +98,33 @@ fetch() {
   debug_print $debug "Finished fetch"
 }
 
+commit_short_sha() {
+  if is_repo; then
+    echo "$(git rev-parse --short HEAD)"
+  fi
+}
+
 branch_name() {
   if is_repo; then
-    local localBranch="$(git symbolic-ref --short HEAD)"
-    echo $localBranch
+    name="$(git symbolic-ref --short HEAD 2>/dev/null)"
+    retcode="$?"
+    if [[ "$retcode" == "0" ]]; then
+      echo "$name"
+    else
+      return 1
+    fi
+  fi
+}
+
+branch_ref() {
+  if is_repo; then
+    echo "$(branch_name || commit_short_sha)"
+  fi
+}
+
+readable_branch_name() {
+  if is_repo; then
+    echo "$(branch_name || echo "detached@$(commit_short_sha)")"
   fi
 }
 
@@ -115,7 +138,7 @@ is_tracking_remote() {
 
 remote_branch_name() {
   if is_repo; then
-    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' | grep "$(branch_name)")"
+    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads | grep "$(branch_name)")"
     if [[ -n $remoteBranch ]]; then
       echo $remoteBranch
       return 0

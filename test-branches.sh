@@ -12,7 +12,7 @@ cd_to_tmp() {
 
 rm_tmp() {
   cd $scriptDir
-  rm -r "$tmpfile"
+  rm -rf /tmp/git-prompt-tests*
 }
 
 test_branch_name_in_repo() {
@@ -33,6 +33,48 @@ test_branch_name_in_repo() {
 test_branch_name_not_in_repo() {
   cd_to_tmp
   assertEquals "" "$(branch_name)"
+  rm_tmp
+}
+
+test_detached_from_branch() {
+  cd_to_tmp
+  git init --quiet
+  assertEquals "master" "$(branch_name)"
+
+  touch README
+  git add .
+  git commit -m "initial commit" --quiet
+
+  touch foo
+  git add .
+  git commit -m "foo" --quiet
+
+  git checkout --quiet HEAD^ >/dev/null
+  sha="$(commit_short_sha)"
+
+  assertNotEquals "master" "$(branch_name)"
+  assertEquals "$sha" "$(branch_ref)"
+  assertEquals "detached@$sha" "$(readable_branch_name)"
+
+  rm_tmp
+}
+
+test_branch_name_returns_error() {
+  cd_to_tmp
+  git init --quiet
+
+  touch README
+  git add .
+  git commit -m "initial commit" --quiet
+
+  touch foo
+  git add .
+  git commit -m "foo" --quiet
+
+  git checkout --quiet HEAD^ >/dev/null
+
+  retcode="$(branch_name; echo $?)"
+  assertEquals "1" "$retcode"
   rm_tmp
 }
 
