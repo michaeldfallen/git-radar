@@ -206,9 +206,9 @@ porcelain_status() {
 
 count_from_porcelain() {
   if is_repo; then
-    status="$(porcelain_status)"
+    current_status="$(porcelain_status)"
     pattern="$1"
-    echo "$(echo "$status" | grep -p "$pattern" | wc -l | grep -oEi '[0-9][0-9]*')"
+    echo "$(echo "$current_status" | grep -p "$pattern" | wc -l | grep -oEi '[0-9][0-9]*')"
   else
     echo "0"
   fi
