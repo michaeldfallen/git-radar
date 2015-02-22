@@ -20,7 +20,7 @@ test_untracked_files() {
   git init --quiet
 
   assertEquals "" "$(untracked_status)"
-  
+
   touch foo
   assertEquals "1$untracked$added" "$(untracked_status)"
 

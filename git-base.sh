@@ -228,10 +228,10 @@ staged_status() {
   if [ -n "$filesAdded" ]; then
     staged_string="$staged_string$filesAdded$staged$added"
   fi
-  if [ -n "$filesDeleted" ]; then 
+  if [ -n "$filesDeleted" ]; then
     staged_string="$staged_string$filesDeleted$staged$deleted"
   fi
-  if [ -n "$filesModified" ]; then 
+  if [ -n "$filesModified" ]; then
     staged_string="$staged_string$filesModified$staged$modified"
   fi
   if [ -n "$filesRenamed" ]; then
@@ -243,10 +243,10 @@ staged_status() {
 conflicted_status() {
   local gitStatus=${1:-"$(porcelain_status)"}
   local conflicted_string=""
-  local filesConflictedUs="$(echo "$gitStatus" | grep -p "[A|M|C|D|R ]U " | wc -l | grep -oEi '[1-9][0-9]*')" 
-  local filesConflictedThem="$(echo "$gitStatus" | grep -p "U[A|M|C|D|R ] " | wc -l | grep -oEi '[1-9][0-9]*')" 
-  local filesConflictedBoth="$(echo "$gitStatus" | grep -p "UU " | wc -l | grep -oEi '[1-9][0-9]*')" 
- 
+  local filesConflictedUs="$(echo "$gitStatus" | grep -p "[A|M|C|D|R ]U " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesConflictedThem="$(echo "$gitStatus" | grep -p "U[A|M|C|D|R ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesConflictedBoth="$(echo "$gitStatus" | grep -p "UU " | wc -l | grep -oEi '[1-9][0-9]*')"
+
   if [ -n "$filesConflictedUs" ]; then
     conflicted_string="$conflicted_string$filesConflictedUs$conflicted$us"
   fi
@@ -265,10 +265,10 @@ unstaged_status() {
   local filesModified="$(echo "$gitStatus" | grep -p "[A|M|C|D|U|R ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesDeleted="$(echo "$gitStatus" | grep -p "[A|M|C|D|U|R ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
 
-  if [ -n "$filesDeleted" ]; then 
+  if [ -n "$filesDeleted" ]; then
     unstaged_string="$unstaged_string$filesDeleted$unstaged$deleted"
   fi
-  if [ -n "$filesModified" ]; then 
+  if [ -n "$filesModified" ]; then
     unstaged_string="$unstaged_string$filesModified$unstaged$modified"
   fi
   echo "$unstaged_string"
@@ -277,8 +277,8 @@ unstaged_status() {
 untracked_status() {
   local gitStatus=${1:-"$(porcelain_status)"}
   local untracked_string=""
-  local filesUntracked="$(echo "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')" 
- 
+  local filesUntracked="$(echo "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
+
   if [ -n "$filesUntracked" ]; then
     untracked_string="$untracked_string$filesUntracked$untracked$added"
   fi
