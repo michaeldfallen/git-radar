@@ -94,7 +94,7 @@ fetch_async() {
 }
 
 fetch() {
-  git fetch
+  git fetch --quiet > /dev/null 2>&1
 }
 
 commit_short_sha() {
