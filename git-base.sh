@@ -87,14 +87,14 @@ time_to_update() {
 }
 
 fetch_async() {
-  if time_to_update; then
-    record_timestamp
-    fetch $debug &
-  fi
+  fetch &
 }
 
 fetch() {
-  git fetch --quiet > /dev/null 2>&1
+  if time_to_update; then
+    record_timestamp
+    git fetch --quiet > /dev/null 2>&1
+  fi
 }
 
 commit_short_sha() {
