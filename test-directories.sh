@@ -12,7 +12,7 @@ cd_to_tmp() {
 
 rm_tmp() {
   cd $scriptDir
-  rm -r "$tmpfile"
+  rm -rf /tmp/git-prompt-tests*
 }
 
 test_git_root_in_repo() {
@@ -71,6 +71,15 @@ test_not_time_to_update_when_just_recorded() {
   cd $scriptDir
   record_timestamp
   assertFalse time_to_update
+}
+
+test_time_to_update_when_no_timestamp() {
+  cd_to_tmp
+  git init --quiet
+
+  assertTrue time_to_update
+
+  rm_tmp
 }
 
 . ./shunit/shunit2

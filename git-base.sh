@@ -13,6 +13,10 @@ in_current_dir() {
   fi
 }
 
+echodebug() {
+  echo "$@" 1>&2
+}
+
 debug_print() {
   local debug=$1
   local message=$2
@@ -58,7 +62,7 @@ record_timestamp() {
 
 timestamp() {
   if is_repo; then
-    echo "$(stat -f%m "$(dot_git)/lastupdatetime")"
+    echo "$(stat -f%m "$(dot_git)/lastupdatetime" || echo 0)"
   fi
 }
 
@@ -70,7 +74,7 @@ time_to_update() {
   if is_repo; then
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
     local fiveminutes="$((5 * 60))"
-    if (( "$timesincelastupdate" > "$5minutes" )); then
+    if (( "$timesincelastupdate" > "$fiveminutes" )); then
       # time to update return 0 (which is true)
       return 0
     else
