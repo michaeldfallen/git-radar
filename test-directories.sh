@@ -77,6 +77,7 @@ test_time_to_update_when_no_timestamp() {
   cd_to_tmp
   git init --quiet
 
+  time_to_update
   assertTrue time_to_update
 
   rm_tmp

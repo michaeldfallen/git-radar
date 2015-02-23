@@ -62,7 +62,7 @@ record_timestamp() {
 
 timestamp() {
   if is_repo; then
-    echo "$(stat -f%m "$(dot_git)/lastupdatetime" || echo 0)"
+    echo "$(stat -f%m "$(dot_git)/lastupdatetime" || echo "0")"
   fi
 }
 
@@ -74,7 +74,7 @@ time_to_update() {
   if is_repo; then
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
     local fiveminutes="$((5 * 60))"
-    if (( "$timesincelastupdate" > "$fiveminutes" )); then
+    if (( $timesincelastupdate > $fiveminutes )); then
       # time to update return 0 (which is true)
       return 0
     else
@@ -87,19 +87,14 @@ time_to_update() {
 }
 
 fetch_async() {
-  local debug="$1"
   if time_to_update; then
-    debug_print $debug "Starting fetch"
+    record_timestamp
     fetch $debug &
-  else
-    debug_print $debug "Didn't fetch"
   fi
 }
 
 fetch() {
-  local debug="$1"
   git fetch
-  debug_print $debug "Finished fetch"
 }
 
 commit_short_sha() {
