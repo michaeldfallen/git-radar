@@ -127,14 +127,6 @@ readable_branch_name() {
   fi
 }
 
-is_tracking_remote() {
-  if [[ -n "$(remote_branch_name)" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 remote_branch_name() {
   if is_repo; then
     local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads | grep "$(branch_name)")"
