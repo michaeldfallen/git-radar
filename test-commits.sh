@@ -162,8 +162,8 @@ test_remote_behind_master() {
   touch README
   git add README
   git commit -m "initial commit" --quiet
-  
-  git push --quiet -u origin master >/dev/null 
+
+  git push --quiet -u origin master >/dev/null
   git reset --quiet --hard HEAD
 
   git checkout -b foo --quiet
@@ -185,6 +185,51 @@ test_remote_behind_master() {
   git push --quiet >/dev/null
   git checkout foo --quiet
   assertEquals "2" "$(remote_behind_of_master)"
+
+  rm_tmp
+}
+
+test_dont_call_remote_branch_name() {
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "new"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+
+  git push --quiet -u origin master >/dev/null
+  git reset --quiet --hard HEAD
+
+  git checkout -b foo --quiet
+  git push --quiet -u origin foo >/dev/null
+
+  remote_branch="$(remote_branch_name)"
+
+  debug_output="$(
+    {
+    set -x
+    output="$(
+      remote_behind_of_master "$remote_branch";
+      remote_ahead_of_master "$remote_branch";
+      commits_ahead_of_remote "$remote_branch";
+      commits_behind_of_remote "$remote_branch";
+    )"
+    set +x
+    } 2>&1
+    echo "$output"
+  )"
+
+  #Grep through the output and look for remote_branch_name being called
+  usages="$(echo "$debug_output" | grep 'remote_branch_name' | wc -l )"
+
+  #wc -l has a weird output
+  assertEquals "       0" "$usages"
 
   rm_tmp
 }
