@@ -86,10 +86,6 @@ time_to_update() {
   fi
 }
 
-fetch_async() {
-  fetch &
-}
-
 fetch() {
   if time_to_update; then
     record_timestamp
