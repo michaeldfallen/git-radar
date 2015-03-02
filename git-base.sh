@@ -165,7 +165,8 @@ commits_ahead_of_remote() {
 
 remote_behind_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
-  if [[ -n "$remote_branch" ]]; then
+  tracked_remote="origin/master"
+  if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
     set --
     set -- $(git rev-list --left-right --count origin/master...${remote_branch})
     behind=$1
@@ -179,7 +180,8 @@ remote_behind_of_master() {
 
 remote_ahead_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
-  if [[ -n "$remote_branch" ]]; then
+  tracked_remote="origin/master"
+  if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
     set --
     set -- $(git rev-list --left-right --count origin/master...${remote_branch})
     behind=$1

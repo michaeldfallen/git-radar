@@ -234,4 +234,29 @@ test_dont_call_remote_branch_name() {
   rm_tmp
 }
 
+test_dont_remote_if_remote_is_master() {
+  cd_to_tmp
+  git init --quiet
+
+  remote_branch="origin/master"
+
+  debug_output="$(
+    {
+    set -x
+    output="$(
+      remote_behind_of_master "$remote_branch";
+      remote_ahead_of_master "$remote_branch";
+    )"
+    set +x
+    } 2>&1
+    echo "$output"
+  )"
+
+  usages="$(echo "$debug_output" | grep 'git rev-list' | wc -l )"
+
+  assertEquals "       0" "$usages"
+
+  rm_tmp
+}
+
 . ./shunit/shunit2
