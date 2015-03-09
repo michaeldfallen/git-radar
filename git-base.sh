@@ -123,7 +123,7 @@ readable_branch_name() {
 
 remote_branch_name() {
   local localRef="$(git symbolic-ref -q HEAD 2>/dev/null)"
-  local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef )"
+  local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef 2>/dev/null)"
   if [[ -n $remoteBranch ]]; then
     echo $remoteBranch
     return 0

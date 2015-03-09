@@ -78,4 +78,25 @@ test_branch_name_returns_error() {
   rm_tmp
 }
 
+test_remote_branch_name_quiet_when_not_in_repo() {
+  cd_to_tmp
+
+  debug_output="$(
+    {
+    set -x
+    output="$(
+      remote_branch_name;
+    )"
+    set +x
+    } 2>&1
+    echo "$output"
+  )"
+
+  usages="$(echo "$debug_output" | grep 'fatal: ' | wc -l)"
+
+  assertEquals "       0" "$usages"
+
+  rm_tmp
+}
+
 . ./shunit/shunit2
