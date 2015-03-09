@@ -125,7 +125,7 @@ readable_branch_name() {
 
 remote_branch_name() {
   if is_repo; then
-    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads | grep "$(branch_name)")"
+    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads "$(git symbolic-ref -q HEAD)" )"
     if [[ -n $remoteBranch ]]; then
       echo $remoteBranch
       return 0
