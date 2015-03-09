@@ -100,14 +100,12 @@ commit_short_sha() {
 }
 
 branch_name() {
-  if is_repo; then
-    name="$(git symbolic-ref --short HEAD 2>/dev/null)"
-    retcode="$?"
-    if [[ "$retcode" == "0" ]]; then
-      echo "$name"
-    else
-      return 1
-    fi
+  name="$(git symbolic-ref --short HEAD 2>/dev/null)"
+  retcode="$?"
+  if [[ "$retcode" == "0" ]]; then
+    echo "$name"
+  else
+    return 1
   fi
 }
 
@@ -124,14 +122,12 @@ readable_branch_name() {
 }
 
 remote_branch_name() {
-  if is_repo; then
-    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads "$(git symbolic-ref -q HEAD)" )"
-    if [[ -n $remoteBranch ]]; then
-      echo $remoteBranch
-      return 0
-    else
-      return 1
-    fi
+  local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads "$(git symbolic-ref -q HEAD)" )"
+  if [[ -n $remoteBranch ]]; then
+    echo $remoteBranch
+    return 0
+  else
+    return 1
   fi
 }
 
