@@ -123,12 +123,14 @@ readable_branch_name() {
 
 remote_branch_name() {
   local localRef="$(branch_name)"
-  local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef 2>/dev/null | grep $localRef)"
-  if [[ -n $remoteBranch ]]; then
-    echo $remoteBranch
-    return 0
-  else
-    return 1
+  if [[ -n "$localRef" ]]; then
+    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef 2>/dev/null | grep $localRef)"
+    if [[ -n $remoteBranch ]]; then
+      echo $remoteBranch
+      return 0
+    else
+      return 1
+    fi
   fi
 }
 

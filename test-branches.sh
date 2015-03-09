@@ -83,16 +83,16 @@ test_remote_branch_name_quiet_when_not_in_repo() {
 
   debug_output="$(
     {
-    set -x
     output="$(
       remote_branch_name;
     )"
-    set +x
     } 2>&1
     echo "$output"
   )"
 
-  usages="$(echo "$debug_output" | grep 'fatal: ' | wc -l)"
+  usages="$(echo "$debug_output" | grep -E "(usage|fatal):" | wc -l)"
+
+  echo "$debug_output"
 
   assertEquals "       0" "$usages"
 
