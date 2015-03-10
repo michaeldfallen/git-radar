@@ -206,19 +206,19 @@ conflicted="%{$fg_bold[yellow]%}"
 untracked="%{$fg_bold[white]%}"
 
 is_dirty() {
-  if ! git rev-parse; then
+  if ! git rev-parse 2>&1/dev/null; then
     #not in repo, thus not dirty
     return 1
   else
     #in repo, might be dirty
-    if [[ -n "$(git ls-files --exclude-standard --others)" ]]; then
+    if [[ -n "$(git ls-files --exclude-standard --others 2>/dev/null)" ]]; then
       #untracked files thus dirty
       return 0
     else
       #no untracked files
-      if git show HEAD --; then
+      if git show HEAD -- 2>&1/dev/null; then
         #has a commit hash, thus not on an initial commit
-        if ! git diff --quiet --ignore-submodules HEAD --; then
+        if ! git diff --quiet --ignore-submodules HEAD -- 2>&1/dev/null; then
           #has differences thus dirty
           return 0
         else
@@ -236,19 +236,6 @@ is_dirty() {
       fi
     fi
   fi
-  {
-    #returns 1 if not a git repo
-    git rev-parse && {
-      #returns 1 if untracked files
-      git ls-files --exclude-standard --others && ! {
-        git show HEAD -- ||
-        #returns 1 if unstaged or staged files
-        git diff --quiet --ignore-submodules HEAD --
-      }
-    }
-  }
-  exitCode="$?"
-  return "$exitCode"
 }
 
 porcelain_status() {
