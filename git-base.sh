@@ -206,7 +206,7 @@ conflicted="%{$fg_bold[yellow]%}"
 untracked="%{$fg_bold[white]%}"
 
 is_dirty() {
-  if ! git rev-parse 2>&1/dev/null; then
+  if ! git rev-parse 2>&1 /dev/null; then
     #not in repo, thus not dirty
     return 1
   else
@@ -216,9 +216,9 @@ is_dirty() {
       return 0
     else
       #no untracked files
-      if git show HEAD -- 2>&1/dev/null; then
+      if git show HEAD -- 2>&1 /dev/null; then
         #has a commit hash, thus not on an initial commit
-        if ! git diff --quiet --ignore-submodules HEAD -- 2>&1/dev/null; then
+        if ! git diff --quiet --ignore-submodules HEAD -- 2>&1 /dev/null; then
           #has differences thus dirty
           return 0
         else
