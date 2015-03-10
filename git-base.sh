@@ -205,6 +205,52 @@ unstaged="%{$fg_bold[red]%}"
 conflicted="%{$fg_bold[yellow]%}"
 untracked="%{$fg_bold[white]%}"
 
+is_dirty() {
+  if ! git rev-parse; then
+    #not in repo, thus not dirty
+    return 1
+  else
+    #in repo, might be dirty
+    if [[ -n "$(git ls-files --exclude-standard --others)" ]]; then
+      #untracked files thus dirty
+      return 0
+    else
+      #no untracked files
+      if git show HEAD --; then
+        #has a commit hash, thus not on an initial commit
+        if ! git diff --quiet --ignore-submodules HEAD --; then
+          #has differences thus dirty
+          return 0
+        else
+          return 1
+        fi
+      else
+        #no commit hash, thus can't use HEAD.
+        #As it's inital commit we can just list the files.
+        if [[ -n "$(ls -a -1 | grep -Ev '(\.|\.\.|\.git)')" ]]; then
+          #files listed and no commit hash, thus changes
+          return 0
+        else
+          return 1
+        fi
+      fi
+    fi
+  fi
+  {
+    #returns 1 if not a git repo
+    git rev-parse && {
+      #returns 1 if untracked files
+      git ls-files --exclude-standard --others && ! {
+        git show HEAD -- ||
+        #returns 1 if unstaged or staged files
+        git diff --quiet --ignore-submodules HEAD --
+      }
+    }
+  }
+  exitCode="$?"
+  return "$exitCode"
+}
+
 porcelain_status() {
   echo "$(git status --porcelain 2>/dev/null)"
 }

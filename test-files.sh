@@ -237,4 +237,31 @@ test_conflicted_us_changes() {
   rm_tmp
 }
 
+test_is_dirty() {
+  cd_to_tmp
+
+  assertFalse "not in repo" is_dirty
+
+  git init --quiet
+  assertFalse "in repo and clean" is_dirty
+
+  touch foo
+  assertTrue "untracked files" is_dirty
+
+  git add .
+  assertTrue "staged addition files" is_dirty
+
+  git commit -m "inital commit" --quiet
+
+  assertFalse "commited and clean" is_dirty
+
+  echo "foo" >> foo
+  assertTrue "modified file unstaged" is_dirty
+
+  git add .
+  assertTrue "modified file staged" is_dirty
+
+  rm_tmp
+}
+
 . ./shunit/shunit2
