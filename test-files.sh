@@ -248,6 +248,12 @@ test_is_dirty() {
   touch foo
   assertTrue "untracked files" is_dirty
 
+  mkdir sneakSubDir
+  cd sneakSubDir
+  assertTrue "untracked files while in an empty sub dir" is_dirty
+
+  cd ../
+
   git add .
   assertTrue "staged addition files" is_dirty
 

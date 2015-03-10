@@ -227,7 +227,7 @@ is_dirty() {
       else
         #no commit hash, thus can't use HEAD.
         #As it's inital commit we can just list the files.
-        if [[ -n "$(ls -a -1 | grep -Ev '(\.|\.\.|\.git)')" ]]; then
+        if [[ -n "$(ls -a -1 "$(git_root)" | grep -Ev '(\.|\.\.|\.git)')" ]]; then
           #files listed and no commit hash, thus changes
           return 0
         else
