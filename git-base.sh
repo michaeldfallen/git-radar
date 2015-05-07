@@ -167,11 +167,15 @@ remote_behind_of_master() {
   tracked_remote="origin/master"
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
     set --
-    set -- $(git rev-list --left-right --count origin/master...${remote_branch})
+    set -- $(git rev-list --left-right --count ${tracked_remote}...${remote_branch} 2>/dev/null)
     behind=$1
     ahead=$2
     set --
-    echo $behind
+    if [[ -n "$behind" ]]; then
+      echo $behind
+    else
+      echo "0"
+    fi
   else
     echo "0"
   fi
@@ -182,11 +186,15 @@ remote_ahead_of_master() {
   tracked_remote="origin/master"
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
     set --
-    set -- $(git rev-list --left-right --count origin/master...${remote_branch})
+    set -- $(git rev-list --left-right --count ${tracked_remote}...${remote_branch} 2>/dev/null)
     behind=$1
     ahead=$2
     set --
-    echo $ahead
+    if [[ -n "$ahead" ]]; then
+      echo $ahead
+    else
+      echo "0"
+    fi
   else
     echo "0"
   fi

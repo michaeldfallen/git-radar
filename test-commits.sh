@@ -259,4 +259,45 @@ test_dont_remote_if_remote_is_master() {
   rm_tmp
 }
 
+test_quiet_if_no_remote_master() {
+  cd_to_tmp "remote"
+  git init --quiet
+  touch README
+  git add .
+  git checkout -b foo --quiet
+  git commit -m "initial commit" --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "new"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout foo --quiet
+  repoLocation="$(pwd)"
+
+  remote_branch="$(remote_branch_name)"
+
+  debug_output="$(
+    {
+      output="$(
+        remote_behind_of_master "$remote_branch";
+      )"
+    } 2>&1
+    echo "$output"
+  )"
+
+  assertEquals "0" "$debug_output"
+  debug_output="$(
+    {
+      output="$(
+        remote_ahead_of_master "$remote_branch";
+      )"
+    } 2>&1
+    echo "$output"
+  )"
+
+  assertEquals "0" "$debug_output"
+
+  rm_tmp
+}
 . ./shunit/shunit2
