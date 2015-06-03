@@ -189,6 +189,74 @@ test_remote_behind_master() {
   rm_tmp
 }
 
+test_remote_branch_starts_with_local_branch_name() {
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "local"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+
+  git push --quiet -u origin master >/dev/null
+  git reset --quiet --hard HEAD
+
+  git checkout -b foobar --quiet
+  touch foobarfile
+  git add foobarfile
+  git commit -m "added foobar" --quiet
+  git push --quiet -u origin foobar >/dev/null
+
+  git checkout -b foo --quiet
+
+  assertEquals "0" "$(remote_ahead_of_master)"
+  assertEquals "0" "$(remote_behind_of_master)"
+  assertEquals "0" "$(commits_behind_of_remote)"
+  assertEquals "0" "$(commits_ahead_of_remote)"
+
+  rm_tmp
+}
+
+test_remote_branch_ends_with_local_branch_name() {
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "local"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+
+  git push --quiet -u origin master >/dev/null
+  git reset --quiet --hard HEAD
+
+  git checkout -b foobar --quiet
+  touch foobarfile
+  git add foobarfile
+  git commit -m "added foobar" --quiet
+  git push --quiet -u origin foobar >/dev/null
+
+  git checkout -b bar --quiet
+
+  assertEquals "0" "$(remote_ahead_of_master)"
+  assertEquals "0" "$(remote_behind_of_master)"
+  assertEquals "0" "$(commits_behind_of_remote)"
+  assertEquals "0" "$(commits_ahead_of_remote)"
+
+  rm_tmp
+}
+
 test_dont_call_remote_branch_name() {
   cd_to_tmp "remote"
   git init --bare --quiet
