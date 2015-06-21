@@ -137,12 +137,7 @@ remote_branch_name() {
 commits_behind_of_remote() {
   remote_branch=${1:-"$(remote_branch_name)"}
   if [[ -n "$remote_branch" ]]; then
-    set --
-    set -- $(git rev-list --left-right --count ${remote_branch}...HEAD)
-    behind=$1
-    ahead=$2
-    set --
-    echo $behind
+    git rev-list --left-only --count ${remote_branch}...HEAD
   else
     echo "0"
   fi
@@ -151,12 +146,7 @@ commits_behind_of_remote() {
 commits_ahead_of_remote() {
   remote_branch=${1:-"$(remote_branch_name)"}
   if [[ -n "$remote_branch" ]]; then
-    set --
-    set -- $(git rev-list --left-right --count ${remote_branch}...HEAD)
-    behind=$1
-    ahead=$2
-    set --
-    echo $ahead
+    git rev-list --right-only --count ${remote_branch}...HEAD
   else
     echo "0"
   fi
@@ -166,16 +156,7 @@ remote_behind_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
   tracked_remote="origin/master"
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
-    set --
-    set -- $(git rev-list --left-right --count ${tracked_remote}...${remote_branch} 2>/dev/null)
-    behind=$1
-    ahead=$2
-    set --
-    if [[ -n "$behind" ]]; then
-      echo $behind
-    else
-      echo "0"
-    fi
+    git rev-list --left-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || echo "0"
   else
     echo "0"
   fi
@@ -185,16 +166,7 @@ remote_ahead_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
   tracked_remote="origin/master"
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
-    set --
-    set -- $(git rev-list --left-right --count ${tracked_remote}...${remote_branch} 2>/dev/null)
-    behind=$1
-    ahead=$2
-    set --
-    if [[ -n "$ahead" ]]; then
-      echo $ahead
-    else
-      echo "0"
-    fi
+    git rev-list --right-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || echo "0"
   else
     echo "0"
   fi
