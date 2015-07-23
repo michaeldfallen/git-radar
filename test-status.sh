@@ -2,6 +2,37 @@ scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/git-base.sh"
 
+test_prefix_and_suffix() {
+  status="""
+ M unstaged-modified
+ D unstaged-deleted
+M  staged-modified
+A  staged-added
+D  staged-deleted
+C  staged-copied
+R  staged-renamed
+UD deleted-them-conflicted
+AU added-us-conflicted
+UU modified-both-conflicted
+?? untacked
+"""
+
+  prefix="_"
+  suffix="-"
+
+  assertEquals "line:${LINENO}" "1_D-1_M-"\
+    "$(unstaged_status "$status" "$prefix" "$suffix")"
+
+  assertEquals "line:${LINENO}" "1_A-1_D-1_M-1_R-1_C-"\
+    "$(staged_status "$status" "$prefix" "$suffix")"
+
+  assertEquals "line:${LINENO}" "1_U-1_T-1_B-"\
+    "$(conflicted_status "$status" "$prefix" "$suffix")"
+
+  assertEquals "line:${LINENO}" "1_A-"\
+    "$(untracked_status "$status" "$prefix" "$suffix")"
+}
+
 test_basic_unstaged_options() {
   status="""
  M modified-and-unstaged

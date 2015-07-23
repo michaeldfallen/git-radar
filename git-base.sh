@@ -277,7 +277,7 @@ unstaged_status() {
   local suffix=${3:-""}
   local unstaged_string=""
 
-  local filesModified="$(echo "$gitStatus" | grep -p "[AMCDR ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(echo "$gitStatus" | grep -p "[ACDR ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesDeleted="$(echo "$gitStatus" | grep -p "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesDeleted" ]; then
@@ -298,7 +298,7 @@ untracked_status() {
   local filesUntracked="$(echo "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUntracked" ]; then
-    untracked_string="$untracked_string$filesUntracked$untracked$added"
+    untracked_string="$untracked_string$filesUntracked${prefix}A${suffix}"
   fi
   echo "$untracked_string"
 }
