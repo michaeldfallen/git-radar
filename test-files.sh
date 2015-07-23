@@ -42,10 +42,10 @@ test_unstaged_modified_files() {
   git commit -m "foo and bar" >/dev/null
 
   echo "foo" >> foo
-  assertEquals "1$unstaged$modified" "$(unstaged_status)"
+  assertEquals "1M" "$(unstaged_status)"
 
   echo "bar" >> bar
-  assertEquals "2$unstaged$modified" "$(unstaged_status)"
+  assertEquals "2M" "$(unstaged_status)"
 
   rm_tmp
 }
@@ -62,10 +62,10 @@ test_unstaged_deleted_files() {
   git commit -m "foo and bar" >/dev/null
 
   rm foo
-  assertEquals "1$unstaged$deleted" "$(unstaged_status)"
+  assertEquals "1D" "$(unstaged_status)"
 
   rm bar
-  assertEquals "2$unstaged$deleted" "$(unstaged_status)"
+  assertEquals "2D" "$(unstaged_status)"
 
   rm_tmp
 }
@@ -78,11 +78,11 @@ test_staged_added_files() {
 
   touch foo
   git add .
-  assertEquals "1$staged$added" "$(staged_status)"
+  assertEquals "1A" "$(staged_status)"
 
   touch bar
   git add .
-  assertEquals "2$staged$added" "$(staged_status)"
+  assertEquals "2A" "$(staged_status)"
 
   rm_tmp
 }
@@ -100,11 +100,11 @@ test_staged_modified_files() {
 
   echo "foo" >> foo
   git add .
-  assertEquals "1$staged$modified" "$(staged_status)"
+  assertEquals "1M" "$(staged_status)"
 
   echo "bar" >> bar
   git add .
-  assertEquals "2$staged$modified" "$(staged_status)"
+  assertEquals "2M" "$(staged_status)"
 
   rm_tmp
 }
@@ -122,11 +122,11 @@ test_staged_deleted_files() {
 
   rm foo
   git add .
-  assertEquals "1$staged$deleted" "$(staged_status)"
+  assertEquals "1D" "$(staged_status)"
 
   rm bar
   git add .
-  assertEquals "2$staged$deleted" "$(staged_status)"
+  assertEquals "2D" "$(staged_status)"
 
   rm_tmp
 }
@@ -144,11 +144,11 @@ test_staged_renamed_files() {
 
   mv foo foo2
   git add .
-  assertEquals "1$staged$renamed" "$(staged_status)"
+  assertEquals "1R" "$(staged_status)"
 
   mv bar bar2
   git add .
-  assertEquals "2$staged$renamed" "$(staged_status)"
+  assertEquals "2R" "$(staged_status)"
 
   rm_tmp
 }
@@ -176,7 +176,7 @@ test_conflicted_both_changes() {
 
   git merge foo2 >/dev/null
 
-  assertEquals "1$conflicted$both" "$(conflicted_status)"
+  assertEquals "1B" "$(conflicted_status)"
 
   rm_tmp
 }
@@ -204,7 +204,7 @@ test_conflicted_them_changes() {
 
   git merge foo2 >/dev/null
 
-  assertEquals "1$conflicted$them" "$(conflicted_status)"
+  assertEquals "1T" "$(conflicted_status)"
 
   rm_tmp
 }
@@ -232,7 +232,7 @@ test_conflicted_us_changes() {
 
   git merge foo2 >/dev/null
 
-  assertEquals "1$conflicted$us" "$(conflicted_status)"
+  assertEquals "1U" "$(conflicted_status)"
 
   rm_tmp
 }

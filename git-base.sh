@@ -172,15 +172,6 @@ remote_ahead_of_master() {
   fi
 }
 
-added="A%{$reset_color%}"
-modified="M%{$reset_color%}"
-deleted="D%{$reset_color%}"
-renamed="R%{$reset_color%}"
-copied="C%{$reset_color%}"
-us="U%{$reset_color%}"
-them="T%{$reset_color%}"
-both="B%{$reset_color%}"
-
 # Diacritic marks for overlaying an arrow over A D C etc
 #us="\xE2\x83\x97{$reset_color%}"
 #them="\xE2\x83\x96%{$reset_color%}"
@@ -230,6 +221,9 @@ porcelain_status() {
 
 staged_status() {
   local gitStatus=${1:-"$(porcelain_status)"}
+  local prefix=${2:-""}
+  local suffix=${3:-""}
+
   local staged_string=""
   local filesModified="$(echo "$gitStatus" | grep -p "M[ACDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesAdded="$(echo "$gitStatus" | grep -p "A[MCDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
@@ -238,25 +232,27 @@ staged_status() {
   local filesCopied="$(echo "$gitStatus" | grep -p "C[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesAdded" ]; then
-    staged_string="$staged_string$filesAdded$staged$added"
+    staged_string="$staged_string$filesAdded${prefix}A${suffix}"
   fi
   if [ -n "$filesDeleted" ]; then
-    staged_string="$staged_string$filesDeleted$staged$deleted"
+    staged_string="$staged_string$filesDeleted${prefix}D${suffix}"
   fi
   if [ -n "$filesModified" ]; then
-    staged_string="$staged_string$filesModified$staged$modified"
+    staged_string="$staged_string$filesModified${prefix}M${suffix}"
   fi
   if [ -n "$filesRenamed" ]; then
-    staged_string="$staged_string$filesRenamed$staged$renamed"
+    staged_string="$staged_string$filesRenamed${prefix}R${suffix}"
   fi
   if [ -n "$filesCopied" ]; then
-    staged_string="$staged_string$filesCopied$staged$copied"
+    staged_string="$staged_string$filesCopied${prefix}C${suffix}"
   fi
   echo "$staged_string"
 }
 
 conflicted_status() {
   local gitStatus=${1:-"$(porcelain_status)"}
+  local prefix=${2:-""}
+  local suffix=${3:-""}
   local conflicted_string=""
 
   local filesUs="$(echo "$gitStatus" | grep -p "[AD]U " | wc -l | grep -oEi '[1-9][0-9]*')"
@@ -264,35 +260,41 @@ conflicted_status() {
   local filesBoth="$(echo "$gitStatus" | grep -E "(UU|AA|DD) " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUs" ]; then
-    conflicted_string="$conflicted_string$filesUs$conflicted$us"
+    conflicted_string="$conflicted_string$filesUs${prefix}U${suffix}"
   fi
   if [ -n "$filesThem" ]; then
-    conflicted_string="$conflicted_string$filesThem$conflicted$them"
+    conflicted_string="$conflicted_string$filesThem${prefix}T${suffix}"
   fi
   if [ -n "$filesBoth" ]; then
-    conflicted_string="$conflicted_string$filesBoth$conflicted$both"
+    conflicted_string="$conflicted_string$filesBoth${prefix}B${suffix}"
   fi
   echo "$conflicted_string"
 }
 
 unstaged_status() {
   local gitStatus=${1:-"$(porcelain_status)"}
+  local prefix=${2:-""}
+  local suffix=${3:-""}
   local unstaged_string=""
+
   local filesModified="$(echo "$gitStatus" | grep -p "[AMCDR ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesDeleted="$(echo "$gitStatus" | grep -p "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesDeleted" ]; then
-    unstaged_string="$unstaged_string$filesDeleted$unstaged$deleted"
+    unstaged_string="$unstaged_string$filesDeleted${prefix}D${suffix}"
   fi
   if [ -n "$filesModified" ]; then
-    unstaged_string="$unstaged_string$filesModified$unstaged$modified"
+    unstaged_string="$unstaged_string$filesModified${prefix}M${suffix}"
   fi
   echo "$unstaged_string"
 }
 
 untracked_status() {
   local gitStatus=${1:-"$(porcelain_status)"}
+  local prefix=${2:-""}
+  local suffix=${3:-""}
   local untracked_string=""
+
   local filesUntracked="$(echo "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUntracked" ]; then
