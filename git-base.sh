@@ -177,11 +177,6 @@ remote_ahead_of_master() {
 #them="\xE2\x83\x96%{$reset_color%}"
 #both="\xE2\x83\xA1%{$reset_color%}"
 
-staged="%{$fg_bold[green]%}"
-unstaged="%{$fg_bold[red]%}"
-conflicted="%{$fg_bold[yellow]%}"
-untracked="%{$fg_bold[white]%}"
-
 is_dirty() {
   if ! git rev-parse &> /dev/null; then
     #not in repo, thus not dirty
@@ -301,4 +296,40 @@ untracked_status() {
     untracked_string="$untracked_string$filesUntracked${prefix}A${suffix}"
   fi
   echo "$untracked_string"
+}
+
+zsh_color_changes_status() {
+  local porcelain="$(porcelain_status)"
+  local changes=""
+
+  if [[ -n "$porcelain" ]]; then
+    local staged_prefix="%{$fg_bold[green]%}"
+    local unstaged_prefix="%{$fg_bold[red]%}"
+    local conflicted_prefix="%{$fg_bold[yellow]%}"
+    local untracked_prefix="%{$fg_bold[white]%}"
+    local suffix="%{$reset_color%}"
+
+    local staged_changes="$(staged_status "$porcelain")"
+    local unstaged_changes="$(unstaged_status "$porcelain")"
+    local untracked_changes="$(untracked_status "$porcelain")"
+    local conflicted_changes="$(conflicted_status "$porcelain")"
+    if [[ -n "$staged_changes" ]]; then
+      staged_changes=" $staged_changes"
+    fi
+
+    if [[ -n "$unstaged_changes" ]]; then
+      unstaged_changes=" $unstaged_changes"
+    fi
+
+    if [[ -n "$conflicted_changes" ]]; then
+      conflicted_changes=" $conflicted_changes"
+    fi
+
+    if [[ -n "$untracked_changes" ]]; then
+      untracked_changes=" $untracked_changes"
+    fi
+
+    changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
+  fi
+  echo $changes
 }
