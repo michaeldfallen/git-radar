@@ -309,10 +309,10 @@ zsh_color_changes_status() {
     local untracked_prefix="%{$fg_bold[white]%}"
     local suffix="%{$reset_color%}"
 
-    local staged_changes="$(staged_status "$porcelain")"
-    local unstaged_changes="$(unstaged_status "$porcelain")"
-    local untracked_changes="$(untracked_status "$porcelain")"
-    local conflicted_changes="$(conflicted_status "$porcelain")"
+    local staged_changes="$(staged_status "$porcelain" "$staged_prefix" "$suffix")"
+    local unstaged_changes="$(unstaged_status "$porcelain" "$unstaged_prefix" "$suffix")"
+    local untracked_changes="$(untracked_status "$porcelain" "$untracked_prefix" "$suffix")"
+    local conflicted_changes="$(conflicted_status "$porcelain" "$conflicted_prefix" "$suffix")"
     if [[ -n "$staged_changes" ]]; then
       staged_changes=" $staged_changes"
     fi
