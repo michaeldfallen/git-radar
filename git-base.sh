@@ -220,7 +220,7 @@ staged_status() {
   local suffix=${3:-""}
 
   local staged_string=""
-  local filesModified="$(echo "$gitStatus" | grep -p "M[ACDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(echo "$gitStatus" | grep -p "M[ACDRM ] " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesAdded="$(echo "$gitStatus" | grep -p "A[MCDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesDeleted="$(echo "$gitStatus" | grep -p "D[AMCR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesRenamed="$(echo "$gitStatus" | grep -p "R[AMCD ] " | wc -l | grep -oEi '[1-9][0-9]*')"
@@ -272,7 +272,7 @@ unstaged_status() {
   local suffix=${3:-""}
   local unstaged_string=""
 
-  local filesModified="$(echo "$gitStatus" | grep -p "[ACDR ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(echo "$gitStatus" | grep -p "[ACDRM ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesDeleted="$(echo "$gitStatus" | grep -p "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesDeleted" ]; then

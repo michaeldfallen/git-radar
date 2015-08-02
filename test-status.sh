@@ -11,6 +11,7 @@ A  staged-added
 D  staged-deleted
 C  staged-copied
 R  staged-renamed
+MM staged-and-unstaged-modified
 UD deleted-them-conflicted
 AU added-us-conflicted
 UU modified-both-conflicted
@@ -20,10 +21,10 @@ UU modified-both-conflicted
   prefix="_"
   suffix="-"
 
-  assertEquals "line:${LINENO}" "1_D-1_M-"\
+  assertEquals "line:${LINENO}" "1_D-2_M-"\
     "$(unstaged_status "$status" "$prefix" "$suffix")"
 
-  assertEquals "line:${LINENO}" "1_A-1_D-1_M-1_R-1_C-"\
+  assertEquals "line:${LINENO}" "1_A-1_D-2_M-1_R-1_C-"\
     "$(staged_status "$status" "$prefix" "$suffix")"
 
   assertEquals "line:${LINENO}" "1_U-1_T-1_B-"\
