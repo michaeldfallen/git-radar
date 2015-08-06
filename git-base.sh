@@ -298,6 +298,42 @@ untracked_status() {
   echo "$untracked_string"
 }
 
+bash_color_changes_status() {
+  local porcelain="$(porcelain_status)"
+  local changes=""
+
+  if [[ -n "$porcelain" ]]; then
+    local green_staged_prefix="\033[1;32m"
+    local red_unstaged_prefix="\033[1;31m"
+    local yellow_conflicted_prefix="\033[1;33m"
+    local grey_untracked_prefix="\033[1;37m"
+    local reset_suffix="\033[0m"
+
+    local staged_changes="$(staged_status "$porcelain" "$green_staged_prefix" "$reset_suffix")"
+    local unstaged_changes="$(unstaged_status "$porcelain" "$red_unstaged_prefix" "$reset_suffix")"
+    local untracked_changes="$(untracked_status "$porcelain" "$grey_untracked_prefix" "$reset_suffix")"
+    local conflicted_changes="$(conflicted_status "$porcelain" "$yellow_conflicted_prefix" "$reset_suffix")"
+    if [[ -n "$staged_changes" ]]; then
+      staged_changes=" $staged_changes"
+    fi
+
+    if [[ -n "$unstaged_changes" ]]; then
+      unstaged_changes=" $unstaged_changes"
+    fi
+
+    if [[ -n "$conflicted_changes" ]]; then
+      conflicted_changes=" $conflicted_changes"
+    fi
+
+    if [[ -n "$untracked_changes" ]]; then
+      untracked_changes=" $untracked_changes"
+    fi
+
+    changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
+  fi
+  echo $changes
+}
+
 zsh_color_changes_status() {
   local porcelain="$(porcelain_status)"
   local changes=""

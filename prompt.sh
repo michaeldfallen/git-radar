@@ -18,6 +18,6 @@ else
   local_behind=""
 fi
 
-prompt="$(branch_name)$local_behind$local_ahead $(zsh_color_changes_status)"
+prompt="$(branch_name)$local_behind$local_ahead $(bash_color_changes_status)"
 
 echo $prompt
