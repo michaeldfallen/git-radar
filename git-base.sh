@@ -331,7 +331,7 @@ bash_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  echo $changes
+  echo "$changes"
 }
 
 zsh_color_changes_status() {
@@ -367,7 +367,7 @@ zsh_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  echo $changes
+  echo "$changes"
 }
 
 bash_color_local_commits() {
@@ -393,7 +393,7 @@ bash_color_local_commits() {
       fi
     fi
   fi
-  echo $local_commits
+  echo "$local_commits"
 }
 
 zsh_color_local_commits() {
@@ -419,5 +419,5 @@ zsh_color_local_commits() {
       fi
     fi
   fi
-  echo $local_commits
+  echo "$local_commits"
 }
