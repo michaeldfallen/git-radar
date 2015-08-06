@@ -370,6 +370,32 @@ zsh_color_changes_status() {
   echo $changes
 }
 
+bash_color_local_commits() {
+  local green_ahead_arrow="\033[1;32m↑\033[0m"
+  local red_behind_arrow="\033[1;31m↓\033[0m"
+  local yellow_diverged_arrow="\033[1;33m⇵\033[0m"
+
+  local local_commits=""
+  if is_repo; then
+
+    if remote_branch="$(remote_branch_name)"; then
+      local_ahead="$(commits_ahead_of_remote "$remote_branch")"
+      local_behind="$(commits_behind_of_remote "$remote_branch")"
+      remote_ahead="$(remote_ahead_of_master "$remote_branch")"
+      remote_behind="$(remote_behind_of_master "$remote_branch")"
+
+      if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
+        local_commits=" $local_behind$yellow_diverged_arrow$local_ahead"
+      elif [[ "$local_behind" -gt "0" ]]; then
+        local_commits=" $local_behind$red_behind_arrow"
+      elif [[ "$local_ahead" -gt "0" ]]; then
+        local_commits=" $local_ahead$green_ahead_arrow"
+      fi
+    fi
+  fi
+  echo $local_commits
+}
+
 zsh_color_local_commits() {
   local ahead_arrow="%{$fg_bold[green]%}↑%{$reset_color%}"
   local behind_arrow="%{$fg_bold[red]%}↓%{$reset_color%}"
