@@ -299,6 +299,8 @@ untracked_status() {
 }
 
 bash_color_changes_status() {
+  local separator="${1:- }"
+
   local porcelain="$(porcelain_status)"
   local changes=""
 
@@ -314,19 +316,19 @@ bash_color_changes_status() {
     local untracked_changes="$(untracked_status "$porcelain" "$grey_untracked_prefix" "$reset_suffix")"
     local conflicted_changes="$(conflicted_status "$porcelain" "$yellow_conflicted_prefix" "$reset_suffix")"
     if [[ -n "$staged_changes" ]]; then
-      staged_changes=" $staged_changes"
+      staged_changes="$separator$staged_changes"
     fi
 
     if [[ -n "$unstaged_changes" ]]; then
-      unstaged_changes=" $unstaged_changes"
+      unstaged_changes="$separator$unstaged_changes"
     fi
 
     if [[ -n "$conflicted_changes" ]]; then
-      conflicted_changes=" $conflicted_changes"
+      conflicted_changes="$separator$conflicted_changes"
     fi
 
     if [[ -n "$untracked_changes" ]]; then
-      untracked_changes=" $untracked_changes"
+      untracked_changes="$separator$untracked_changes"
     fi
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
@@ -335,6 +337,8 @@ bash_color_changes_status() {
 }
 
 zsh_color_changes_status() {
+  local separator="${1:- }"
+
   local porcelain="$(porcelain_status)"
   local changes=""
 
@@ -350,19 +354,19 @@ zsh_color_changes_status() {
     local untracked_changes="$(untracked_status "$porcelain" "$untracked_prefix" "$suffix")"
     local conflicted_changes="$(conflicted_status "$porcelain" "$conflicted_prefix" "$suffix")"
     if [[ -n "$staged_changes" ]]; then
-      staged_changes=" $staged_changes"
+      staged_changes="$separator$staged_changes"
     fi
 
     if [[ -n "$unstaged_changes" ]]; then
-      unstaged_changes=" $unstaged_changes"
+      unstaged_changes="$separator$unstaged_changes"
     fi
 
     if [[ -n "$conflicted_changes" ]]; then
-      conflicted_changes=" $conflicted_changes"
+      conflicted_changes="$separator$conflicted_changes"
     fi
 
     if [[ -n "$untracked_changes" ]]; then
-      untracked_changes=" $untracked_changes"
+      untracked_changes="$separator$untracked_changes"
     fi
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
@@ -371,6 +375,8 @@ zsh_color_changes_status() {
 }
 
 bash_color_local_commits() {
+  local separator="${1:- }"
+
   local green_ahead_arrow="\033[1;32m↑\033[0m"
   local red_behind_arrow="\033[1;31m↓\033[0m"
   local yellow_diverged_arrow="\033[1;33m⇵\033[0m"
@@ -385,11 +391,11 @@ bash_color_local_commits() {
       remote_behind="$(remote_behind_of_master "$remote_branch")"
 
       if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
-        local_commits=" $local_behind$yellow_diverged_arrow$local_ahead"
+        local_commits="$separator$local_behind$yellow_diverged_arrow$local_ahead"
       elif [[ "$local_behind" -gt "0" ]]; then
-        local_commits=" $local_behind$red_behind_arrow"
+        local_commits="$separator$local_behind$red_behind_arrow"
       elif [[ "$local_ahead" -gt "0" ]]; then
-        local_commits=" $local_ahead$green_ahead_arrow"
+        local_commits="$separator$local_ahead$green_ahead_arrow"
       fi
     fi
   fi
@@ -397,6 +403,8 @@ bash_color_local_commits() {
 }
 
 zsh_color_local_commits() {
+  local separator="${1:- }"
+
   local ahead_arrow="%{$fg_bold[green]%}↑%{$reset_color%}"
   local behind_arrow="%{$fg_bold[red]%}↓%{$reset_color%}"
   local diverged_arrow="%{$fg_bold[yellow]%}⇵%{$reset_color%}"
@@ -411,11 +419,11 @@ zsh_color_local_commits() {
       remote_behind="$(remote_behind_of_master "$remote_branch")"
 
       if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
-        local_commits=" $local_behind$diverged_arrow$local_ahead"
+        local_commits="$separator$local_behind$diverged_arrow$local_ahead"
       elif [[ "$local_behind" -gt "0" ]]; then
-        local_commits=" $local_behind$behind_arrow"
+        local_commits="$separator$local_behind$behind_arrow"
       elif [[ "$local_ahead" -gt "0" ]]; then
-        local_commits=" $local_ahead$ahead_arrow"
+        local_commits="$separator$local_ahead$ahead_arrow"
       fi
     fi
   fi
