@@ -382,19 +382,16 @@ bash_color_local_commits() {
   local yellow_diverged_arrow="\033[1;33m⇵\033[0m"
 
   local local_commits=""
-  if is_repo; then
+  if remote_branch="$(remote_branch_name)"; then
+    local_ahead="$(commits_ahead_of_remote "$remote_branch")"
+    local_behind="$(commits_behind_of_remote "$remote_branch")"
 
-    if remote_branch="$(remote_branch_name)"; then
-      local_ahead="$(commits_ahead_of_remote "$remote_branch")"
-      local_behind="$(commits_behind_of_remote "$remote_branch")"
-
-      if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
-        local_commits="$separator$local_behind$yellow_diverged_arrow$local_ahead"
-      elif [[ "$local_behind" -gt "0" ]]; then
-        local_commits="$separator$local_behind$red_behind_arrow"
-      elif [[ "$local_ahead" -gt "0" ]]; then
-        local_commits="$separator$local_ahead$green_ahead_arrow"
-      fi
+    if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
+      local_commits="$separator$local_behind$yellow_diverged_arrow$local_ahead"
+    elif [[ "$local_behind" -gt "0" ]]; then
+      local_commits="$separator$local_behind$red_behind_arrow"
+    elif [[ "$local_ahead" -gt "0" ]]; then
+      local_commits="$separator$local_ahead$green_ahead_arrow"
     fi
   fi
   echo "$local_commits"
@@ -408,19 +405,16 @@ zsh_color_local_commits() {
   local diverged_arrow="%{$fg_bold[yellow]%}⇵%{$reset_color%}"
 
   local local_commits=""
-  if is_repo; then
+  if remote_branch="$(remote_branch_name)"; then
+    local_ahead="$(commits_ahead_of_remote "$remote_branch")"
+    local_behind="$(commits_behind_of_remote "$remote_branch")"
 
-    if remote_branch="$(remote_branch_name)"; then
-      local_ahead="$(commits_ahead_of_remote "$remote_branch")"
-      local_behind="$(commits_behind_of_remote "$remote_branch")"
-
-      if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
-        local_commits="$separator$local_behind$diverged_arrow$local_ahead"
-      elif [[ "$local_behind" -gt "0" ]]; then
-        local_commits="$separator$local_behind$behind_arrow"
-      elif [[ "$local_ahead" -gt "0" ]]; then
-        local_commits="$separator$local_ahead$ahead_arrow"
-      fi
+    if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
+      local_commits="$separator$local_behind$diverged_arrow$local_ahead"
+    elif [[ "$local_behind" -gt "0" ]]; then
+      local_commits="$separator$local_behind$behind_arrow"
+    elif [[ "$local_ahead" -gt "0" ]]; then
+      local_commits="$separator$local_ahead$ahead_arrow"
     fi
   fi
   echo "$local_commits"
