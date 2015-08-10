@@ -387,8 +387,6 @@ bash_color_local_commits() {
     if remote_branch="$(remote_branch_name)"; then
       local_ahead="$(commits_ahead_of_remote "$remote_branch")"
       local_behind="$(commits_behind_of_remote "$remote_branch")"
-      remote_ahead="$(remote_ahead_of_master "$remote_branch")"
-      remote_behind="$(remote_behind_of_master "$remote_branch")"
 
       if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
         local_commits="$separator$local_behind$yellow_diverged_arrow$local_ahead"
@@ -415,8 +413,6 @@ zsh_color_local_commits() {
     if remote_branch="$(remote_branch_name)"; then
       local_ahead="$(commits_ahead_of_remote "$remote_branch")"
       local_behind="$(commits_behind_of_remote "$remote_branch")"
-      remote_ahead="$(remote_ahead_of_master "$remote_branch")"
-      remote_behind="$(remote_behind_of_master "$remote_branch")"
 
       if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
         local_commits="$separator$local_behind$diverged_arrow$local_ahead"
