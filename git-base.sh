@@ -28,13 +28,13 @@ debug_print() {
 dot_git() {
   if in_current_dir && [[ -n "$dot_git" ]]; then
     # cache dot_git to save calls to rev-parse
-    echo $dot_git
+    printf '%s' $dot_git
   elif [ -d .git ]; then
     dot_git=".git"
-    echo $dot_git
+    printf '%s' $dot_git
   else
     dot_git="$(git rev-parse --git-dir 2>/dev/null)"
-    echo $dot_git
+    printf '%s' $dot_git
   fi
 }
 
@@ -48,9 +48,9 @@ is_repo() {
 
 git_root() {
   if [ -d .git ]; then
-    echo "$(pwd)"
+    printf '%s' "$(pwd)"
   else
-    echo "$(git rev-parse --show-toplevel 2>/dev/null)"
+    printf '%s' "$(git rev-parse --show-toplevel 2>/dev/null)"
   fi
 }
 
@@ -62,12 +62,12 @@ record_timestamp() {
 
 timestamp() {
   if is_repo; then
-    echo "$(stat -f%m "$(dot_git)/lastupdatetime" 2>/dev/null || echo "0")"
+    printf '%s' "$(stat -f%m "$(dot_git)/lastupdatetime" 2>/dev/null || printf '%s' "0")"
   fi
 }
 
 time_now() {
-  echo "$(date +%s)"
+  printf '%s' "$(date +%s)"
 }
 
 time_to_update() {
@@ -95,7 +95,7 @@ fetch() {
 
 commit_short_sha() {
   if is_repo; then
-    echo "$(git rev-parse --short HEAD)"
+    printf '%s' "$(git rev-parse --short HEAD)"
   fi
 }
 
@@ -103,7 +103,7 @@ branch_name() {
   name="$(git symbolic-ref --short HEAD 2>/dev/null)"
   retcode="$?"
   if [[ "$retcode" == "0" ]]; then
-    echo "$name"
+    printf %s "$name"
   else
     return 1
   fi
@@ -111,13 +111,13 @@ branch_name() {
 
 branch_ref() {
   if is_repo; then
-    echo "$(branch_name || commit_short_sha)"
+    printf '%s' "$(branch_name || commit_short_sha)"
   fi
 }
 
 readable_branch_name() {
   if is_repo; then
-    echo "$(branch_name || echo "detached@$(commit_short_sha)")"
+    printf '%s' "$(branch_name || printf '%s' "detached@$(commit_short_sha)")"
   fi
 }
 
@@ -126,7 +126,7 @@ remote_branch_name() {
   if [[ -n "$localRef" ]]; then
     local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef 2>/dev/null | grep $localRef)"
     if [[ -n $remoteBranch ]]; then
-      echo $remoteBranch
+      printf '%s' $remoteBranch
       return 0
     else
       return 1
@@ -139,7 +139,7 @@ commits_behind_of_remote() {
   if [[ -n "$remote_branch" ]]; then
     git rev-list --left-only --count ${remote_branch}...HEAD
   else
-    echo "0"
+    printf '%s' "0"
   fi
 }
 
@@ -148,7 +148,7 @@ commits_ahead_of_remote() {
   if [[ -n "$remote_branch" ]]; then
     git rev-list --right-only --count ${remote_branch}...HEAD
   else
-    echo "0"
+    printf '%s' "0"
   fi
 }
 
@@ -156,9 +156,9 @@ remote_behind_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
   tracked_remote="origin/master"
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
-    git rev-list --left-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || echo "0"
+    git rev-list --left-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || printf '%s' "0"
   else
-    echo "0"
+    printf '%s' "0"
   fi
 }
 
@@ -166,9 +166,9 @@ remote_ahead_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
   tracked_remote="origin/master"
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
-    git rev-list --right-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || echo "0"
+    git rev-list --right-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || printf '%s' "0"
   else
-    echo "0"
+    printf '%s' "0"
   fi
 }
 
@@ -211,7 +211,7 @@ is_dirty() {
 }
 
 porcelain_status() {
-  echo "$(git status --porcelain 2>/dev/null)"
+  printf '%s' "$(git status --porcelain 2>/dev/null)"
 }
 
 staged_status() {
@@ -220,11 +220,11 @@ staged_status() {
   local suffix=${3:-""}
 
   local staged_string=""
-  local filesModified="$(echo "$gitStatus" | grep -p "M[ACDRM ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesAdded="$(echo "$gitStatus" | grep -p "A[MCDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesDeleted="$(echo "$gitStatus" | grep -p "D[AMCR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesRenamed="$(echo "$gitStatus" | grep -p "R[AMCD ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesCopied="$(echo "$gitStatus" | grep -p "C[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(printf '%s' "$gitStatus" | grep -p "M[ACDRM ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesAdded="$(printf '%s' "$gitStatus" | grep -p "A[MCDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesDeleted="$(printf '%s' "$gitStatus" | grep -p "D[AMCR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesRenamed="$(printf '%s' "$gitStatus" | grep -p "R[AMCD ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesCopied="$(printf '%s' "$gitStatus" | grep -p "C[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesAdded" ]; then
     staged_string="$staged_string$filesAdded${prefix}A${suffix}"
@@ -241,7 +241,7 @@ staged_status() {
   if [ -n "$filesCopied" ]; then
     staged_string="$staged_string$filesCopied${prefix}C${suffix}"
   fi
-  echo "$staged_string"
+  printf '%s' "$staged_string"
 }
 
 conflicted_status() {
@@ -250,9 +250,9 @@ conflicted_status() {
   local suffix=${3:-""}
   local conflicted_string=""
 
-  local filesUs="$(echo "$gitStatus" | grep -p "[AD]U " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesThem="$(echo "$gitStatus" | grep -p "U[AD] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesBoth="$(echo "$gitStatus" | grep -E "(UU|AA|DD) " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesUs="$(printf '%s' "$gitStatus" | grep -p "[AD]U " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesThem="$(printf '%s' "$gitStatus" | grep -p "U[AD] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesBoth="$(printf '%s' "$gitStatus" | grep -E "(UU|AA|DD) " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUs" ]; then
     conflicted_string="$conflicted_string$filesUs${prefix}U${suffix}"
@@ -263,7 +263,7 @@ conflicted_status() {
   if [ -n "$filesBoth" ]; then
     conflicted_string="$conflicted_string$filesBoth${prefix}B${suffix}"
   fi
-  echo "$conflicted_string"
+  printf '%s' "$conflicted_string"
 }
 
 unstaged_status() {
@@ -272,8 +272,8 @@ unstaged_status() {
   local suffix=${3:-""}
   local unstaged_string=""
 
-  local filesModified="$(echo "$gitStatus" | grep -p "[ACDRM ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesDeleted="$(echo "$gitStatus" | grep -p "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(printf '%s' "$gitStatus" | grep -p "[ACDRM ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesDeleted="$(printf '%s' "$gitStatus" | grep -p "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesDeleted" ]; then
     unstaged_string="$unstaged_string$filesDeleted${prefix}D${suffix}"
@@ -281,7 +281,7 @@ unstaged_status() {
   if [ -n "$filesModified" ]; then
     unstaged_string="$unstaged_string$filesModified${prefix}M${suffix}"
   fi
-  echo "$unstaged_string"
+  printf '%s' "$unstaged_string"
 }
 
 untracked_status() {
@@ -290,12 +290,12 @@ untracked_status() {
   local suffix=${3:-""}
   local untracked_string=""
 
-  local filesUntracked="$(echo "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesUntracked="$(printf '%s' "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUntracked" ]; then
     untracked_string="$untracked_string$filesUntracked${prefix}A${suffix}"
   fi
-  echo "$untracked_string"
+  printf '%s' "$untracked_string"
 }
 
 bash_color_changes_status() {
@@ -333,7 +333,7 @@ bash_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  echo "$changes"
+  printf %s "$changes"
 }
 
 zsh_color_changes_status() {
@@ -371,7 +371,7 @@ zsh_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  echo "$changes"
+  printf %s "$changes"
 }
 
 bash_color_local_commits() {
@@ -394,7 +394,7 @@ bash_color_local_commits() {
       local_commits="$separator$local_ahead$green_ahead_arrow"
     fi
   fi
-  echo "$local_commits"
+  printf %s "$local_commits"
 }
 
 zsh_color_local_commits() {
@@ -417,7 +417,7 @@ zsh_color_local_commits() {
       local_commits="$separator$local_ahead$ahead_arrow"
     fi
   fi
-  echo "$local_commits"
+  printf %s "$local_commits"
 }
 
 bash_color_remote_commits() {
@@ -442,5 +442,5 @@ bash_color_remote_commits() {
     remote="upstream $not_upstream "
   fi
 
-  echo "$remote"
+  printf %s "$remote"
 }
