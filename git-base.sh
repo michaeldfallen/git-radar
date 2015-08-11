@@ -444,3 +444,28 @@ bash_color_remote_commits() {
 
   printf %s "$remote"
 }
+
+zsh_color_remote_commits() {
+  local remote_master="\xF0\x9D\x98\xAE" # an italic m to represent master
+  local green_ahead_arrow="%{$fg_bold[green]%}←%{$reset_color%}"
+  local red_behind_arrow="%{$fg_bold[red]%}→%{$reset_color%}"
+  local yellow_diverged_arrow="%{$fg_bold[yellow]%}⇄%{$reset_color%}"
+  local not_upstream="%{$fg_bold[red]%}⚡%{$reset_color%}"
+
+  if remote_branch="$(remote_branch_name)"; then
+    remote_ahead="$(remote_ahead_of_master "$remote_branch")"
+    remote_behind="$(remote_behind_of_master "$remote_branch")"
+
+    if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
+      remote="$remote_master $remote_behind $yellow_diverged_arrow $remote_ahead "
+    elif [[ "$remote_ahead" -gt "0" ]]; then
+      remote="$remote_master $green_ahead_arrow $remote_ahead "
+    elif [[ "$remote_behind" -gt "0" ]]; then
+      remote="$remote_master $remote_behind $red_behind_arrow "
+    fi
+  else
+    remote="upstream $not_upstream "
+  fi
+
+  printf %s "$remote"
+}
