@@ -2,11 +2,10 @@
 
 dot="$(cd "$(dirname "$0")"; pwd)"
 source "$dot/git-base.sh"
-autoload colors && colors
 
-command="$1"
-
-git_prefix="%{$fg_bold[black]%}git:(%{$reset_color}"
-git_suffix="%{$fg_bold[black]%})%{$reset_color}"
-printf '%s' " $git_prefix"
-#<Down>$(zsh_color_remote_commits;branch_name;zsh_color_local_commits)$git_suffix$(zsh_color_changes_status)"
+if is_repo; then
+  autoload colors && colors
+  git_prefix="%{$fg_bold[black]%}git:(%{$reset_color%}"
+  git_suffix="%{$fg_bold[black]%})%{$reset_color%}"
+  printf '%s' " $git_prefix$(zsh_color_remote_commits;branch_name;zsh_color_local_commits)$git_suffix$(zsh_color_changes_status)"
+fi
