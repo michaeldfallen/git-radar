@@ -220,11 +220,11 @@ staged_status() {
   local suffix=${3:-""}
 
   local staged_string=""
-  local filesModified="$(printf '%s' "$gitStatus" | grep -p "M[ACDRM ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesAdded="$(printf '%s' "$gitStatus" | grep -p "A[MCDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesDeleted="$(printf '%s' "$gitStatus" | grep -p "D[AMCR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesRenamed="$(printf '%s' "$gitStatus" | grep -p "R[AMCD ] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesCopied="$(printf '%s' "$gitStatus" | grep -p "C[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(printf '%s' "$gitStatus" | grep -oE "M[ACDRM ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesAdded="$(printf '%s' "$gitStatus" | grep -oE "A[MCDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesDeleted="$(printf '%s' "$gitStatus" | grep -oE "D[AMCR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesRenamed="$(printf '%s' "$gitStatus" | grep -oE "R[AMCD ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesCopied="$(printf '%s' "$gitStatus" | grep -oE "C[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesAdded" ]; then
     staged_string="$staged_string$filesAdded${prefix}A${suffix}"
@@ -250,9 +250,9 @@ conflicted_status() {
   local suffix=${3:-""}
   local conflicted_string=""
 
-  local filesUs="$(printf '%s' "$gitStatus" | grep -p "[AD]U " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesThem="$(printf '%s' "$gitStatus" | grep -p "U[AD] " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesBoth="$(printf '%s' "$gitStatus" | grep -E "(UU|AA|DD) " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesUs="$(printf '%s' "$gitStatus" | grep -oE "[AD]U " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesThem="$(printf '%s' "$gitStatus" | grep -oE "U[AD] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesBoth="$(printf '%s' "$gitStatus" | grep -oE "(UU|AA|DD) " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUs" ]; then
     conflicted_string="$conflicted_string$filesUs${prefix}U${suffix}"
@@ -272,8 +272,8 @@ unstaged_status() {
   local suffix=${3:-""}
   local unstaged_string=""
 
-  local filesModified="$(printf '%s' "$gitStatus" | grep -p "[ACDRM ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
-  local filesDeleted="$(printf '%s' "$gitStatus" | grep -p "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesModified="$(printf '%s' "$gitStatus" | grep -oE "[ACDRM ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesDeleted="$(printf '%s' "$gitStatus" | grep -oE "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesDeleted" ]; then
     unstaged_string="$unstaged_string$filesDeleted${prefix}D${suffix}"
@@ -290,7 +290,7 @@ untracked_status() {
   local suffix=${3:-""}
   local untracked_string=""
 
-  local filesUntracked="$(printf '%s' "$gitStatus" | grep -p "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local filesUntracked="$(printf '%s' "$gitStatus" | grep "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUntracked" ]; then
     untracked_string="$untracked_string$filesUntracked${prefix}A${suffix}"
