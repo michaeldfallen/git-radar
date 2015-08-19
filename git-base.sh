@@ -333,7 +333,7 @@ bash_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  printf %s "$changes"
+  printf "$changes"
 }
 
 zsh_color_changes_status() {
@@ -394,7 +394,7 @@ bash_color_local_commits() {
       local_commits="$separator$local_ahead$green_ahead_arrow"
     fi
   fi
-  printf %s "$local_commits"
+  printf "$local_commits"
 }
 
 zsh_color_local_commits() {
@@ -442,7 +442,7 @@ bash_color_remote_commits() {
     remote="upstream $not_upstream "
   fi
 
-  printf %s "$remote"
+  printf "$remote"
 }
 
 zsh_color_remote_commits() {
