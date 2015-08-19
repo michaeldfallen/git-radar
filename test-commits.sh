@@ -1,6 +1,6 @@
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
-source "$scriptDir/git-base.sh"
+source "$scriptDir/radar-base.sh"
 
 tmpfile=""
 

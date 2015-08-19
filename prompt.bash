@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 dot="$(cd "$(dirname "$0")"; pwd)"
-source "$dot/git-base.sh"
+source "$dot/radar-base.sh"
 
 if is_repo; then
   printf " \033[1;30mgit:(\033[0m"

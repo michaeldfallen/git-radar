@@ -1,3 +1,3 @@
-source $DOTFILES/zsh/git-prompt/git-base.sh
+source $DOTFILES/zsh/git-prompt/radar-base.sh
 
 fetch;

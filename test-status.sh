@@ -1,6 +1,6 @@
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
-source "$scriptDir/git-base.sh"
+source "$scriptDir/radar-base.sh"
 
 test_prefix_and_suffix() {
   status="""

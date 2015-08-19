@@ -1,7 +1,7 @@
 #! /usr/bin/env zsh
 
 dot="$(cd "$(dirname "$0")"; pwd)"
-source "$dot/git-base.sh"
+source "$dot/radar-base.sh"
 
 if is_repo; then
   autoload colors && colors
