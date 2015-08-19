@@ -2,13 +2,77 @@
 
 dot="$(cd "$(dirname "$0")"; pwd)"
 
-command="$1"
+if [[ -z $@ ]]; then
+  _git="\033[1;30mgit:(\033[0m"
+  _master="\033[0;37mmaster\033[0m"
+  _my_branch="\033[0;37mmy-branch\033[0m"
+  _endgit="\033[1;30m)\033[0m"
+  _untracked="\033[1;37mA\033[0m"
+  _added_staged="\033[1;32mA\033[0m"
+  _modified_unstaged="\033[1;31mM\033[0m"
+  _local_up="\033[1;32m↑\033[0m"
+  _2_from_master="\xF0\x9D\x98\xAE 2 \033[1;31m→\033[0m "
+  _diverged_from_master="\xF0\x9D\x98\xAE 2 \033[1;33m⇄\033[0m 3 "
+  _not_upstream="upstream \033[1;31m⚡\033[0m "
+  _detached="\033[0;37mdetached@94eac67\033[0m"
+  _conflicted_us="\033[1;33mU\033[0m"
+  _conflicted_them="\033[1;33mT\033[0m"
+  _ahead_master="\xF0\x9D\x98\xAE \033[1;32m←\033[0m"
+  _local_diverged="\033[1;33m⇵\033[0m"
+  echo "git-radar - a heads up display for git"
+  echo ""
+  echo "examples:"
+  printf "  $_git$_master$_endgit"
+  echo "                  # You are on the master branch and everything is clean"
+  printf "  $_git$_not_upstream$_my_branch$_endgit"
+  echo "    # Fresh branch that we haven't pushed upstream"
+  printf "  $_git$_my_branch$_endgit 2$_untracked"
+  echo "            # Two files created that aren't tracked by git"
+  printf "  $_git$_my_branch$_endgit 1$_added_staged 3$_modified_unstaged"
+  echo "         # 1 new file staged to commit and 3 modifications that we still need to \`git add\`"
+  printf "  $_git$_2_from_master$_my_branch 3$_local_up$_endgit"
+  echo "      # 3 commits made locally ready to push up while master is ahead of us by 2"
+  printf "  $_git$_diverged_from_master$_my_branch$_endgit"
+  echo "       # our commits pushed up, master and my-branch have diverged"
+  printf "  $_git$_detached$_endgit 2${_conflicted_them}3${_conflicted_us}"
+  echo "   # mid rebase, we are detached and have 3 conflicts caused by US and 2 caused by THEM"
+  printf "  $_git$_diverged_from_master$_my_branch 3${_local_diverged}5$_endgit"
+  echo "   # rebase complete, our rewritten commits now need pushed up"
+  printf "  $_git$_ahead_master 3 $_my_branch$_endgit"
+  echo "         # origin/my-branch is up to date with master and has our 3 commits waiting merge"
 
-nohup $dot/fetch.sh >/dev/null &
+  echo ""
+  echo "usage:"
+  echo "  git-radar [--zsh|--bash] [--fetch]"
+  echo ""
+  echo "  --fetch  # Fetches your repo asynchronously in the background every 5 mins"
+  echo "  --zsh    # Output prompt using Zsh style color characters"
+  echo "  --bash   # Output prompt using Bash style color characters"
+  echo ""
+  echo "Bash example:"
+  echo "  export PS1=\"\\W\\\$(git-radar --bash --prompt) \""
+  echo ""
+  echo "  This will show your current directory and the full git-radar."
+  echo "  As an added benefit, if you are in a repo, it will asynchronously"
+  echo "  run \`git fetch\` every 5 mins, so that you are never out of date."
+  echo ""
+  echo "Zsh example:"
+  echo "  export PROMPT=\"%1/%\\\$(git-radar --zsh --prompt) \""
+  echo ""
+  echo "  Same as the Bash but for Zsh."
+  exit
+fi
+while [[ $# > 0 ]];do
+  command="$1"
+  shift
 
-if [[ "$command" == "--zsh" ]]; then
-  $dot/prompt.zsh
-fi
-if [[ "$command" == "--bash" || "$command" == "" ]]; then
-  $dot/prompt.bash
-fi
+  if [[ "$command" == "--fetch" ]]; then
+    $dot/fetch.sh
+  fi
+  if [[ "$command" == "--zsh" ]]; then
+    $dot/prompt.zsh
+  fi
+  if [[ "$command" == "--bash" ]]; then
+    $dot/prompt.bash
+  fi
+done
