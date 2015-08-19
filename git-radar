@@ -4,6 +4,8 @@ dot="$(cd "$(dirname "$0")"; pwd)"
 
 command="$1"
 
+nohup $dot/fetch.sh >/dev/null &
+
 if [[ "$command" == "--zsh" ]]; then
   $dot/prompt.zsh
 fi
