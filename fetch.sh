@@ -1,3 +1,6 @@
-source $DOTFILES/zsh/git-prompt/radar-base.sh
+#! /usr/bin/env bash
+
+dot="$(cd "$(dirname "$0")"; pwd)"
+source $dot/radar-base.sh
 
 fetch;
