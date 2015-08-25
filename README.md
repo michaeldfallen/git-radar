@@ -118,3 +118,4 @@ Git Radar is licensed under the MIT license.
 See [LICENSE] for the full license text.
 
 [LICENSE]: https://github.com/michaeldfallen/git-radar/blob/master/LICENSE
+[git:(master) 3A]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/untracked.png
