@@ -67,7 +67,7 @@ while [[ $# > 0 ]];do
   shift
 
   if [[ "$command" == "--fetch" ]]; then
-    $dot/fetch.sh
+    nohup $dot/fetch.sh >/dev/null &
   fi
   if [[ "$command" == "--zsh" ]]; then
     $dot/prompt.zsh
