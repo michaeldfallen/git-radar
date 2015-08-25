@@ -82,7 +82,7 @@ Prompt              | Meaning
 ![git:(master 3↓)]  | We have 3 commits to pull down
 ![git:(master 3⇵5)] | Our version and origins version of `master` have diverged
 
-### Our branch against Master commits status
+### Remote commits status
 
 The prompt will also show the difference between your branch on origin and what
 is on `origin/master`. This a is hard coded branch name which I intend to make
