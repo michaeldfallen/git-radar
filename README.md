@@ -2,6 +2,8 @@
 
 A heads up display for git.
 
+![An example of git-radar]
+
 ## Installation
 
 Install from brew:
@@ -129,3 +131,4 @@ See [LICENSE] for the full license text.
 [git:(m ← 2 my-branch)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/branch%20is%20ahead.png
 [git:(m 4 → my-branch)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/master%20is%20ahead.png
 [git:(m 1 ⇄ 2 my-branch)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/master%20branch%20diverged.png
+[An example of git-radar]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/detailed.png
