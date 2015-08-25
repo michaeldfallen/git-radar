@@ -4,6 +4,10 @@ A heads up display for git.
 
 ![An example of git-radar]
 
+Git-radar is a tool you can add to your prompt to provide at-a-glance
+information on your git repo. It's a labour of love I've been dogfooding for the
+last few years. Maybe it can help you too.
+
 ## Installation
 
 Install from brew:
