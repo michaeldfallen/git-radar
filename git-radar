@@ -1,6 +1,16 @@
 #! /usr/bin/env bash
+#
+# git-radar
+#
+# A heads up display for git
 
-dot="$(cd "$(dirname "$0")"; pwd)"
+if [[ "$OSTYPE" == *darwin* ]]; then
+  READLINK_CMD='greadlink'
+else
+  READLINK_CMD='readlink'
+fi
+
+dot="$(cd "$(dirname "$([ -L "$0" ] && $READLINK_CMD -f "$0" || echo "$0")")"; pwd)"
 
 if [[ -z $@ ]]; then
   _git="\033[1;30mgit:(\033[0m"
