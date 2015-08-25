@@ -16,20 +16,25 @@ Install from brew:
 > brew install michaeldfallen/formula/git-radar
 ```
 
-Then add to your prompt:
+Then run `git-radar` to see the docs and prove it's installed.
+
+## Usage
+
+To use git-radar you need to add it to your prompt. This is done in different
+ways depending on your shell.
 
 **Bash**
 
 Add to your `.bashrc`
 ```bash
-export PS1="$PS1$(git-radar --bash)"
+export PS1="$PS1$(git-radar --bash --fetch)"
 ```
 
 **Zsh**
 
 Add to your `.zshrc`
 ```zsh
-export PROMPT="$PROMPT$(git-radar --zsh) "
+export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
 ```
 
 ## Features
