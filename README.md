@@ -119,3 +119,13 @@ See [LICENSE] for the full license text.
 
 [LICENSE]: https://github.com/michaeldfallen/git-radar/blob/master/LICENSE
 [git:(master) 3A]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/untracked.png
+[git:(master) 2D2M]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/unstaged.png
+[git:(master) 1M1R]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/added.png
+[git:(master) 1U]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/conflicts.png
+[git:(master) 1M 1D2M 2A]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/combination.png
+[git:(master 2↑)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/local%20is%20ahead.png
+[git:(master 3↓)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/remote%20is%20behind.png
+[git:(master 3⇵5)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/remote%20local%20diverged.png
+[git:(m ← 2 my-branch)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/branch%20is%20ahead.png
+[git:(m 4 → my-branch)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/master%20is%20ahead.png
+[git:(m 1 ⇄ 2 my-branch)]: https://raw.githubusercontent.com/michaeldfallen/git-prompt/master/images/master%20branch%20diverged.png
