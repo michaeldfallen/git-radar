@@ -305,11 +305,11 @@ bash_color_changes_status() {
   local changes=""
 
   if [[ -n "$porcelain" ]]; then
-    local green_staged_prefix="\033[1;32m"
-    local red_unstaged_prefix="\033[1;31m"
-    local yellow_conflicted_prefix="\033[1;33m"
-    local grey_untracked_prefix="\033[1;37m"
-    local reset_suffix="\033[0m"
+    local green_staged_prefix="\[\033[1;32m\]"
+    local red_unstaged_prefix="\[\033[1;31m\]"
+    local yellow_conflicted_prefix="\[\033[1;33m\]"
+    local grey_untracked_prefix="\[\033[1;37m\]"
+    local reset_suffix="\[\033[0m\]"
 
     local staged_changes="$(staged_status "$porcelain" "$green_staged_prefix" "$reset_suffix")"
     local unstaged_changes="$(unstaged_status "$porcelain" "$red_unstaged_prefix" "$reset_suffix")"
@@ -377,9 +377,9 @@ zsh_color_changes_status() {
 bash_color_local_commits() {
   local separator="${1:- }"
 
-  local green_ahead_arrow="\033[1;32m↑\033[0m"
-  local red_behind_arrow="\033[1;31m↓\033[0m"
-  local yellow_diverged_arrow="\033[1;33m⇵\033[0m"
+  local green_ahead_arrow="\[\033[1;32m\]↑\[\033[0m\]"
+  local red_behind_arrow="\[\033[1;31m\]↓\[\033[0m\]"
+  local yellow_diverged_arrow="\[\033[1;33m\]⇵\[\033[0m\]"
 
   local local_commits=""
   if remote_branch="$(remote_branch_name)"; then
@@ -422,10 +422,10 @@ zsh_color_local_commits() {
 
 bash_color_remote_commits() {
   local remote_master="\xF0\x9D\x98\xAE" # an italic m to represent master
-  local green_ahead_arrow="\033[1;32m←\033[0m"
-  local red_behind_arrow="\033[1;31m→\033[0m"
-  local yellow_diverged_arrow="\033[1;33m⇄\033[0m"
-  local not_upstream="\033[1;31m⚡\033[0m"
+  local green_ahead_arrow="\[\033[1;32m\]←\[\033[0m\]"
+  local red_behind_arrow="\[\033[1;31m\]→\[\033[0m\]"
+  local yellow_diverged_arrow="\[\033[1;33m\]⇄\[\033[0m\]"
+  local not_upstream="\[\033[1;31m\]⚡\[\033[0m\]"
 
   if remote_branch="$(remote_branch_name)"; then
     remote_ahead="$(remote_ahead_of_master "$remote_branch")"
