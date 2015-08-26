@@ -27,8 +27,9 @@ ways depending on your shell.
 
 Add to your `.bashrc`
 ```bash
-export PS1="$PS1$(git-radar --bash --fetch)"
+export PS1="$PS1\$(git-radar --bash --fetch)"
 ```
+(note: the `\` escaping the `$` is important)
 
 **Zsh**
 
@@ -114,8 +115,9 @@ To use this feature, when setting your prompt, call git-radar with `--fetch`:
 
 **Bash**
 ```bash
-export PS1="$PS1$(git-radar --bash --fetch)"
+export PS1="$PS1\$(git-radar --bash --fetch)"
 ```
+(note: the `\` escaping the `$` is important)
 
 **Zsh**
 ```zsh
