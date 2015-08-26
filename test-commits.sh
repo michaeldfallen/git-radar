@@ -374,9 +374,9 @@ test_zsh_and_bash_local_commits() {
   local zsh_both="%{[yellow]%}⇵%{%}"
   local zsh_down="%{[red]%}↓%{%}"
 
-  printf -v bash_up "\033[1;32m↑\033[0m"
-  printf -v bash_both "\033[1;33m⇵\033[0m"
-  printf -v bash_down "\033[1;31m↓\033[0m"
+  printf -v bash_up "\x01\033[1;32m\x02↑\x01\033[0m\x02"
+  printf -v bash_both "\x01\033[1;33m\x02⇵\x01\033[0m\x02"
+  printf -v bash_down "\x01\033[1;31m\x02↓\x01\033[0m\x02"
 
   cd_to_tmp "remote"
 
