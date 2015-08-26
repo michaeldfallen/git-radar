@@ -305,11 +305,11 @@ bash_color_changes_status() {
   local changes=""
 
   if [[ -n "$porcelain" ]]; then
-    local green_staged_prefix="\[\033[1;32m\]"
-    local red_unstaged_prefix="\[\033[1;31m\]"
-    local yellow_conflicted_prefix="\[\033[1;33m\]"
-    local grey_untracked_prefix="\[\033[1;37m\]"
-    local reset_suffix="\[\033[0m\]"
+    local green_staged_prefix="\x01\033[1;32m\x02"
+    local red_unstaged_prefix="\x01\033[1;31m\x02"
+    local yellow_conflicted_prefix="\x01\033[1;33m\x02"
+    local grey_untracked_prefix="\x01\033[1;37m\x02"
+    local reset_suffix="\x01\033[0m\x02"
 
     local staged_changes="$(staged_status "$porcelain" "$green_staged_prefix" "$reset_suffix")"
     local unstaged_changes="$(unstaged_status "$porcelain" "$red_unstaged_prefix" "$reset_suffix")"
@@ -377,9 +377,9 @@ zsh_color_changes_status() {
 bash_color_local_commits() {
   local separator="${1:- }"
 
-  local green_ahead_arrow="\[\033[1;32m\]↑\[\033[0m\]"
-  local red_behind_arrow="\[\033[1;31m\]↓\[\033[0m\]"
-  local yellow_diverged_arrow="\[\033[1;33m\]⇵\[\033[0m\]"
+  local green_ahead_arrow="\x01\033[1;32m\x02↑\x01\033[0m\x02"
+  local red_behind_arrow="\x01\033[1;31m\x02↓\x01\033[0m\x02"
+  local yellow_diverged_arrow="\x01\033[1;33m\x02⇵\x01\033[0m\x02"
 
   local local_commits=""
   if remote_branch="$(remote_branch_name)"; then
@@ -422,10 +422,10 @@ zsh_color_local_commits() {
 
 bash_color_remote_commits() {
   local remote_master="\xF0\x9D\x98\xAE" # an italic m to represent master
-  local green_ahead_arrow="\[\033[1;32m\]←\[\033[0m\]"
-  local red_behind_arrow="\[\033[1;31m\]→\[\033[0m\]"
-  local yellow_diverged_arrow="\[\033[1;33m\]⇄\[\033[0m\]"
-  local not_upstream="\[\033[1;31m\]⚡\[\033[0m\]"
+  local green_ahead_arrow="\x01\033[1;32m\x02←\x01\033[0m\x02"
+  local red_behind_arrow="\x01\033[1;31m\x02→\x01\033[0m\x02"
+  local yellow_diverged_arrow="\x01\033[1;33m\x02⇄\x01\033[0m\x02"
+  local not_upstream="\x01\033[1;31m\x02⚡\x01\033[0m\x02"
 
   if remote_branch="$(remote_branch_name)"; then
     remote_ahead="$(remote_ahead_of_master "$remote_branch")"
