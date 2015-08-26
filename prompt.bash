@@ -6,9 +6,7 @@ source "$dot/radar-base.sh"
 if is_repo; then
   printf " \x01\033[1;30m\x02git:(\x01\033[0m\x02"
   bash_color_remote_commits
-  printf "\x01\033[0;37m\x02"
   readable_branch_name
-  printf "\x01\033[0m\x02"
   bash_color_local_commits
   printf "\x01\033[1;30m\x02)\x01\033[0m\x02"
   bash_color_changes_status
