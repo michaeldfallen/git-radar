@@ -95,7 +95,7 @@ fetch() {
 
 commit_short_sha() {
   if is_repo; then
-    printf '%s' "$(git rev-parse --short HEAD)"
+    printf '%s' "$(git rev-parse --short HEAD 2>/dev/null)"
   fi
 }
 
