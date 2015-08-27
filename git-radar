@@ -53,11 +53,12 @@ if [[ -z $@ ]]; then
 
   echo ""
   echo "usage:"
-  echo "  git-radar [--zsh|--bash] [--fetch]"
+  echo "  git-radar [--zsh|--bash|--fish] [--fetch]"
   echo ""
   echo "  --fetch  # Fetches your repo asynchronously in the background every 5 mins"
   echo "  --zsh    # Output prompt using Zsh style color characters"
   echo "  --bash   # Output prompt using Bash style color characters"
+  echo "  --fish   # Output prompt using fish style color characters"
   echo ""
   echo "Bash example:"
   echo "  export PS1=\"\\W\\\$(git-radar --bash --fetch) \""
@@ -70,6 +71,17 @@ if [[ -z $@ ]]; then
   echo "  export PROMPT=\"%1/%\\\$(git-radar --zsh --fetch) \""
   echo ""
   echo "  Same as the Bash but for Zsh."
+  echo ""
+  echo "fish example:"
+  echo "  function fish_prompt"
+  echo "    set_color \$fish_color_cwd"
+  echo "    echo -n (prompt_pwd)"
+  echo "    git-radar --fish -fetch"
+  echo "    set_color normal"
+  echo "    echo -n ' > '"
+  echo "  end"
+  echo ""
+  echo "  Same as the Bash but for fish."
   exit
 fi
 while [[ $# > 0 ]];do
@@ -82,7 +94,7 @@ while [[ $# > 0 ]];do
   if [[ "$command" == "--zsh" ]]; then
     $dot/prompt.zsh
   fi
-  if [[ "$command" == "--bash" ]]; then
+  if [[ "$command" == "--bash" || "$command" == "--fish" ]]; then
     $dot/prompt.bash
   fi
 done
