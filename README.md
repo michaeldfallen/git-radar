@@ -102,6 +102,19 @@ Prompt                     | Meaning
 ![git:(m 4 → my-branch)]   | There are 4 commits on `origin/master` that aren't on `origin/my-branch`
 ![git:(m 1 ⇄ 2 my-branch)] | `origin/master` and `origin/my-branch` have diverged, we'll need to rebase or merge
 
+If you don't rely on this status, you can always hide this part of the prompt by calling git-radar with `--no-remote-status`.
+
+**Bash**
+```bash
+export PS1="$PS1\$(git-radar --bash --fetch --no-remote-status) "
+```
+(note: the `\` escaping the `$` is important)
+
+**Zsh**
+```zsh
+export PROMPT="$PROMPT$(git-radar --zsh --fetch --no-remote-status) "
+```
+
 ### (Optional) Auto-fetch repos
 
 Ensuring your refs are up to date I found can be a pain. To streamline this
@@ -122,6 +135,21 @@ export PS1="$PS1\$(git-radar --bash --fetch)"
 **Zsh**
 ```zsh
 export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
+```
+
+### (Optional) Minimal mode
+
+If you wish to keep the length of your prompt shorter, you can call git-radar with `--minimal` which will render the new prompt without the `git:` part
+
+**Bash**
+```bash
+export PS1="$PS1\$(git-radar --bash --fetch --minimal) "
+```
+(note: the `\` escaping the `$` is important)
+
+**Zsh**
+```zsh
+export PROMPT="$PROMPT$(git-radar --zsh --fetch --minimal) "
 ```
 
 ## License

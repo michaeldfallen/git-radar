@@ -11,6 +11,7 @@ else
 fi
 
 dot="$(cd "$(dirname "$([ -L "$0" ] && $READLINK_CMD -f "$0" || echo "$0")")"; pwd)"
+args=$@
 
 if [[ -z $@ ]]; then
   _git="\033[1;30mgit:(\033[0m"
@@ -92,9 +93,9 @@ while [[ $# > 0 ]];do
     nohup $dot/fetch.sh >/dev/null 2>&1 &
   fi
   if [[ "$command" == "--zsh" ]]; then
-    $dot/prompt.zsh
+    $dot/prompt.zsh $args
   fi
   if [[ "$command" == "--bash" || "$command" == "--fish" ]]; then
-    $dot/prompt.bash
+    $dot/prompt.bash $args
   fi
 done
