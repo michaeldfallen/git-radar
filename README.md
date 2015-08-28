@@ -137,21 +137,6 @@ export PS1="$PS1\$(git-radar --bash --fetch)"
 export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
 ```
 
-### (Optional) Minimal mode
-
-If you wish to keep the length of your prompt shorter, you can call git-radar with `--minimal` which will render the new prompt without the `git:` part
-
-**Bash**
-```bash
-export PS1="$PS1\$(git-radar --bash --fetch --minimal) "
-```
-(note: the `\` escaping the `$` is important)
-
-**Zsh**
-```zsh
-export PROMPT="$PROMPT$(git-radar --zsh --fetch --minimal) "
-```
-
 ## License
 
 Git Radar is licensed under the MIT license.
