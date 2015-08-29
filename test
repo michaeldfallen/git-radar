@@ -1,5 +1,6 @@
 #!/bin/sh
 
+./test-radar-base.sh
 ./test-directories.sh
 ./test-commits.sh
 ./test-branches.sh

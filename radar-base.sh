@@ -1,3 +1,5 @@
+NO_REMOTE_STATUS='--no-remote-status'
+
 dot_git=""
 cwd=""
 remote=""
@@ -468,4 +470,10 @@ zsh_color_remote_commits() {
   fi
 
   printf %s "$remote"
+}
+show_remote_status() {
+  if [[ $@ == *$NO_REMOTE_STATUS* ]]; then
+    return 1 # don't show the git remote status
+  fi
+  return 0
 }
