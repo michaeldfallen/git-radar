@@ -12,7 +12,13 @@ prepare_zsh_colors() {
   ZSH_COLOR_REMOTE_DIVERGED="${GIT_RADAR_COLOR_ZSH_REMOTE_DIVERGED:-$fg_bold[yellow]}"
   ZSH_COLOR_REMOTE_NOT_UPSTREAM="${GIT_RADAR_COLOR_ZSH_REMOTE_NOT_UPSTREAM:-$fg_bold[red]}"
 
+  ZSH_COLOR_LOCAL_AHEAD="${GIT_RADAR_COLOR_ZSH_LOCAL_AHEAD:-$fg_bold[green]}"
+  ZSH_COLOR_LOCAL_BEHIND="${GIT_RADAR_COLOR_ZSH_LOCAL_BEHIND:-$fg_bold[red]}"
+  ZSH_COLOR_LOCAL_DIVERGED="${GIT_RADAR_COLOR_ZSH_LOCAL_DIVERGED:-$fg_bold[yellow]}"
+
+  ZSH_RESET_COLOR_LOCAL="${GIT_RADAR_COLOR_ZSH_LOCAL_RESET:-$reset_color}"
   ZSH_RESET_COLOR_REMOTE="${GIT_RADAR_COLOR_ZSH_REMOTE_RESET:-$reset_color}"
+  ZSH_RESET_COLOR_CHANGES="${GIT_RADAR_COLOR_ZSH_CHANGES_RESET:-$reset_color}"
 }
 
 in_current_dir() {
@@ -413,9 +419,9 @@ bash_color_local_commits() {
 zsh_color_local_commits() {
   local separator="${1:- }"
 
-  local ahead_arrow="%{$fg_bold[green]%}↑%{$reset_color%}"
-  local behind_arrow="%{$fg_bold[red]%}↓%{$reset_color%}"
-  local diverged_arrow="%{$fg_bold[yellow]%}⇵%{$reset_color%}"
+  local ahead_arrow="%{$ZSH_COLOR_LOCAL_AHEAD%}↑%{$ZSH_RESET_COLOR_LOCAL%}"
+  local behind_arrow="%{$ZSH_COLOR_LOCAL_BEHIND%}↓%{$ZSH_RESET_COLOR_LOCAL%}"
+  local diverged_arrow="%{$ZSH_COLOR_LOCAL_DIVERGED%}⇵%{$ZSH_RESET_COLOR_LOCAL%}"
 
   local local_commits=""
   if remote_branch="$(remote_branch_name)"; then
