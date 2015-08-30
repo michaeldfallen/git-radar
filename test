@@ -6,3 +6,4 @@
 ./test-branches.sh
 ./test-files.sh
 ./test-status.sh
+./test-colors.sh
