@@ -7,23 +7,23 @@ remote=""
 prepare_zsh_colors() {
   autoload colors && colors
 
-  COLOR_REMOTE_AHEAD="${GIT_RADAR_COLOR_REMOTE_AHEAD:-$fg_bold[green]}"
-  COLOR_REMOTE_BEHIND="${GIT_RADAR_COLOR_REMOTE_BEHIND:-$fg_bold[red]}"
-  COLOR_REMOTE_DIVERGED="${GIT_RADAR_COLOR_REMOTE_DIVERGED:-$fg_bold[yellow]}"
-  COLOR_REMOTE_NOT_UPSTREAM="${GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM:-$fg_bold[red]}"
+  COLOR_REMOTE_AHEAD="%{${GIT_RADAR_COLOR_REMOTE_AHEAD:-$fg_bold[green]}%}"
+  COLOR_REMOTE_BEHIND="%{${GIT_RADAR_COLOR_REMOTE_BEHIND:-$fg_bold[red]}%}"
+  COLOR_REMOTE_DIVERGED="%{${GIT_RADAR_COLOR_REMOTE_DIVERGED:-$fg_bold[yellow]}%}"
+  COLOR_REMOTE_NOT_UPSTREAM="%{${GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM:-$fg_bold[red]}%}"
 
-  COLOR_LOCAL_AHEAD="${GIT_RADAR_COLOR_LOCAL_AHEAD:-$fg_bold[green]}"
-  COLOR_LOCAL_BEHIND="${GIT_RADAR_COLOR_LOCAL_BEHIND:-$fg_bold[red]}"
-  COLOR_LOCAL_DIVERGED="${GIT_RADAR_COLOR_LOCAL_DIVERGED:-$fg_bold[yellow]}"
+  COLOR_LOCAL_AHEAD="%{${GIT_RADAR_COLOR_LOCAL_AHEAD:-$fg_bold[green]}%}"
+  COLOR_LOCAL_BEHIND="%{${GIT_RADAR_COLOR_LOCAL_BEHIND:-$fg_bold[red]}%}"
+  COLOR_LOCAL_DIVERGED="%{${GIT_RADAR_COLOR_LOCAL_DIVERGED:-$fg_bold[yellow]}%}"
 
-  COLOR_CHANGES_STAGED="${GIT_RADAR_COLOR_CHANGES_STAGED:-$fg_bold[green]}"
-  COLOR_CHANGES_UNSTAGED="${GIT_RADAR_COLOR_CHANGES_UNSTAGED:-$fg_bold[red]}"
-  COLOR_CHANGES_CONFLICTED="${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-$fg_bold[yellow]}"
-  COLOR_CHANGES_UNTRACKED="${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}"
+  COLOR_CHANGES_STAGED="%{${GIT_RADAR_COLOR_CHANGES_STAGED:-$fg_bold[green]}%}"
+  COLOR_CHANGES_UNSTAGED="%{${GIT_RADAR_COLOR_CHANGES_UNSTAGED:-$fg_bold[red]}%}"
+  COLOR_CHANGES_CONFLICTED="%{${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-$fg_bold[yellow]}%}"
+  COLOR_CHANGES_UNTRACKED="%{${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}%}"
 
-  RESET_COLOR_LOCAL="${GIT_RADAR_COLOR_LOCAL_RESET:-$reset_color}"
-  RESET_COLOR_REMOTE="${GIT_RADAR_COLOR_REMOTE_RESET:-$reset_color}"
-  RESET_COLOR_CHANGES="${GIT_RADAR_COLOR_CHANGES_RESET:-$reset_color}"
+  RESET_COLOR_LOCAL="%{${GIT_RADAR_COLOR_LOCAL_RESET:-$reset_color}%}"
+  RESET_COLOR_REMOTE="%{${GIT_RADAR_COLOR_REMOTE_RESET:-$reset_color}%}"
+  RESET_COLOR_CHANGES="%{${GIT_RADAR_COLOR_CHANGES_RESET:-$reset_color}%}"
 }
 
 in_current_dir() {
@@ -367,11 +367,11 @@ zsh_color_changes_status() {
   local changes=""
 
   if [[ -n "$porcelain" ]]; then
-    local staged_prefix="%{$COLOR_CHANGES_STAGED%}"
-    local unstaged_prefix="%{$COLOR_CHANGES_UNSTAGED%}"
-    local conflicted_prefix="%{$COLOR_CHANGES_CONFLICTED%}"
-    local untracked_prefix="%{$COLOR_CHANGES_UNTRACKED%}"
-    local suffix="%{$RESET_COLOR_CHANGES%}"
+    local staged_prefix="$COLOR_CHANGES_STAGED"
+    local unstaged_prefix="$COLOR_CHANGES_UNSTAGED"
+    local conflicted_prefix="$COLOR_CHANGES_CONFLICTED"
+    local untracked_prefix="$COLOR_CHANGES_UNTRACKED"
+    local suffix="$RESET_COLOR_CHANGES"
 
     local staged_changes="$(staged_status "$porcelain" "$staged_prefix" "$suffix")"
     local unstaged_changes="$(unstaged_status "$porcelain" "$unstaged_prefix" "$suffix")"
@@ -424,9 +424,9 @@ bash_color_local_commits() {
 zsh_color_local_commits() {
   local separator="${1:- }"
 
-  local ahead_arrow="%{$COLOR_LOCAL_AHEAD%}↑%{$RESET_COLOR_LOCAL%}"
-  local behind_arrow="%{$COLOR_LOCAL_BEHIND%}↓%{$RESET_COLOR_LOCAL%}"
-  local diverged_arrow="%{$COLOR_LOCAL_DIVERGED%}⇵%{$RESET_COLOR_LOCAL%}"
+  local ahead_arrow="$COLOR_LOCAL_AHEAD↑$RESET_COLOR_LOCAL"
+  local behind_arrow="$COLOR_LOCAL_BEHIND↓$RESET_COLOR_LOCAL"
+  local diverged_arrow="$COLOR_LOCAL_DIVERGED⇵$RESET_COLOR_LOCAL"
 
   local local_commits=""
   if remote_branch="$(remote_branch_name)"; then
@@ -471,10 +471,10 @@ bash_color_remote_commits() {
 
 zsh_color_remote_commits() {
   local remote_master="$(printf '\xF0\x9D\x98\xAE')" # an italic m to represent master
-  local green_ahead_arrow="%{$COLOR_REMOTE_AHEAD%}←%{$RESET_COLOR_REMOTE%}"
-  local red_behind_arrow="%{$COLOR_REMOTE_BEHIND%}→%{$RESET_COLOR_REMOTE%}"
-  local yellow_diverged_arrow="%{$COLOR_REMOTE_DIVERGED%}⇄%{$RESET_COLOR_REMOTE%}"
-  local not_upstream="%{$COLOR_REMOTE_NOT_UPSTREAM%}⚡%{$RESET_COLOR_REMOTE%}"
+  local green_ahead_arrow="$COLOR_REMOTE_AHEAD←$RESET_COLOR_REMOTE"
+  local red_behind_arrow="$COLOR_REMOTE_BEHIND→$RESET_COLOR_REMOTE"
+  local yellow_diverged_arrow="$COLOR_REMOTE_DIVERGED⇄$RESET_COLOR_REMOTE"
+  local not_upstream="$COLOR_REMOTE_NOT_UPSTREAM⚡$RESET_COLOR_REMOTE"
 
   if remote_branch="$(remote_branch_name)"; then
     remote_ahead="$(remote_ahead_of_master "$remote_branch")"
