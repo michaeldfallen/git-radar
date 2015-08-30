@@ -173,4 +173,22 @@ test_zsh_colors_remote() {
   rm_tmp
 }
 
+test_zsh_colors_changes() {
+  set_zsh_env_vars
+  prepare_zsh_colors
+
+  cd_to_tmp
+  git init --quiet
+
+  touch foo
+  touch bar
+  git add bar
+  echo "bar" > bar
+  untracked="1%{changes-untracked%}A%{change-reset%}"
+  unstaged="1%{changes-unstaged%}M%{change-reset%}"
+  staged="1%{changes-staged%}A%{change-reset%}"
+
+  assertEquals " $staged $unstaged $untracked" "$(zsh_color_changes_status)"
+}
+
 . ./shunit/shunit2
