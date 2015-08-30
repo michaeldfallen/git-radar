@@ -23,6 +23,7 @@ mock_zsh_colors() {
 }
 
 test_no_rcfile_bash() {
+  reset_env_vars
   prepare_bash_colors
 
   assertEquals "$COLOR_REMOTE_AHEAD" "\x01\033[1;32m\x02"
@@ -45,6 +46,7 @@ test_no_rcfile_bash() {
 }
 
 test_no_rcfile_zsh() {
+  reset_env_vars
   mock_zsh_colors
   prepare_zsh_colors
 
@@ -87,6 +89,26 @@ set_bash_env_vars() {
   export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
 }
 
+reset_env_vars() {
+  export GIT_RADAR_COLOR_REMOTE_AHEAD=""
+  export GIT_RADAR_COLOR_REMOTE_BEHIND=""
+  export GIT_RADAR_COLOR_REMOTE_DIVERGED=""
+  export GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM=""
+
+  export GIT_RADAR_COLOR_LOCAL_AHEAD=""
+  export GIT_RADAR_COLOR_LOCAL_BEHIND=""
+  export GIT_RADAR_COLOR_LOCAL_DIVERGED=""
+
+  export GIT_RADAR_COLOR_CHANGES_STAGED=""
+  export GIT_RADAR_COLOR_CHANGES_UNSTAGED=""
+  export GIT_RADAR_COLOR_CHANGES_CONFLICTED=""
+  export GIT_RADAR_COLOR_CHANGES_UNTRACKED=""
+
+  export GIT_RADAR_COLOR_LOCAL_RESET=""
+  export GIT_RADAR_COLOR_REMOTE_RESET=""
+  export GIT_RADAR_COLOR_CHANGES_RESET=""
+}
+
 set_zsh_env_vars() {
   export GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"
   export GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"
@@ -107,7 +129,89 @@ set_zsh_env_vars() {
   export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
 }
 
+create_rc_file() {
+  echo 'GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM="not-upstream"' >> .gitradarrc
+
+  echo 'GIT_RADAR_COLOR_LOCAL_AHEAD="local-ahead"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_LOCAL_BEHIND="local-behind"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_LOCAL_DIVERGED="local-diverged"' >> .gitradarrc
+
+  echo 'GIT_RADAR_COLOR_CHANGES_STAGED="changes-staged"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_CHANGES_UNSTAGED="changes-unstaged"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"' >> .gitradarrc
+
+  echo 'GIT_RADAR_COLOR_LOCAL_RESET="local-reset"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_CHANGES_RESET="change-reset"' >> .gitradarrc
+}
+
+test_with_rcfile_bash() {
+  reset_env_vars
+  cd_to_tmp
+
+  rcfile_path="$(pwd)"
+
+  create_rc_file
+  prepare_bash_colors
+
+  assertEquals "$COLOR_REMOTE_AHEAD" "\x01remote-ahead\x02"
+  assertEquals "$COLOR_REMOTE_BEHIND" "\x01remote-behind\x02"
+  assertEquals "$COLOR_REMOTE_DIVERGED" "\x01remote-diverged\x02"
+  assertEquals "$COLOR_REMOTE_NOT_UPSTREAM" "\x01not-upstream\x02"
+
+  assertEquals "$COLOR_LOCAL_AHEAD" "\x01local-ahead\x02"
+  assertEquals "$COLOR_LOCAL_BEHIND" "\x01local-behind\x02"
+  assertEquals "$COLOR_LOCAL_DIVERGED" "\x01local-diverged\x02"
+
+  assertEquals "$COLOR_CHANGES_STAGED" "\x01changes-staged\x02"
+  assertEquals "$COLOR_CHANGES_UNSTAGED" "\x01changes-unstaged\x02"
+  assertEquals "$COLOR_CHANGES_CONFLICTED" "\x01changes-conflicted\x02"
+  assertEquals "$COLOR_CHANGES_UNTRACKED" "\x01changes-untracked\x02"
+
+  assertEquals "$RESET_COLOR_LOCAL" "\x01local-reset\x02"
+  assertEquals "$RESET_COLOR_REMOTE" "\x01remote-reset\x02"
+  assertEquals "$RESET_COLOR_CHANGES" "\x01change-reset\x02"
+
+  rm_tmp
+}
+
+test_with_rcfile_zsh() {
+  reset_env_vars
+  cd_to_tmp
+
+  rcfile_path="$(pwd)"
+
+  create_rc_file
+  mock_zsh_colors
+  prepare_zsh_colors
+
+  assertEquals "$COLOR_REMOTE_AHEAD" "%{remote-ahead%}"
+  assertEquals "$COLOR_REMOTE_BEHIND" "%{remote-behind%}"
+  assertEquals "$COLOR_REMOTE_DIVERGED" "%{remote-diverged%}"
+  assertEquals "$COLOR_REMOTE_NOT_UPSTREAM" "%{not-upstream%}"
+
+  assertEquals "$COLOR_LOCAL_AHEAD" "%{local-ahead%}"
+  assertEquals "$COLOR_LOCAL_BEHIND" "%{local-behind%}"
+  assertEquals "$COLOR_LOCAL_DIVERGED" "%{local-diverged%}"
+
+  assertEquals "$COLOR_CHANGES_STAGED" "%{changes-staged%}"
+  assertEquals "$COLOR_CHANGES_UNSTAGED" "%{changes-unstaged%}"
+  assertEquals "$COLOR_CHANGES_CONFLICTED" "%{changes-conflicted%}"
+  assertEquals "$COLOR_CHANGES_UNTRACKED" "%{changes-untracked%}"
+
+  assertEquals "$RESET_COLOR_LOCAL" "%{local-reset%}"
+  assertEquals "$RESET_COLOR_REMOTE" "%{remote-reset%}"
+  assertEquals "$RESET_COLOR_CHANGES" "%{change-reset%}"
+
+  rm_tmp
+}
+
 test_with_env_vars_bash() {
+  reset_env_vars
   set_bash_env_vars
   prepare_bash_colors
 
@@ -131,6 +235,7 @@ test_with_env_vars_bash() {
 }
 
 test_with_env_vars_zsh() {
+  reset_env_vars
   set_zsh_env_vars
   mock_zsh_colors
   prepare_zsh_colors
@@ -155,6 +260,7 @@ test_with_env_vars_zsh() {
 }
 
 test_bash_colors_local() {
+  reset_env_vars
   set_bash_env_vars
   prepare_bash_colors
 
@@ -197,6 +303,7 @@ test_bash_colors_local() {
 }
 
 test_zsh_colors_local() {
+  reset_env_vars
   set_zsh_env_vars
   prepare_zsh_colors
 
@@ -236,6 +343,7 @@ test_zsh_colors_local() {
 }
 
 test_bash_colors_remote() {
+  reset_env_vars
   set_bash_env_vars
   prepare_bash_colors
 
@@ -284,6 +392,7 @@ test_bash_colors_remote() {
 }
 
 test_zsh_colors_remote() {
+  reset_env_vars
   set_zsh_env_vars
   prepare_zsh_colors
 
@@ -329,6 +438,7 @@ test_zsh_colors_remote() {
 }
 
 test_bash_colors_changes() {
+  reset_env_vars
   set_bash_env_vars
   prepare_bash_colors
 
@@ -349,6 +459,7 @@ test_bash_colors_changes() {
 }
 
 test_zsh_colors_changes() {
+  reset_env_vars
   set_zsh_env_vars
   prepare_zsh_colors
 

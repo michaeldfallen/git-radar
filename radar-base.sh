@@ -3,8 +3,13 @@ NO_REMOTE_STATUS='--no-remote-status'
 dot_git=""
 cwd=""
 remote=""
+rcfile_path="$HOME"
 
 prepare_bash_colors() {
+  if [ -f "$rcfile_path/.gitradarrc" ]; then
+    source "$rcfile_path/.gitradarrc"
+  fi
+
   COLOR_REMOTE_AHEAD="\x01${GIT_RADAR_COLOR_REMOTE_AHEAD:-"\\033[1;32m"}\x02"
   COLOR_REMOTE_BEHIND="\x01${GIT_RADAR_COLOR_REMOTE_BEHIND:-"\\033[1;31m"}\x02"
   COLOR_REMOTE_DIVERGED="\x01${GIT_RADAR_COLOR_REMOTE_DIVERGED:-"\\033[1;33m"}\x02"
@@ -25,6 +30,10 @@ prepare_bash_colors() {
 }
 
 prepare_zsh_colors() {
+  if [ -f "$rcfile_path/.gitradarrc" ]; then
+    source "$rcfile_path/.gitradarrc"
+  fi
+
   COLOR_REMOTE_AHEAD="%{${GIT_RADAR_COLOR_REMOTE_AHEAD:-$fg_bold[green]}%}"
   COLOR_REMOTE_BEHIND="%{${GIT_RADAR_COLOR_REMOTE_BEHIND:-$fg_bold[red]}%}"
   COLOR_REMOTE_DIVERGED="%{${GIT_RADAR_COLOR_REMOTE_DIVERGED:-$fg_bold[yellow]}%}"
