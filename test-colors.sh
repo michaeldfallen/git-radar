@@ -45,7 +45,7 @@ test_no_rcfile_zsh() {
   assertEquals "$RESET_COLOR_CHANGES" "%{$reset_color%}"
 }
 
-test_with_env_vars_zsh() {
+set_zsh_env_vars() {
   export GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"
   export GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"
   export GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"
@@ -63,7 +63,10 @@ test_with_env_vars_zsh() {
   export GIT_RADAR_COLOR_LOCAL_RESET="local-reset"
   export GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"
   export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
+}
 
+test_with_env_vars_zsh() {
+  set_zsh_env_vars
   mock_zsh_colors
   prepare_zsh_colors
 
@@ -86,4 +89,42 @@ test_with_env_vars_zsh() {
   assertEquals "$RESET_COLOR_CHANGES" "%{change-reset%}"
 }
 
+test_zsh_colors_local() {
+  set_zsh_env_vars
+  prepare_zsh_colors
+
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "repo"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+  git push --quiet -u origin master >/dev/null
+  repoLocation="$(pwd)"
+
+  echo "foo" > foo
+  git add .
+  git commit -m "test commit" --quiet
+
+  assertEquals " 1%{local-ahead%}↑%{local-reset%}" "$(zsh_color_local_commits)"
+
+  git push --quiet >/dev/null
+  git reset --hard head^ --quiet >/dev/null
+
+  assertEquals " 1%{local-behind%}↓%{local-reset%}" "$(zsh_color_local_commits)"
+
+  echo "foo" > foo
+  git add .
+  git commit -m "new commit" --quiet
+
+  assertEquals " 1%{local-diverged%}⇵%{local-reset%}1" "$(zsh_color_local_commits)"
+
+  rm_tmp
+}
 . ./shunit/shunit2

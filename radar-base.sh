@@ -430,9 +430,9 @@ bash_color_local_commits() {
 zsh_color_local_commits() {
   local separator="${1:- }"
 
-  local ahead_arrow="$COLOR_LOCAL_AHEAD↑$RESET_COLOR_LOCAL"
-  local behind_arrow="$COLOR_LOCAL_BEHIND↓$RESET_COLOR_LOCAL"
-  local diverged_arrow="$COLOR_LOCAL_DIVERGED⇵$RESET_COLOR_LOCAL"
+  local ahead_arrow="${COLOR_LOCAL_AHEAD}↑$RESET_COLOR_LOCAL"
+  local behind_arrow="${COLOR_LOCAL_BEHIND}↓$RESET_COLOR_LOCAL"
+  local diverged_arrow="${COLOR_LOCAL_DIVERGED}⇵$RESET_COLOR_LOCAL"
 
   local local_commits=""
   if remote_branch="$(remote_branch_name)"; then
