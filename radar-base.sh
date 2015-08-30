@@ -25,8 +25,6 @@ prepare_bash_colors() {
 }
 
 prepare_zsh_colors() {
-  autoload colors && colors
-
   COLOR_REMOTE_AHEAD="%{${GIT_RADAR_COLOR_REMOTE_AHEAD:-$fg_bold[green]}%}"
   COLOR_REMOTE_BEHIND="%{${GIT_RADAR_COLOR_REMOTE_BEHIND:-$fg_bold[red]}%}"
   COLOR_REMOTE_DIVERGED="%{${GIT_RADAR_COLOR_REMOTE_DIVERGED:-$fg_bold[yellow]}%}"
