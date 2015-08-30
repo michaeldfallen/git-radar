@@ -29,16 +29,17 @@ Add to your `.bashrc`
 ```bash
 export PS1="$PS1\$(git-radar --bash --fetch)"
 ```
-(note: the `\` escaping the `$` is important)
+[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
 **Zsh**
 
 Add to your `.zshrc`
 ```zsh
-export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
+export PROMPT="$PROMPT\$(git-radar --zsh --fetch) "
 ```
+[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
-**fish**
+**Fish**
 
 Add to your `config.fish`
 ```bash
@@ -121,12 +122,13 @@ If you don't rely on this status, you can always hide this part of the prompt by
 ```bash
 export PS1="$PS1\$(git-radar --bash --fetch --no-remote-status) "
 ```
-(note: the `\` escaping the `$` is important)
+[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
 **Zsh**
 ```zsh
-export PROMPT="$PROMPT$(git-radar --zsh --fetch --no-remote-status) "
+export PROMPT="$PROMPT\$(git-radar --zsh --fetch --no-remote-status) "
 ```
+[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
 ### (Optional) Auto-fetch repos
 
@@ -143,11 +145,33 @@ To use this feature, when setting your prompt, call git-radar with `--fetch`:
 ```bash
 export PS1="$PS1\$(git-radar --bash --fetch)"
 ```
-(note: the `\` escaping the `$` is important)
+[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
 **Zsh**
 ```zsh
-export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
+export PROMPT="$PROMPT\$(git-radar --zsh --fetch) "
+```
+[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
+
+## Support
+
+### Ensuring prompt execution
+
+When setting your prompt variable, `PROMPT` in Zsh and `PS1` in Bash, it's
+important that the function executes each time the prompt renders. That way the
+prompt will respond to changes in your git repo. To ensure this you will need
+to escape the execution of the function. There are two ways to do this:
+
+**1. Use `$'` to render raw characters**
+```bash
+export PROMPT=$'$(git-radar --zsh)'
+export PS1=$'$(git-radar --bash)'
+```
+
+**2. Use `\` to escape execution of the subshell**
+```bash
+export PROMPT="\$(git-radar --zsh)"
+export PS1="\$(git-radar --bash)"
 ```
 
 ## License
