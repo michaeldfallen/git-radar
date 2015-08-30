@@ -22,6 +22,28 @@ mock_zsh_colors() {
   reset_color=0
 }
 
+test_no_rcfile_bash() {
+  prepare_bash_colors
+
+  assertEquals "$COLOR_REMOTE_AHEAD" "\x01\033[1;32m\x02"
+  assertEquals "$COLOR_REMOTE_BEHIND" "\x01\033[1;31m\x02"
+  assertEquals "$COLOR_REMOTE_DIVERGED" "\x01\033[1;33m\x02"
+  assertEquals "$COLOR_REMOTE_NOT_UPSTREAM" "\x01\033[1;31m\x02"
+
+  assertEquals "$COLOR_LOCAL_AHEAD" "\x01\033[1;32m\x02"
+  assertEquals "$COLOR_LOCAL_BEHIND" "\x01\033[1;31m\x02"
+  assertEquals "$COLOR_LOCAL_DIVERGED" "\x01\033[1;33m\x02"
+
+  assertEquals "$COLOR_CHANGES_STAGED" "\x01\033[1;32m\x02"
+  assertEquals "$COLOR_CHANGES_UNSTAGED" "\x01\033[1;31m\x02"
+  assertEquals "$COLOR_CHANGES_CONFLICTED" "\x01\033[1;33m\x02"
+  assertEquals "$COLOR_CHANGES_UNTRACKED" "\x01\033[1;37m\x02"
+
+  assertEquals "$RESET_COLOR_LOCAL" "\x01\033[0m\x02"
+  assertEquals "$RESET_COLOR_REMOTE" "\x01\033[0m\x02"
+  assertEquals "$RESET_COLOR_CHANGES" "\x01\033[0m\x02"
+}
+
 test_no_rcfile_zsh() {
   mock_zsh_colors
   prepare_zsh_colors
@@ -45,6 +67,26 @@ test_no_rcfile_zsh() {
   assertEquals "$RESET_COLOR_CHANGES" "%{$reset_color%}"
 }
 
+set_bash_env_vars() {
+  export GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"
+  export GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"
+  export GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"
+  export GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM="not-upstream"
+
+  export GIT_RADAR_COLOR_LOCAL_AHEAD="local-ahead"
+  export GIT_RADAR_COLOR_LOCAL_BEHIND="local-behind"
+  export GIT_RADAR_COLOR_LOCAL_DIVERGED="local-diverged"
+
+  export GIT_RADAR_COLOR_CHANGES_STAGED="changes-staged"
+  export GIT_RADAR_COLOR_CHANGES_UNSTAGED="changes-unstaged"
+  export GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"
+  export GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"
+
+  export GIT_RADAR_COLOR_LOCAL_RESET="local-reset"
+  export GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"
+  export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
+}
+
 set_zsh_env_vars() {
   export GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"
   export GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"
@@ -63,6 +105,29 @@ set_zsh_env_vars() {
   export GIT_RADAR_COLOR_LOCAL_RESET="local-reset"
   export GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"
   export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
+}
+
+test_with_env_vars_bash() {
+  set_bash_env_vars
+  prepare_bash_colors
+
+  assertEquals "$COLOR_REMOTE_AHEAD" "\x01remote-ahead\x02"
+  assertEquals "$COLOR_REMOTE_BEHIND" "\x01remote-behind\x02"
+  assertEquals "$COLOR_REMOTE_DIVERGED" "\x01remote-diverged\x02"
+  assertEquals "$COLOR_REMOTE_NOT_UPSTREAM" "\x01not-upstream\x02"
+
+  assertEquals "$COLOR_LOCAL_AHEAD" "\x01local-ahead\x02"
+  assertEquals "$COLOR_LOCAL_BEHIND" "\x01local-behind\x02"
+  assertEquals "$COLOR_LOCAL_DIVERGED" "\x01local-diverged\x02"
+
+  assertEquals "$COLOR_CHANGES_STAGED" "\x01changes-staged\x02"
+  assertEquals "$COLOR_CHANGES_UNSTAGED" "\x01changes-unstaged\x02"
+  assertEquals "$COLOR_CHANGES_CONFLICTED" "\x01changes-conflicted\x02"
+  assertEquals "$COLOR_CHANGES_UNTRACKED" "\x01changes-untracked\x02"
+
+  assertEquals "$RESET_COLOR_LOCAL" "\x01local-reset\x02"
+  assertEquals "$RESET_COLOR_REMOTE" "\x01remote-reset\x02"
+  assertEquals "$RESET_COLOR_CHANGES" "\x01change-reset\x02"
 }
 
 test_with_env_vars_zsh() {
@@ -87,6 +152,48 @@ test_with_env_vars_zsh() {
   assertEquals "$RESET_COLOR_LOCAL" "%{local-reset%}"
   assertEquals "$RESET_COLOR_REMOTE" "%{remote-reset%}"
   assertEquals "$RESET_COLOR_CHANGES" "%{change-reset%}"
+}
+
+test_bash_colors_local() {
+  set_bash_env_vars
+  prepare_bash_colors
+
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "repo"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+  git push --quiet -u origin master >/dev/null
+  repoLocation="$(pwd)"
+
+  echo "foo" > foo
+  git add .
+  git commit -m "test commit" --quiet
+
+  printf -v expected " 1\x01local-ahead\x02↑\x01local-reset\x02"
+  assertEquals "$expected" "$(bash_color_local_commits)"
+
+  git push --quiet >/dev/null
+  git reset --hard head^ --quiet >/dev/null
+
+  printf -v expected " 1\x01local-behind\x02↓\x01local-reset\x02"
+  assertEquals "$expected" "$(bash_color_local_commits)"
+
+  echo "foo" > foo
+  git add .
+  git commit -m "new commit" --quiet
+
+  printf -v expected " 1\x01local-diverged\x02⇵\x01local-reset\x021"
+  assertEquals "$expected" "$(bash_color_local_commits)"
+
+  rm_tmp
 }
 
 test_zsh_colors_local() {
@@ -124,6 +231,54 @@ test_zsh_colors_local() {
   git commit -m "new commit" --quiet
 
   assertEquals " 1%{local-diverged%}⇵%{local-reset%}1" "$(zsh_color_local_commits)"
+
+  rm_tmp
+}
+
+test_bash_colors_remote() {
+  set_bash_env_vars
+  prepare_bash_colors
+
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "repo"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+  echo "foo" > foo
+  git add .
+  git commit -m "test commit" --quiet
+  git push --quiet -u origin master >/dev/null
+  repoLocation="$(pwd)"
+
+  git reset --hard head^ --quiet >/dev/null
+  git checkout -b mybranch --quiet
+  git push --quiet -u origin mybranch >/dev/null
+
+  printf -v m '\xF0\x9D\x98\xAE'
+
+  printf -v expected "$m 1 \x01remote-behind\x02→\x01remote-reset\x02 "
+  assertEquals "$expected" "$(bash_color_remote_commits)"
+
+  echo "bar" > bar
+  git add .
+  git commit -m "new commit" --quiet
+  git push --quiet >/dev/null
+
+  printf -v expected "$m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1 "
+  assertEquals "$expected" "$(bash_color_remote_commits)"
+
+  git pull origin master --quiet >/dev/null
+  git push --quiet >/dev/null
+
+  printf -v expected "$m \x01remote-ahead\x02←\x01remote-reset\x02 2 "
+  assertEquals "$expected" "$(bash_color_remote_commits)"
 
   rm_tmp
 }
@@ -173,6 +328,26 @@ test_zsh_colors_remote() {
   rm_tmp
 }
 
+test_bash_colors_changes() {
+  set_bash_env_vars
+  prepare_bash_colors
+
+  cd_to_tmp
+  git init --quiet
+
+  touch foo
+  touch bar
+  git add bar
+  echo "bar" > bar
+  untracked="1\x01changes-untracked\x02A\x01change-reset\x02"
+  unstaged="1\x01changes-unstaged\x02M\x01change-reset\x02"
+  staged="1\x01changes-staged\x02A\x01change-reset\x02"
+
+  printf -v expected " $staged $unstaged $untracked"
+  assertEquals "$expected" "$(bash_color_changes_status)"
+  rm_tmp
+}
+
 test_zsh_colors_changes() {
   set_zsh_env_vars
   prepare_zsh_colors
@@ -189,6 +364,7 @@ test_zsh_colors_changes() {
   staged="1%{changes-staged%}A%{change-reset%}"
 
   assertEquals " $staged $unstaged $untracked" "$(zsh_color_changes_status)"
+  rm_tmp
 }
 
 . ./shunit/shunit2
