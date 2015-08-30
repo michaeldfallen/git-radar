@@ -477,10 +477,10 @@ bash_color_remote_commits() {
 
 zsh_color_remote_commits() {
   local remote_master="$(printf '\xF0\x9D\x98\xAE')" # an italic m to represent master
-  local green_ahead_arrow="$COLOR_REMOTE_AHEAD←$RESET_COLOR_REMOTE"
-  local red_behind_arrow="$COLOR_REMOTE_BEHIND→$RESET_COLOR_REMOTE"
-  local yellow_diverged_arrow="$COLOR_REMOTE_DIVERGED⇄$RESET_COLOR_REMOTE"
-  local not_upstream="$COLOR_REMOTE_NOT_UPSTREAM⚡$RESET_COLOR_REMOTE"
+  local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
+  local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
+  local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
+  local not_upstream="${COLOR_REMOTE_NOT_UPSTREAM}⚡$RESET_COLOR_REMOTE"
 
   if remote_branch="$(remote_branch_name)"; then
     remote_ahead="$(remote_ahead_of_master "$remote_branch")"

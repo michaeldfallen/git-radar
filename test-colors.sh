@@ -127,4 +127,50 @@ test_zsh_colors_local() {
 
   rm_tmp
 }
+
+test_zsh_colors_remote() {
+  set_zsh_env_vars
+  prepare_zsh_colors
+
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "repo"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+  echo "foo" > foo
+  git add .
+  git commit -m "test commit" --quiet
+  git push --quiet -u origin master >/dev/null
+  repoLocation="$(pwd)"
+
+  git reset --hard head^ --quiet >/dev/null
+  git checkout -b mybranch --quiet
+  git push --quiet -u origin mybranch >/dev/null
+
+  printf -v m '\xF0\x9D\x98\xAE'
+
+  assertEquals "$m 1 %{remote-behind%}→%{remote-reset%} " "$(zsh_color_remote_commits)"
+
+  echo "bar" > bar
+  git add .
+  git commit -m "new commit" --quiet
+  git push --quiet >/dev/null
+
+  assertEquals "$m 1 %{remote-diverged%}⇄%{remote-reset%} 1 " "$(zsh_color_remote_commits)"
+
+  git pull origin master --quiet >/dev/null
+  git push --quiet >/dev/null
+
+  assertEquals "$m %{remote-ahead%}←%{remote-reset%} 2 " "$(zsh_color_remote_commits)"
+
+  rm_tmp
+}
+
 . ./shunit/shunit2
