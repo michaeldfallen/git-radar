@@ -470,16 +470,20 @@ zsh_color_remote_commits() {
   printf %s "$remote"
 }
 
+stashed_status() {
+  printf '%s' "$(git stash list | wc -l 2>/dev/null)"
+}
+
 bash_stash_status() {
-  local number_stashes="$(git stash list | wc -l)"
+  local number_stashes="$(stashed_status)"
   if [ $number_stashes -gt 0 ]; then
-    printf " $number_stashes\x01\033[1;33m\x02=\x01\033[0m\x02)"
+    printf " $number_stashes\x01\033[1;33m\x02=\x01\033[0m\x02"
   fi
 }
 
 zsh_stash_status() {
-  local number_stashes="$(git stash list | wc -l)"
+  local number_stashes="$(stashed_status)"
   if [ $number_stashes -gt 0 ]; then
-    printf %s " $number_stashes%{$fg_bold[yellow]%}=%{$reset_color%})"
+    printf %s " $number_stashes%{$fg_bold[yellow]%}=%{$reset_color%}"
   fi
 }
