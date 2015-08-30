@@ -16,6 +16,11 @@ prepare_zsh_colors() {
   ZSH_COLOR_LOCAL_BEHIND="${GIT_RADAR_COLOR_ZSH_LOCAL_BEHIND:-$fg_bold[red]}"
   ZSH_COLOR_LOCAL_DIVERGED="${GIT_RADAR_COLOR_ZSH_LOCAL_DIVERGED:-$fg_bold[yellow]}"
 
+  ZSH_COLOR_CHANGES_STAGED="${GIT_RADAR_COLOR_ZSH_CHANGES_STAGED:-$fg_bold[green]}"
+  ZSH_COLOR_CHANGES_UNSTAGED="${GIT_RADAR_COLOR_ZSH_CHANGES_UNSTAGED:-$fg_bold[red]}"
+  ZSH_COLOR_CHANGES_CONFLICTED="${GIT_RADAR_COLOR_ZSH_CHANGES_CONFLICTED:-$fg_bold[yellow]}"
+  ZSH_COLOR_CHANGES_UNTRACKED="${GIT_RADAR_COLOR_ZSH_CHANGES_UNTRACKED:-$fg_bold[white]}"
+
   ZSH_RESET_COLOR_LOCAL="${GIT_RADAR_COLOR_ZSH_LOCAL_RESET:-$reset_color}"
   ZSH_RESET_COLOR_REMOTE="${GIT_RADAR_COLOR_ZSH_REMOTE_RESET:-$reset_color}"
   ZSH_RESET_COLOR_CHANGES="${GIT_RADAR_COLOR_ZSH_CHANGES_RESET:-$reset_color}"
@@ -362,11 +367,11 @@ zsh_color_changes_status() {
   local changes=""
 
   if [[ -n "$porcelain" ]]; then
-    local staged_prefix="%{$fg_bold[green]%}"
-    local unstaged_prefix="%{$fg_bold[red]%}"
-    local conflicted_prefix="%{$fg_bold[yellow]%}"
-    local untracked_prefix="%{$fg_bold[white]%}"
-    local suffix="%{$reset_color%}"
+    local staged_prefix="%{$ZSH_COLOR_CHANGES_STAGED%}"
+    local unstaged_prefix="%{$ZSH_COLOR_CHANGES_UNSTAGED%}"
+    local conflicted_prefix="%{$ZSH_COLOR_CHANGES_CONFLICTED%}"
+    local untracked_prefix="%{$ZSH_COLOR_CHANGES_UNTRACKED%}"
+    local suffix="%{$ZSH_RESET_COLOR_CHANGES%}"
 
     local staged_changes="$(staged_status "$porcelain" "$staged_prefix" "$suffix")"
     local unstaged_changes="$(unstaged_status "$porcelain" "$unstaged_prefix" "$suffix")"
