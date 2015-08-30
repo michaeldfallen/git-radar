@@ -4,6 +4,15 @@ dot_git=""
 cwd=""
 remote=""
 
+prepare_zsh_colors() {
+  ZSH_COLOR_REMOTE_AHEAD="${GIT_RADAR_COLOR_ZSH_REMOTE_AHEAD:-$fg_bold[green]}"
+  ZSH_COLOR_REMOTE_BEHIND="${GIT_RADAR_COLOR_ZSH_REMOTE_BEHIND:-$fg_bold[red]}"
+  ZSH_COLOR_REMOTE_DIVERGED="${GIT_RADAR_COLOR_ZSH_REMOTE_DIVERGED:-$fg_bold[yellow]}"
+  ZSH_COLOR_REMOTE_NOT_UPSTREAM="${GIT_RADAR_COLOR_ZSH_REMOTE_NOT_UPSTREAM:-$fg_bold[red]}"
+
+  ZSH_RESET_COLOR="${GIT_RADAR_COLOR_ZSH_RESET:-$reset_color}"
+}
+
 in_current_dir() {
   local wd="$(pwd)"
   if [[ "$wd" == $cwd ]]; then
@@ -448,11 +457,13 @@ bash_color_remote_commits() {
 }
 
 zsh_color_remote_commits() {
+  prepare_zsh_colors
+
   local remote_master="$(printf '\xF0\x9D\x98\xAE')" # an italic m to represent master
-  local green_ahead_arrow="%{$fg_bold[green]%}←%{$reset_color%}"
-  local red_behind_arrow="%{$fg_bold[red]%}→%{$reset_color%}"
-  local yellow_diverged_arrow="%{$fg_bold[yellow]%}⇄%{$reset_color%}"
-  local not_upstream="%{$fg_bold[red]%}⚡%{$reset_color%}"
+  local green_ahead_arrow="%{$ZSH_COLOR_REMOTE_AHEAD%}←%{$ZSH_RESET_COLOR%}"
+  local red_behind_arrow="%{$ZSH_COLOR_REMOTE_BEHIND%}→%{$ZSH_RESET_COLOR%}"
+  local yellow_diverged_arrow="%{$ZSH_COLOR_REMOTE_DIVERGED%}⇄%{$ZSH_RESET_COLOR%}"
+  local not_upstream="%{$ZSH_COLOR_REMOTE_NOT_UPSTREAM%}⚡%{$ZSH_RESET_COLOR%}"
 
   if remote_branch="$(remote_branch_name)"; then
     remote_ahead="$(remote_ahead_of_master "$remote_branch")"
