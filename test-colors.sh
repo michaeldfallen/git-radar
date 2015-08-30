@@ -69,7 +69,7 @@ test_no_rcfile_zsh() {
   assertEquals "$RESET_COLOR_CHANGES" "%{$reset_color%}"
 }
 
-set_bash_env_vars() {
+set_env_vars() {
   export GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"
   export GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"
   export GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"
@@ -107,26 +107,6 @@ reset_env_vars() {
   export GIT_RADAR_COLOR_LOCAL_RESET=""
   export GIT_RADAR_COLOR_REMOTE_RESET=""
   export GIT_RADAR_COLOR_CHANGES_RESET=""
-}
-
-set_zsh_env_vars() {
-  export GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"
-  export GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"
-  export GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"
-  export GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM="not-upstream"
-
-  export GIT_RADAR_COLOR_LOCAL_AHEAD="local-ahead"
-  export GIT_RADAR_COLOR_LOCAL_BEHIND="local-behind"
-  export GIT_RADAR_COLOR_LOCAL_DIVERGED="local-diverged"
-
-  export GIT_RADAR_COLOR_CHANGES_STAGED="changes-staged"
-  export GIT_RADAR_COLOR_CHANGES_UNSTAGED="changes-unstaged"
-  export GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"
-  export GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"
-
-  export GIT_RADAR_COLOR_LOCAL_RESET="local-reset"
-  export GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"
-  export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
 }
 
 create_rc_file() {
@@ -212,7 +192,7 @@ test_with_rcfile_zsh() {
 
 test_with_env_vars_bash() {
   reset_env_vars
-  set_bash_env_vars
+  set_env_vars
   prepare_bash_colors
 
   assertEquals "$COLOR_REMOTE_AHEAD" "\x01remote-ahead\x02"
@@ -236,7 +216,7 @@ test_with_env_vars_bash() {
 
 test_with_env_vars_zsh() {
   reset_env_vars
-  set_zsh_env_vars
+  set_env_vars
   mock_zsh_colors
   prepare_zsh_colors
 
@@ -261,7 +241,7 @@ test_with_env_vars_zsh() {
 
 test_bash_colors_local() {
   reset_env_vars
-  set_bash_env_vars
+  set_env_vars
   prepare_bash_colors
 
   cd_to_tmp "remote"
@@ -304,7 +284,7 @@ test_bash_colors_local() {
 
 test_zsh_colors_local() {
   reset_env_vars
-  set_zsh_env_vars
+  set_env_vars
   prepare_zsh_colors
 
   cd_to_tmp "remote"
@@ -344,7 +324,7 @@ test_zsh_colors_local() {
 
 test_bash_colors_remote() {
   reset_env_vars
-  set_bash_env_vars
+  set_env_vars
   prepare_bash_colors
 
   cd_to_tmp "remote"
@@ -393,7 +373,7 @@ test_bash_colors_remote() {
 
 test_zsh_colors_remote() {
   reset_env_vars
-  set_zsh_env_vars
+  set_env_vars
   prepare_zsh_colors
 
   cd_to_tmp "remote"
@@ -439,7 +419,7 @@ test_zsh_colors_remote() {
 
 test_bash_colors_changes() {
   reset_env_vars
-  set_bash_env_vars
+  set_env_vars
   prepare_bash_colors
 
   cd_to_tmp
@@ -460,7 +440,7 @@ test_bash_colors_changes() {
 
 test_zsh_colors_changes() {
   reset_env_vars
-  set_zsh_env_vars
+  set_env_vars
   prepare_zsh_colors
 
   cd_to_tmp
