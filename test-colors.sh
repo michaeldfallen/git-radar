@@ -84,9 +84,13 @@ set_env_vars() {
   export GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"
   export GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"
 
+  export GIT_RADAR_COLOR_BRANCH="branch-color"
+  export GIT_RADAR_MASTER_SYMBOL="m"
+
   export GIT_RADAR_COLOR_LOCAL_RESET="local-reset"
   export GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"
   export GIT_RADAR_COLOR_CHANGES_RESET="change-reset"
+  export GIT_RADAR_COLOR_BRANCH_RESET="branch-reset"
 }
 
 reset_env_vars() {
@@ -104,9 +108,13 @@ reset_env_vars() {
   export GIT_RADAR_COLOR_CHANGES_CONFLICTED=""
   export GIT_RADAR_COLOR_CHANGES_UNTRACKED=""
 
+  export GIT_RADAR_COLOR_BRANCH=""
+  export GIT_RADAR_MASTER_SYMBOL=""
+
   export GIT_RADAR_COLOR_LOCAL_RESET=""
   export GIT_RADAR_COLOR_REMOTE_RESET=""
   export GIT_RADAR_COLOR_CHANGES_RESET=""
+  export GIT_RADAR_COLOR_BRANCH_RESET=""
 }
 
 create_rc_file() {
@@ -124,9 +132,13 @@ create_rc_file() {
   echo 'GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"' >> .gitradarrc
   echo 'GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"' >> .gitradarrc
 
+  echo 'export GIT_RADAR_COLOR_BRANCH="branch-color"' >> .gitradarrc
+  echo 'export GIT_RADAR_MASTER_SYMBOL="m"' >> .gitradarrc
+
   echo 'GIT_RADAR_COLOR_LOCAL_RESET="local-reset"' >> .gitradarrc
   echo 'GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"' >> .gitradarrc
   echo 'GIT_RADAR_COLOR_CHANGES_RESET="change-reset"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_BRANCH_RESET="branch-reset"' >> .gitradarrc
 }
 
 test_with_rcfile_bash() {
@@ -152,9 +164,13 @@ test_with_rcfile_bash() {
   assertEquals "$COLOR_CHANGES_CONFLICTED" "\x01changes-conflicted\x02"
   assertEquals "$COLOR_CHANGES_UNTRACKED" "\x01changes-untracked\x02"
 
+  assertEquals "$COLOR_BRANCH" "\x01branch-color\x02"
+  assertEquals "$MASTER_SYMBOL" "m"
+
   assertEquals "$RESET_COLOR_LOCAL" "\x01local-reset\x02"
   assertEquals "$RESET_COLOR_REMOTE" "\x01remote-reset\x02"
   assertEquals "$RESET_COLOR_CHANGES" "\x01change-reset\x02"
+  assertEquals "$RESET_COLOR_BRANCH" "\x01branch-reset\x02"
 
   rm_tmp
 }
@@ -183,9 +199,13 @@ test_with_rcfile_zsh() {
   assertEquals "$COLOR_CHANGES_CONFLICTED" "%{changes-conflicted%}"
   assertEquals "$COLOR_CHANGES_UNTRACKED" "%{changes-untracked%}"
 
+  assertEquals "$COLOR_BRANCH" "%{branch-color%}"
+  assertEquals "$MASTER_SYMBOL" "m"
+
   assertEquals "$RESET_COLOR_LOCAL" "%{local-reset%}"
   assertEquals "$RESET_COLOR_REMOTE" "%{remote-reset%}"
   assertEquals "$RESET_COLOR_CHANGES" "%{change-reset%}"
+  assertEquals "$RESET_COLOR_BRANCH" "%{branch-reset%}"
 
   rm_tmp
 }
@@ -209,9 +229,13 @@ test_with_env_vars_bash() {
   assertEquals "$COLOR_CHANGES_CONFLICTED" "\x01changes-conflicted\x02"
   assertEquals "$COLOR_CHANGES_UNTRACKED" "\x01changes-untracked\x02"
 
+  assertEquals "$COLOR_BRANCH" "\x01branch-color\x02"
+  assertEquals "$MASTER_SYMBOL" "m"
+
   assertEquals "$RESET_COLOR_LOCAL" "\x01local-reset\x02"
   assertEquals "$RESET_COLOR_REMOTE" "\x01remote-reset\x02"
   assertEquals "$RESET_COLOR_CHANGES" "\x01change-reset\x02"
+  assertEquals "$RESET_COLOR_BRANCH" "\x01branch-reset\x02"
 }
 
 test_with_env_vars_zsh() {
@@ -234,9 +258,13 @@ test_with_env_vars_zsh() {
   assertEquals "$COLOR_CHANGES_CONFLICTED" "%{changes-conflicted%}"
   assertEquals "$COLOR_CHANGES_UNTRACKED" "%{changes-untracked%}"
 
+  assertEquals "$COLOR_BRANCH" "%{branch-color%}"
+  assertEquals "$MASTER_SYMBOL" "m"
+
   assertEquals "$RESET_COLOR_LOCAL" "%{local-reset%}"
   assertEquals "$RESET_COLOR_REMOTE" "%{remote-reset%}"
   assertEquals "$RESET_COLOR_CHANGES" "%{change-reset%}"
+  assertEquals "$RESET_COLOR_BRANCH" "%{branch-reset%}"
 }
 
 test_bash_colors_local() {
@@ -349,9 +377,7 @@ test_bash_colors_remote() {
   git checkout -b mybranch --quiet
   git push --quiet -u origin mybranch >/dev/null
 
-  printf -v m '\xF0\x9D\x98\xAE'
-
-  printf -v expected "$m 1 \x01remote-behind\x02→\x01remote-reset\x02 "
+  printf -v expected "m 1 \x01remote-behind\x02→\x01remote-reset\x02 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
 
   echo "bar" > bar
@@ -359,13 +385,13 @@ test_bash_colors_remote() {
   git commit -m "new commit" --quiet
   git push --quiet >/dev/null
 
-  printf -v expected "$m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1 "
+  printf -v expected "m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
 
   git pull origin master --quiet >/dev/null
   git push --quiet >/dev/null
 
-  printf -v expected "$m \x01remote-ahead\x02←\x01remote-reset\x02 2 "
+  printf -v expected "m \x01remote-ahead\x02←\x01remote-reset\x02 2 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
 
   rm_tmp
@@ -398,21 +424,19 @@ test_zsh_colors_remote() {
   git checkout -b mybranch --quiet
   git push --quiet -u origin mybranch >/dev/null
 
-  printf -v m '\xF0\x9D\x98\xAE'
-
-  assertEquals "$m 1 %{remote-behind%}→%{remote-reset%} " "$(zsh_color_remote_commits)"
+  assertEquals "m 1 %{remote-behind%}→%{remote-reset%} " "$(zsh_color_remote_commits)"
 
   echo "bar" > bar
   git add .
   git commit -m "new commit" --quiet
   git push --quiet >/dev/null
 
-  assertEquals "$m 1 %{remote-diverged%}⇄%{remote-reset%} 1 " "$(zsh_color_remote_commits)"
+  assertEquals "m 1 %{remote-diverged%}⇄%{remote-reset%} 1 " "$(zsh_color_remote_commits)"
 
   git pull origin master --quiet >/dev/null
   git push --quiet >/dev/null
 
-  assertEquals "$m %{remote-ahead%}←%{remote-reset%} 2 " "$(zsh_color_remote_commits)"
+  assertEquals "m %{remote-ahead%}←%{remote-reset%} 2 " "$(zsh_color_remote_commits)"
 
   rm_tmp
 }

@@ -24,9 +24,13 @@ prepare_bash_colors() {
   COLOR_CHANGES_CONFLICTED="\x01${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-"\\033[1;33m"}\x02"
   COLOR_CHANGES_UNTRACKED="\x01${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-"\\033[1;37m"}\x02"
 
+  COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH:-"\\033[0m"}\x02"
+  MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"\\x01\\033[0m\\x02\\xF0\\x9D\\x98\\xAE\\x01\\033[0m\\x02"}"
+
   RESET_COLOR_LOCAL="\x01${GIT_RADAR_COLOR_LOCAL_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_REMOTE="\x01${GIT_RADAR_COLOR_REMOTE_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_CHANGES="\x01${GIT_RADAR_COLOR_CHANGES_RESET:-"\\033[0m"}\x02"
+  RESET_COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH_RESET:-"\\033[0m"}\x02"
 }
 
 prepare_zsh_colors() {
@@ -48,9 +52,15 @@ prepare_zsh_colors() {
   COLOR_CHANGES_CONFLICTED="%{${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-$fg_bold[yellow]}%}"
   COLOR_CHANGES_UNTRACKED="%{${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}%}"
 
+  local italic_m="$(printf '\xF0\x9D\x98\xAE')"
+
+  COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH:-$reset_color}%}"
+  MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"%{$reset_color%}$italic_m%{$reset_color%}"}"
+
   RESET_COLOR_LOCAL="%{${GIT_RADAR_COLOR_LOCAL_RESET:-$reset_color}%}"
   RESET_COLOR_REMOTE="%{${GIT_RADAR_COLOR_REMOTE_RESET:-$reset_color}%}"
   RESET_COLOR_CHANGES="%{${GIT_RADAR_COLOR_CHANGES_RESET:-$reset_color}%}"
+  RESET_COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH_RESET:-$reset_color}%}"
 }
 
 in_current_dir() {
@@ -168,7 +178,7 @@ branch_ref() {
 
 readable_branch_name() {
   if is_repo; then
-    printf '%s' "$(branch_name || printf '%s' "detached@$(commit_short_sha)")"
+    printf '%s' "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
   fi
 }
 
@@ -460,7 +470,6 @@ zsh_color_local_commits() {
 }
 
 bash_color_remote_commits() {
-  local remote_master="\xF0\x9D\x98\xAE" # an italic m to represent master
   local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
   local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
   local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
@@ -471,11 +480,11 @@ bash_color_remote_commits() {
     remote_behind="$(remote_behind_of_master "$remote_branch")"
 
     if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
-      remote="$remote_master $remote_behind $yellow_diverged_arrow $remote_ahead "
+      remote="$MASTER_SYMBOL $remote_behind $yellow_diverged_arrow $remote_ahead "
     elif [[ "$remote_ahead" -gt "0" ]]; then
-      remote="$remote_master $green_ahead_arrow $remote_ahead "
+      remote="$MASTER_SYMBOL $green_ahead_arrow $remote_ahead "
     elif [[ "$remote_behind" -gt "0" ]]; then
-      remote="$remote_master $remote_behind $red_behind_arrow "
+      remote="$MASTER_SYMBOL $remote_behind $red_behind_arrow "
     fi
   else
     remote="upstream $not_upstream "
@@ -485,7 +494,6 @@ bash_color_remote_commits() {
 }
 
 zsh_color_remote_commits() {
-  local remote_master="$(printf '\xF0\x9D\x98\xAE')" # an italic m to represent master
   local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
   local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
   local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
@@ -496,11 +504,11 @@ zsh_color_remote_commits() {
     remote_behind="$(remote_behind_of_master "$remote_branch")"
 
     if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
-      remote="$remote_master $remote_behind $yellow_diverged_arrow $remote_ahead "
+      remote="$MASTER_SYMBOL $remote_behind $yellow_diverged_arrow $remote_ahead "
     elif [[ "$remote_ahead" -gt "0" ]]; then
-      remote="$remote_master $green_ahead_arrow $remote_ahead "
+      remote="$MASTER_SYMBOL $green_ahead_arrow $remote_ahead "
     elif [[ "$remote_behind" -gt "0" ]]; then
-      remote="$remote_master $remote_behind $red_behind_arrow "
+      remote="$MASTER_SYMBOL $remote_behind $red_behind_arrow "
     fi
   else
     remote="upstream $not_upstream "
