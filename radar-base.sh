@@ -6,7 +6,9 @@ remote=""
 rcfile_path="$HOME"
 
 prepare_bash_colors() {
-  if [ -f "$rcfile_path/.gitradarrc" ]; then
+  if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
+    source "$rcfile_path/.gitradarrc.bash"
+  elif [ -f "$rcfile_path/.gitradarrc" ]; then
     source "$rcfile_path/.gitradarrc"
   fi
 
@@ -34,7 +36,9 @@ prepare_bash_colors() {
 }
 
 prepare_zsh_colors() {
-  if [ -f "$rcfile_path/.gitradarrc" ]; then
+  if [ -f "$rcfile_path/.gitradarrc.zsh" ]; then
+    source "$rcfile_path/.gitradarrc.zsh"
+  elif [ -f "$rcfile_path/.gitradarrc" ]; then
     source "$rcfile_path/.gitradarrc"
   fi
 

@@ -118,27 +118,27 @@ reset_env_vars() {
 }
 
 create_rc_file() {
-  echo 'GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM="not-upstream"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_REMOTE_AHEAD="remote-ahead"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_REMOTE_BEHIND="remote-behind"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_REMOTE_DIVERGED="remote-diverged"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_REMOTE_NOT_UPSTREAM="not-upstream"' >> .gitradarrc$1
 
-  echo 'GIT_RADAR_COLOR_LOCAL_AHEAD="local-ahead"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_LOCAL_BEHIND="local-behind"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_LOCAL_DIVERGED="local-diverged"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_LOCAL_AHEAD="local-ahead"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_LOCAL_BEHIND="local-behind"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_LOCAL_DIVERGED="local-diverged"' >> .gitradarrc$1
 
-  echo 'GIT_RADAR_COLOR_CHANGES_STAGED="changes-staged"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_CHANGES_UNSTAGED="changes-unstaged"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_CHANGES_STAGED="changes-staged"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_CHANGES_UNSTAGED="changes-unstaged"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_CHANGES_CONFLICTED="changes-conflicted"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_CHANGES_UNTRACKED="changes-untracked"' >> .gitradarrc$1
 
-  echo 'export GIT_RADAR_COLOR_BRANCH="branch-color"' >> .gitradarrc
-  echo 'export GIT_RADAR_MASTER_SYMBOL="m"' >> .gitradarrc
+  echo 'export GIT_RADAR_COLOR_BRANCH="branch-color"' >> .gitradarrc$1
+  echo 'export GIT_RADAR_MASTER_SYMBOL="m"' >> .gitradarrc$1
 
-  echo 'GIT_RADAR_COLOR_LOCAL_RESET="local-reset"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_CHANGES_RESET="change-reset"' >> .gitradarrc
-  echo 'GIT_RADAR_COLOR_BRANCH_RESET="branch-reset"' >> .gitradarrc
+  echo 'GIT_RADAR_COLOR_LOCAL_RESET="local-reset"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_REMOTE_RESET="remote-reset"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_CHANGES_RESET="change-reset"' >> .gitradarrc$1
+  echo 'GIT_RADAR_COLOR_BRANCH_RESET="branch-reset"' >> .gitradarrc$1
 }
 
 test_with_rcfile_bash() {
@@ -147,7 +147,7 @@ test_with_rcfile_bash() {
 
   rcfile_path="$(pwd)"
 
-  create_rc_file
+  create_rc_file ".bash"
   prepare_bash_colors
 
   assertEquals "$COLOR_REMOTE_AHEAD" "\x01remote-ahead\x02"
@@ -181,7 +181,7 @@ test_with_rcfile_zsh() {
 
   rcfile_path="$(pwd)"
 
-  create_rc_file
+  create_rc_file ".zsh"
   mock_zsh_colors
   prepare_zsh_colors
 
