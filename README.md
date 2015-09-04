@@ -23,10 +23,17 @@ last few years. Maybe it can help you too.
 
 ## Installation
 
-Install from brew:
+### Install from brew:
 
 ```
 > brew install michaeldfallen/formula/git-radar
+```
+
+### Manually:
+
+```
+> cd ~ && git clone https://github.com/michaeldfallen/git-radar .git-radar
+> echo 'export PATH=$PATH:$HOME/.git-radar' >> ~/.bashrc
 ```
 
 Then run `git-radar` to see the docs and prove it's installed.
