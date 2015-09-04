@@ -6,6 +6,8 @@ source "$dot/radar-base.sh"
 
 if is_repo; then
   autoload colors && colors
+
+  prepare_zsh_colors
   printf '%s' "%{$fg_bold[black]%} git:(%{$reset_color%}"
   if show_remote_status $args; then
     zsh_color_remote_commits
