@@ -19,6 +19,16 @@ last few years. Maybe it can help you too.
   - [(Optional) Auto-fetch repos](#optional-auto-fetch-repos)
 - [Support](#support)
   - [Ensuring prompt execution](#ensuring-prompt-execution)
+  - [Configuring colours](#configuring-colours)
+    - [Exporting Environment Variables](#exporting-environment-variables)
+    - [Setting an RC file](#setting-an-rc-file)
+    - [Bash Colour Codes](#bash-colour-codes)
+    - [Zsh Colour Codes](#zsh-colour-codes)
+    - [Configuration values](#configuration-values)
+      - [Colouring the Branch part](#colouring-the-branch-part)
+      - [Colouring the local commits status](#colouring-the-local-commits-status)
+      - [Colouring the remote commits status](#colouring-the-remote-commits-status)
+      - [Colouring the file changes status](#colouring-the-file-changes-status)
 - [License](#license)
 
 ## Installation
@@ -319,6 +329,8 @@ All these values should be set using a the correct colour code for your
 terminal. You should also choose the colour code based on what shell you are
 using. There is a way to support [colouring multiple shells using rc files](#setting-an-rc-file).
 
+##### Colouring the Branch part
+
 **GIT_RADAR_COLOR_BRANCH='[colour code]'**
 ```
 git:(my-branch)
@@ -329,6 +341,8 @@ The colour to use for the Branch or git reference.
 It is unset by
 `GIT_RADAR_COLOR_BRANCH_RESET` which you can set if you want a different
 background colour to return to.
+
+##### Colouring the local commits status
 
 **GIT_RADAR_COLOR_LOCAL_AHEAD='[colour code]'**
 ```
@@ -361,6 +375,8 @@ The colour to use for the arrow that indicates how many commits your branch has 
 
 It is unset by `GIT_RADAR_COLOR_LOCAL_RESET` which you can set if you want
 a different background colour to return to.
+
+##### Colouring the remote commits status
 
 **GIT_RADAR_COLOR_REMOTE_AHEAD='[colour code]'**
 ```
@@ -404,6 +420,8 @@ tracking an upstream branch.
 
 It is unset by `GIT_RADAR_COLOR_REMOTE_RESET` which you can set if you want
 a different background colour to return to.
+
+##### Colouring the file changes status
 
 **GIT_RADAR_COLOR_CHANGES_STAGED='[colour code]'**
 ```
