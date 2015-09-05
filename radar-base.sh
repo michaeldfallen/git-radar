@@ -180,7 +180,13 @@ branch_ref() {
   fi
 }
 
-readable_branch_name() {
+zsh_readable_branch_name() {
+  if is_repo; then
+    printf '%s' "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
+  fi
+}
+
+bash_readable_branch_name() {
   if is_repo; then
     printf "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
   fi
