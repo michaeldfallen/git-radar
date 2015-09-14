@@ -65,6 +65,8 @@ prepare_zsh_colors() {
   COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH:-$reset_color}%}"
   MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"%{$reset_color%}$italic_m%{$reset_color%}"}"
 
+  PROMPT_FORMAT="${GIT_RADAR_FORMAT:-""}"
+
   RESET_COLOR_LOCAL="%{${GIT_RADAR_COLOR_LOCAL_RESET:-$reset_color}%}"
   RESET_COLOR_REMOTE="%{${GIT_RADAR_COLOR_REMOTE_RESET:-$reset_color}%}"
   RESET_COLOR_CHANGES="%{${GIT_RADAR_COLOR_CHANGES_RESET:-$reset_color}%}"
@@ -483,4 +485,19 @@ show_remote_status() {
     return 1 # don't show the git remote status
   fi
   return 0
+}
+
+render_prompt() {
+  if [[ $PROMPT_FORMAT =~ ^.*%{remote}.*$ ]]; then
+    zsh_color_remote_commits
+  fi
+  if [[ $PROMPT_FORMAT =~ ^.*%{branch}.*$ ]]; then
+    zsh_readable_branch_name
+  fi
+  if [[ $PROMPT_FORMAT =~ ^.*%{local}.*$ ]]; then
+    zsh_color_local_commits
+  fi
+  if [[ $PROMPT_FORMAT =~ ^.*%{changes}.*$ ]]; then
+    zsh_color_changes_status
+  fi
 }
