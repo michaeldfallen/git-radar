@@ -108,4 +108,31 @@ test_all_options_set_config() {
   rm_tmp
 }
 
+test_reorder_parts() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{branch}%{local}%{changes}%{remote}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "foo 1↑ 1Am 1 → " "$prompt"
+
+  export GIT_RADAR_FORMAT="%{local}%{changes}%{remote}%{branch}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals " 1↑ 1Am 1 → foo" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{changes}%{remote}%{branch}%{local}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals " 1Am 1 → foo 1↑" "$prompt"
+
+  rm_tmp
+}
+
 . ./shunit/shunit2

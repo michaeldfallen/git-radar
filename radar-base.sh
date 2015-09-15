@@ -488,16 +488,27 @@ show_remote_status() {
 }
 
 render_prompt() {
-  if [[ $PROMPT_FORMAT =~ ^.*%{remote}.*$ ]]; then
-    zsh_color_remote_commits
+  output="$PROMPT_FORMAT"
+  branch_sed=""
+  remote_sed=""
+  local_sed=""
+  changes_sed=""
+  if [[ $output =~ ^.*%{remote}.*$ ]]; then
+    remote_sed="s/%{remote}/$(zsh_color_remote_commits)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{branch}.*$ ]]; then
-    zsh_readable_branch_name
+    branch_sed="s/%{branch}/$(zsh_readable_branch_name)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{local}.*$ ]]; then
-    zsh_color_local_commits
+    local_sed="s/%{local}/$(zsh_color_local_commits)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{changes}.*$ ]]; then
-    zsh_color_changes_status
+    changes_sed="s/%{changes}/$(zsh_color_changes_status)/"
   fi
+
+  sed \
+    -e "$remote_sed" \
+    -e "$branch_sed" \
+    -e "$changes_sed" \
+    -e "$local_sed" <<<"$output"
 }
