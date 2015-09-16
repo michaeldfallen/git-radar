@@ -184,18 +184,6 @@ branch_ref() {
   fi
 }
 
-zsh_readable_branch_name() {
-  if is_repo; then
-    printf '%s' "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
-  fi
-}
-
-bash_readable_branch_name() {
-  if is_repo; then
-    printf "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
-  fi
-}
-
 remote_branch_name() {
   local localRef="\/$(branch_name)$"
   if [[ -n "$localRef" ]]; then
@@ -474,6 +462,20 @@ bash_color_remote_commits() {
 
 zsh_color_remote_commits() {
   color_remote_commits
+}
+
+readable_branch_name() {
+  if is_repo; then
+    printf $PRINT_F_OPTION "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
+  fi
+}
+
+zsh_readable_branch_name() {
+  readable_branch_name
+}
+
+bash_readable_branch_name() {
+  readable_branch_name
 }
 
 show_remote_status() {
