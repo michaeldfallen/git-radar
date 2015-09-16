@@ -373,7 +373,7 @@ untracked_status() {
   printf '%s' "$untracked_string"
 }
 
-bash_color_changes_status() {
+color_changes_status() {
   local separator="${1:- }"
 
   local porcelain="$(porcelain_status)"
@@ -405,36 +405,12 @@ bash_color_changes_status() {
   printf $PRINT_F_OPTION "$changes"
 }
 
+bash_color_changes_status() {
+  color_changes_status
+}
+
 zsh_color_changes_status() {
-  local separator="${1:- }"
-
-  local porcelain="$(porcelain_status)"
-  local changes=""
-
-  if [[ -n "$porcelain" ]]; then
-    local staged_changes="$(staged_status "$porcelain" "$COLOR_CHANGES_STAGED" "$RESET_COLOR_CHANGES")"
-    local unstaged_changes="$(unstaged_status "$porcelain" "$COLOR_CHANGES_UNSTAGED" "$RESET_COLOR_CHANGES")"
-    local untracked_changes="$(untracked_status "$porcelain" "$COLOR_CHANGES_UNTRACKED" "$RESET_COLOR_CHANGES")"
-    local conflicted_changes="$(conflicted_status "$porcelain" "$COLOR_CHANGES_CONFLICTED" "$RESET_COLOR_CHANGES")"
-    if [[ -n "$staged_changes" ]]; then
-      staged_changes="$separator$staged_changes"
-    fi
-
-    if [[ -n "$unstaged_changes" ]]; then
-      unstaged_changes="$separator$unstaged_changes"
-    fi
-
-    if [[ -n "$conflicted_changes" ]]; then
-      conflicted_changes="$separator$conflicted_changes"
-    fi
-
-    if [[ -n "$untracked_changes" ]]; then
-      untracked_changes="$separator$untracked_changes"
-    fi
-
-    changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
-  fi
-  printf $PRINT_F_OPTION "$changes"
+  color_changes_status
 }
 
 color_local_commits() {
