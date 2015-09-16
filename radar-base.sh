@@ -483,7 +483,7 @@ zsh_color_local_commits() {
   printf $PRINT_F_OPTION "$local_commits"
 }
 
-bash_color_remote_commits() {
+color_remote_commits() {
   local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
   local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
   local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
@@ -505,31 +505,16 @@ bash_color_remote_commits() {
   fi
 
   printf $PRINT_F_OPTION "$remote"
+}
+
+bash_color_remote_commits() {
+  color_remote_commits
 }
 
 zsh_color_remote_commits() {
-  local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
-  local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
-  local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
-  local not_upstream="${COLOR_REMOTE_NOT_UPSTREAM}⚡$RESET_COLOR_REMOTE"
-
-  if remote_branch="$(remote_branch_name)"; then
-    remote_ahead="$(remote_ahead_of_master "$remote_branch")"
-    remote_behind="$(remote_behind_of_master "$remote_branch")"
-
-    if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $remote_behind $yellow_diverged_arrow $remote_ahead "
-    elif [[ "$remote_ahead" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $green_ahead_arrow $remote_ahead "
-    elif [[ "$remote_behind" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $remote_behind $red_behind_arrow "
-    fi
-  else
-    remote="upstream $not_upstream "
-  fi
-
-  printf $PRINT_F_OPTION "$remote"
+  color_remote_commits
 }
+
 show_remote_status() {
   if [[ $@ == *$NO_REMOTE_STATUS* ]]; then
     return 1 # don't show the git remote status
