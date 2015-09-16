@@ -12,6 +12,8 @@ prepare_bash_colors() {
     source "$rcfile_path/.gitradarrc"
   fi
 
+  PRINT_F_OPTION=""
+
   COLOR_REMOTE_AHEAD="\x01${GIT_RADAR_COLOR_REMOTE_AHEAD:-"\\033[1;32m"}\x02"
   COLOR_REMOTE_BEHIND="\x01${GIT_RADAR_COLOR_REMOTE_BEHIND:-"\\033[1;31m"}\x02"
   COLOR_REMOTE_DIVERGED="\x01${GIT_RADAR_COLOR_REMOTE_DIVERGED:-"\\033[1;33m"}\x02"
@@ -41,6 +43,8 @@ prepare_zsh_colors() {
   elif [ -f "$rcfile_path/.gitradarrc" ]; then
     source "$rcfile_path/.gitradarrc"
   fi
+
+  PRINT_F_OPTION="%s"
 
   COLOR_REMOTE_AHEAD="%{${GIT_RADAR_COLOR_REMOTE_AHEAD:-$fg_bold[green]}%}"
   COLOR_REMOTE_BEHIND="%{${GIT_RADAR_COLOR_REMOTE_BEHIND:-$fg_bold[red]}%}"
@@ -398,7 +402,7 @@ bash_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  printf "$changes"
+  printf $PRINT_F_OPTION "$changes"
 }
 
 zsh_color_changes_status() {
@@ -430,7 +434,7 @@ zsh_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  printf %s "$changes"
+  printf $PRINT_F_OPTION "$changes"
 }
 
 bash_color_local_commits() {
@@ -453,7 +457,7 @@ bash_color_local_commits() {
       local_commits="$separator$local_ahead$green_ahead_arrow"
     fi
   fi
-  printf "$local_commits"
+  printf $PRINT_F_OPTION "$local_commits"
 }
 
 zsh_color_local_commits() {
@@ -476,7 +480,7 @@ zsh_color_local_commits() {
       local_commits="$separator$local_ahead$ahead_arrow"
     fi
   fi
-  printf %s "$local_commits"
+  printf $PRINT_F_OPTION "$local_commits"
 }
 
 bash_color_remote_commits() {
@@ -500,7 +504,7 @@ bash_color_remote_commits() {
     remote="upstream $not_upstream "
   fi
 
-  printf "$remote"
+  printf $PRINT_F_OPTION "$remote"
 }
 
 zsh_color_remote_commits() {
@@ -524,7 +528,7 @@ zsh_color_remote_commits() {
     remote="upstream $not_upstream "
   fi
 
-  printf %s "$remote"
+  printf $PRINT_F_OPTION "$remote"
 }
 show_remote_status() {
   if [[ $@ == *$NO_REMOTE_STATUS* ]]; then
