@@ -437,7 +437,7 @@ zsh_color_changes_status() {
   printf $PRINT_F_OPTION "$changes"
 }
 
-bash_color_local_commits() {
+color_local_commits() {
   local separator="${1:- }"
 
   local green_ahead_arrow="${COLOR_LOCAL_AHEAD}↑$RESET_COLOR_LOCAL"
@@ -460,27 +460,12 @@ bash_color_local_commits() {
   printf $PRINT_F_OPTION "$local_commits"
 }
 
+bash_color_local_commits() {
+  color_local_commits
+}
+
 zsh_color_local_commits() {
-  local separator="${1:- }"
-
-  local ahead_arrow="${COLOR_LOCAL_AHEAD}↑$RESET_COLOR_LOCAL"
-  local behind_arrow="${COLOR_LOCAL_BEHIND}↓$RESET_COLOR_LOCAL"
-  local diverged_arrow="${COLOR_LOCAL_DIVERGED}⇵$RESET_COLOR_LOCAL"
-
-  local local_commits=""
-  if remote_branch="$(remote_branch_name)"; then
-    local_ahead="$(commits_ahead_of_remote "$remote_branch")"
-    local_behind="$(commits_behind_of_remote "$remote_branch")"
-
-    if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
-      local_commits="$separator$local_behind$diverged_arrow$local_ahead"
-    elif [[ "$local_behind" -gt "0" ]]; then
-      local_commits="$separator$local_behind$behind_arrow"
-    elif [[ "$local_ahead" -gt "0" ]]; then
-      local_commits="$separator$local_ahead$ahead_arrow"
-    fi
-  fi
-  printf $PRINT_F_OPTION "$local_commits"
+  color_local_commits
 }
 
 color_remote_commits() {
