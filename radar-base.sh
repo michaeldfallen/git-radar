@@ -494,16 +494,16 @@ render_prompt() {
   local_sed=""
   changes_sed=""
   if [[ $output =~ ^.*%{remote}.*$ ]]; then
-    remote_sed="s/%{remote}/$(zsh_color_remote_commits)/"
+    remote_sed="s/%{remote}/$(color_remote_commits)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{branch}.*$ ]]; then
-    branch_sed="s/%{branch}/$(zsh_readable_branch_name)/"
+    branch_sed="s/%{branch}/$(readable_branch_name)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{local}.*$ ]]; then
-    local_sed="s/%{local}/$(zsh_color_local_commits)/"
+    local_sed="s/%{local}/$(color_local_commits)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{changes}.*$ ]]; then
-    changes_sed="s/%{changes}/$(zsh_color_changes_status)/"
+    changes_sed="s/%{changes}/$(color_changes_status)/"
   fi
 
   sed \
