@@ -54,7 +54,8 @@ test_detached_from_branch() {
 
   assertNotEquals "master" "$(branch_name)"
   assertEquals "$sha" "$(branch_ref)"
-  assertEquals "detached@$sha" "$(readable_branch_name)"
+  assertEquals "detached@$sha" "$(zsh_readable_branch_name)"
+  assertEquals "detached@$sha" "$(bash_readable_branch_name)"
 
   rm_tmp
 }
