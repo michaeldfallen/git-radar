@@ -12,6 +12,8 @@ prepare_bash_colors() {
     source "$rcfile_path/.gitradarrc"
   fi
 
+  PRINT_F_OPTION=""
+
   COLOR_REMOTE_AHEAD="\x01${GIT_RADAR_COLOR_REMOTE_AHEAD:-"\\033[1;32m"}\x02"
   COLOR_REMOTE_BEHIND="\x01${GIT_RADAR_COLOR_REMOTE_BEHIND:-"\\033[1;31m"}\x02"
   COLOR_REMOTE_DIVERGED="\x01${GIT_RADAR_COLOR_REMOTE_DIVERGED:-"\\033[1;33m"}\x02"
@@ -41,6 +43,8 @@ prepare_zsh_colors() {
   elif [ -f "$rcfile_path/.gitradarrc" ]; then
     source "$rcfile_path/.gitradarrc"
   fi
+
+  PRINT_F_OPTION="%s"
 
   COLOR_REMOTE_AHEAD="%{${GIT_RADAR_COLOR_REMOTE_AHEAD:-$fg_bold[green]}%}"
   COLOR_REMOTE_BEHIND="%{${GIT_RADAR_COLOR_REMOTE_BEHIND:-$fg_bold[red]}%}"
@@ -177,18 +181,6 @@ branch_name() {
 branch_ref() {
   if is_repo; then
     printf '%s' "$(branch_name || commit_short_sha)"
-  fi
-}
-
-zsh_readable_branch_name() {
-  if is_repo; then
-    printf '%s' "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
-  fi
-}
-
-bash_readable_branch_name() {
-  if is_repo; then
-    printf "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
   fi
 }
 
@@ -369,7 +361,7 @@ untracked_status() {
   printf '%s' "$untracked_string"
 }
 
-bash_color_changes_status() {
+color_changes_status() {
   local separator="${1:- }"
 
   local porcelain="$(porcelain_status)"
@@ -398,42 +390,18 @@ bash_color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
-  printf "$changes"
+  printf $PRINT_F_OPTION "$changes"
+}
+
+bash_color_changes_status() {
+  color_changes_status
 }
 
 zsh_color_changes_status() {
-  local separator="${1:- }"
-
-  local porcelain="$(porcelain_status)"
-  local changes=""
-
-  if [[ -n "$porcelain" ]]; then
-    local staged_changes="$(staged_status "$porcelain" "$COLOR_CHANGES_STAGED" "$RESET_COLOR_CHANGES")"
-    local unstaged_changes="$(unstaged_status "$porcelain" "$COLOR_CHANGES_UNSTAGED" "$RESET_COLOR_CHANGES")"
-    local untracked_changes="$(untracked_status "$porcelain" "$COLOR_CHANGES_UNTRACKED" "$RESET_COLOR_CHANGES")"
-    local conflicted_changes="$(conflicted_status "$porcelain" "$COLOR_CHANGES_CONFLICTED" "$RESET_COLOR_CHANGES")"
-    if [[ -n "$staged_changes" ]]; then
-      staged_changes="$separator$staged_changes"
-    fi
-
-    if [[ -n "$unstaged_changes" ]]; then
-      unstaged_changes="$separator$unstaged_changes"
-    fi
-
-    if [[ -n "$conflicted_changes" ]]; then
-      conflicted_changes="$separator$conflicted_changes"
-    fi
-
-    if [[ -n "$untracked_changes" ]]; then
-      untracked_changes="$separator$untracked_changes"
-    fi
-
-    changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
-  fi
-  printf %s "$changes"
+  color_changes_status
 }
 
-bash_color_local_commits() {
+color_local_commits() {
   local separator="${1:- }"
 
   local green_ahead_arrow="${COLOR_LOCAL_AHEAD}↑$RESET_COLOR_LOCAL"
@@ -453,79 +421,63 @@ bash_color_local_commits() {
       local_commits="$separator$local_ahead$green_ahead_arrow"
     fi
   fi
-  printf "$local_commits"
+  printf $PRINT_F_OPTION "$local_commits"
+}
+
+bash_color_local_commits() {
+  color_local_commits
 }
 
 zsh_color_local_commits() {
-  local separator="${1:- }"
+  color_local_commits
+}
 
-  local ahead_arrow="${COLOR_LOCAL_AHEAD}↑$RESET_COLOR_LOCAL"
-  local behind_arrow="${COLOR_LOCAL_BEHIND}↓$RESET_COLOR_LOCAL"
-  local diverged_arrow="${COLOR_LOCAL_DIVERGED}⇵$RESET_COLOR_LOCAL"
+color_remote_commits() {
+  local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
+  local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
+  local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
+  local not_upstream="${COLOR_REMOTE_NOT_UPSTREAM}⚡$RESET_COLOR_REMOTE"
 
-  local local_commits=""
   if remote_branch="$(remote_branch_name)"; then
-    local_ahead="$(commits_ahead_of_remote "$remote_branch")"
-    local_behind="$(commits_behind_of_remote "$remote_branch")"
+    remote_ahead="$(remote_ahead_of_master "$remote_branch")"
+    remote_behind="$(remote_behind_of_master "$remote_branch")"
 
-    if [[ "$local_behind" -gt "0" && "$local_ahead" -gt "0" ]]; then
-      local_commits="$separator$local_behind$diverged_arrow$local_ahead"
-    elif [[ "$local_behind" -gt "0" ]]; then
-      local_commits="$separator$local_behind$behind_arrow"
-    elif [[ "$local_ahead" -gt "0" ]]; then
-      local_commits="$separator$local_ahead$ahead_arrow"
+    if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
+      remote="$MASTER_SYMBOL $remote_behind $yellow_diverged_arrow $remote_ahead "
+    elif [[ "$remote_ahead" -gt "0" ]]; then
+      remote="$MASTER_SYMBOL $green_ahead_arrow $remote_ahead "
+    elif [[ "$remote_behind" -gt "0" ]]; then
+      remote="$MASTER_SYMBOL $remote_behind $red_behind_arrow "
     fi
+  else
+    remote="upstream $not_upstream "
   fi
-  printf %s "$local_commits"
+
+  printf $PRINT_F_OPTION "$remote"
 }
 
 bash_color_remote_commits() {
-  local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
-  local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
-  local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
-  local not_upstream="${COLOR_REMOTE_NOT_UPSTREAM}⚡$RESET_COLOR_REMOTE"
-
-  if remote_branch="$(remote_branch_name)"; then
-    remote_ahead="$(remote_ahead_of_master "$remote_branch")"
-    remote_behind="$(remote_behind_of_master "$remote_branch")"
-
-    if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $remote_behind $yellow_diverged_arrow $remote_ahead "
-    elif [[ "$remote_ahead" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $green_ahead_arrow $remote_ahead "
-    elif [[ "$remote_behind" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $remote_behind $red_behind_arrow "
-    fi
-  else
-    remote="upstream $not_upstream "
-  fi
-
-  printf "$remote"
+  color_remote_commits
 }
 
 zsh_color_remote_commits() {
-  local green_ahead_arrow="${COLOR_REMOTE_AHEAD}←$RESET_COLOR_REMOTE"
-  local red_behind_arrow="${COLOR_REMOTE_BEHIND}→$RESET_COLOR_REMOTE"
-  local yellow_diverged_arrow="${COLOR_REMOTE_DIVERGED}⇄$RESET_COLOR_REMOTE"
-  local not_upstream="${COLOR_REMOTE_NOT_UPSTREAM}⚡$RESET_COLOR_REMOTE"
-
-  if remote_branch="$(remote_branch_name)"; then
-    remote_ahead="$(remote_ahead_of_master "$remote_branch")"
-    remote_behind="$(remote_behind_of_master "$remote_branch")"
-
-    if [[ "$remote_behind" -gt "0" && "$remote_ahead" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $remote_behind $yellow_diverged_arrow $remote_ahead "
-    elif [[ "$remote_ahead" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $green_ahead_arrow $remote_ahead "
-    elif [[ "$remote_behind" -gt "0" ]]; then
-      remote="$MASTER_SYMBOL $remote_behind $red_behind_arrow "
-    fi
-  else
-    remote="upstream $not_upstream "
-  fi
-
-  printf %s "$remote"
+  color_remote_commits
 }
+
+readable_branch_name() {
+  if is_repo; then
+    printf $PRINT_F_OPTION "$COLOR_BRANCH$(branch_name || printf '%s' "detached@$(commit_short_sha)")$RESET_COLOR_BRANCH"
+  fi
+}
+
+zsh_readable_branch_name() {
+  readable_branch_name
+}
+
+bash_readable_branch_name() {
+  readable_branch_name
+}
+
 show_remote_status() {
   if [[ $@ == *$NO_REMOTE_STATUS* ]]; then
     return 1 # don't show the git remote status

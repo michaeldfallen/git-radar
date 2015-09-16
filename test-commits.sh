@@ -378,6 +378,7 @@ test_local_commits() {
 
   assertEquals "" "$(zsh_color_local_commits)"
   assertEquals "" "$(bash_color_local_commits)"
+  assertEquals "" "$(color_local_commits)"
 
   git init --quiet
   touch README
@@ -394,6 +395,7 @@ test_local_commits() {
 
   assertEquals "" "$(zsh_color_local_commits)"
   assertEquals "" "$(bash_color_local_commits)"
+  assertEquals "" "$(color_local_commits)"
 
   cd "$repo"
   echo "bar" > bar
@@ -402,6 +404,7 @@ test_local_commits() {
 
   assertEquals " 1$up" "$(zsh_color_local_commits)"
   assertEquals " 1$up" "$(bash_color_local_commits)"
+  assertEquals " 1$up" "$(color_local_commits)"
 
   cd "$remote"
   echo "foo" > foo
@@ -413,11 +416,13 @@ test_local_commits() {
 
   assertEquals " 1${both}1" "$(zsh_color_local_commits)"
   assertEquals " 1${both}1" "$(bash_color_local_commits)"
+  assertEquals " 1${both}1" "$(color_local_commits)"
 
   git reset --hard HEAD^ --quiet
 
   assertEquals " 1$down" "$(zsh_color_local_commits)"
   assertEquals " 1$down" "$(bash_color_local_commits)"
+  assertEquals " 1$down" "$(color_local_commits)"
 }
 
 . ./shunit/shunit2
