@@ -293,12 +293,14 @@ test_bash_colors_local() {
 
   printf -v expected " 1\x01local-ahead\x02↑\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
+  assertEquals "$expected" "$(color_local_commits)"
 
   git push --quiet >/dev/null
   git reset --hard head^ --quiet >/dev/null
 
   printf -v expected " 1\x01local-behind\x02↓\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
+  assertEquals "$expected" "$(color_local_commits)"
 
   echo "foo" > foo
   git add .
@@ -306,6 +308,7 @@ test_bash_colors_local() {
 
   printf -v expected " 1\x01local-diverged\x02⇵\x01local-reset\x021"
   assertEquals "$expected" "$(bash_color_local_commits)"
+  assertEquals "$expected" "$(color_local_commits)"
 
   rm_tmp
 }
@@ -379,6 +382,7 @@ test_bash_colors_remote() {
 
   printf -v expected "m 1 \x01remote-behind\x02→\x01remote-reset\x02 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
+  assertEquals "$expected" "$(color_remote_commits)"
 
   echo "bar" > bar
   git add .
@@ -387,12 +391,14 @@ test_bash_colors_remote() {
 
   printf -v expected "m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
+  assertEquals "$expected" "$(color_remote_commits)"
 
   git pull origin master --quiet >/dev/null
   git push --quiet >/dev/null
 
   printf -v expected "m \x01remote-ahead\x02←\x01remote-reset\x02 2 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
+  assertEquals "$expected" "$(color_remote_commits)"
 
   rm_tmp
 }
@@ -459,6 +465,7 @@ test_bash_colors_changes() {
 
   printf -v expected " $staged $unstaged $untracked"
   assertEquals "$expected" "$(bash_color_changes_status)"
+  assertEquals "$expected" "$(color_changes_status)"
   rm_tmp
 }
 
