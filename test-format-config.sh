@@ -195,4 +195,24 @@ test_prefix_and_suffix_branch() {
   rm_tmp
 }
 
+test_prefix_and_suffix_remote() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{remote}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "m 1 → " "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:remote:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[m 1 → ]" "$prompt"
+
+  rm_tmp
+}
+
 . ./shunit/shunit2

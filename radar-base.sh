@@ -499,8 +499,8 @@ render_prompt() {
   sed_pre="%{\(\([^%^{^}]*\)\:\)\{0,1\}"
   sed_post="\(\:\([^%^{^}]*\)\)\{0,1\}}"
 
-  if [[ $output =~ ^.*%{remote}.*$ ]]; then
-    remote_sed="s/%{remote}/$(color_remote_commits)/"
+  if [[ $output =~ ${if_pre}remote${if_post} ]]; then
+    remote_sed="s/${sed_pre}remote${sed_post}/\2$(color_remote_commits)\4/"
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}branch${if_post} ]]; then
     branch_sed="s/${sed_pre}branch${sed_post}/\2$(readable_branch_name)\4/"
