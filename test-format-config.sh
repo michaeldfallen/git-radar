@@ -68,6 +68,22 @@ prepare_test_repo() {
 }
 
 test_all_options_set_config() {
+  cd_to_tmp "empty"
+  export GIT_RADAR_FORMAT="%{branch}%{local}%{changes}"
+  # Don't test remote as in no repo you will get upstream error message
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "$prompt" ""
+
+  export GIT_RADAR_FORMAT="%{remote}"
+  # Don't test remote as in no repo you will get upstream error message
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "$prompt" "upstream ⚡"
   prepare_test_repo
 
   export GIT_RADAR_FORMAT="%{remote}%{branch}%{local}%{changes}"
