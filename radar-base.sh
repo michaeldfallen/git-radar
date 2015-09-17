@@ -493,17 +493,23 @@ render_prompt() {
   remote_sed=""
   local_sed=""
   changes_sed=""
+
+  if_pre="%{([^%{}]{1,}:){0,1}"
+  if_post="(:[^%{}]{1,}){0,1}}"
+  sed_pre="%{\(\([^%^{^}]*\)\:\)\{0,1\}"
+  sed_post="\(\:\([^%^{^}]*\)\)\{0,1\}}"
+
   if [[ $output =~ ^.*%{remote}.*$ ]]; then
     remote_sed="s/%{remote}/$(color_remote_commits)/"
   fi
   if [[ $PROMPT_FORMAT =~ ^.*%{branch}.*$ ]]; then
     branch_sed="s/%{branch}/$(readable_branch_name)/"
   fi
-  if [[ $PROMPT_FORMAT =~ %{([^%{}]{1,}:){0,1}local(:[^%{}]{1,}){0,1}} ]]; then
-    local_sed="s/%{\(\([^%^{^}]*\)\:\)\{0,1\}local\(\:\([^%^{^}]*\)\)\{0,1\}}/\2$(color_local_commits)\4/"
+  if [[ $PROMPT_FORMAT =~ ${if_pre}local${if_post} ]]; then
+    local_sed="s/${sed_pre}local${sed_post}/\2$(color_local_commits)\4/"
   fi
-  if [[ $PROMPT_FORMAT =~ %{([^%{}]{1,}:){0,1}changes(:[^%{}]{1,}){0,1}} ]]; then
-    changes_sed="s/%{\(\([^%^{^}]*\)\:\)\{0,1\}changes\(\:\([^%^{^}]*\)\)\{0,1\}}/\2$(color_changes_status)\4/"
+  if [[ $PROMPT_FORMAT =~ ${if_pre}changes${if_post} ]]; then
+    changes_sed="s/${sed_pre}changes${sed_post}/\2$(color_changes_status)\4/"
   fi
 
   sed \
