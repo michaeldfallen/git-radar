@@ -135,7 +135,7 @@ test_reorder_parts() {
   rm_tmp
 }
 
-test_prefix_and_suffix() {
+test_prefix_and_suffix_changes() {
   prepare_test_repo
 
   export GIT_RADAR_FORMAT="%{changes}"
@@ -151,6 +151,26 @@ test_prefix_and_suffix() {
 
   prompt="$(render_prompt)"
   assertEquals "[ 1A]" "$prompt"
+
+  rm_tmp
+}
+
+test_prefix_and_suffix_local() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{local}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals " 1↑" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:local:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[ 1↑]" "$prompt"
 
   rm_tmp
 }

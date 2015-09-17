@@ -499,8 +499,8 @@ render_prompt() {
   if [[ $PROMPT_FORMAT =~ ^.*%{branch}.*$ ]]; then
     branch_sed="s/%{branch}/$(readable_branch_name)/"
   fi
-  if [[ $PROMPT_FORMAT =~ ^.*%{local}.*$ ]]; then
-    local_sed="s/%{local}/$(color_local_commits)/"
+  if [[ $PROMPT_FORMAT =~ %{([^%{}]{1,}:){0,1}local(:[^%{}]{1,}){0,1}} ]]; then
+    local_sed="s/%{\(\([^%^{^}]*\)\:\)\{0,1\}local\(\:\([^%^{^}]*\)\)\{0,1\}}/\2$(color_local_commits)\4/"
   fi
   if [[ $PROMPT_FORMAT =~ %{([^%{}]{1,}:){0,1}changes(:[^%{}]{1,}){0,1}} ]]; then
     changes_sed="s/%{\(\([^%^{^}]*\)\:\)\{0,1\}changes\(\:\([^%^{^}]*\)\)\{0,1\}}/\2$(color_changes_status)\4/"
