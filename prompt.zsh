@@ -16,4 +16,5 @@ if is_repo; then
   color_local_commits
   printf '%s' "%{$fg_bold[black]%})%{$reset_color%}"
   color_changes_status
+  stash_status
 fi
