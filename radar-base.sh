@@ -28,6 +28,8 @@ prepare_bash_colors() {
   COLOR_CHANGES_CONFLICTED="\x01${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-"\\033[1;33m"}\x02"
   COLOR_CHANGES_UNTRACKED="\x01${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-"\\033[1;37m"}\x02"
 
+  COLOR_STASH="\x01${GIT_RADAR_COLOR_STASH:-"\\033[1;33m"}\x02"
+
   COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH:-"\\033[0m"}\x02"
   MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"\\x01\\033[0m\\x02\\xF0\\x9D\\x98\\xAE\\x01\\033[0m\\x02"}"
 
@@ -35,6 +37,8 @@ prepare_bash_colors() {
   RESET_COLOR_REMOTE="\x01${GIT_RADAR_COLOR_REMOTE_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_CHANGES="\x01${GIT_RADAR_COLOR_CHANGES_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH_RESET:-"\\033[0m"}\x02"
+  RESET_COLOR_STASH="\x01${GIT_RADAR_COLOR_STASH:-"\\033[0m"}\x02"
+  
 }
 
 prepare_zsh_colors() {
@@ -60,6 +64,8 @@ prepare_zsh_colors() {
   COLOR_CHANGES_CONFLICTED="%{${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-$fg_bold[yellow]}%}"
   COLOR_CHANGES_UNTRACKED="%{${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}%}"
 
+  COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$fg_bold[yellow]}%}"
+  
   local italic_m="$(printf '\xF0\x9D\x98\xAE')"
 
   COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH:-$reset_color}%}"
@@ -69,6 +75,7 @@ prepare_zsh_colors() {
   RESET_COLOR_REMOTE="%{${GIT_RADAR_COLOR_REMOTE_RESET:-$reset_color}%}"
   RESET_COLOR_CHANGES="%{${GIT_RADAR_COLOR_CHANGES_RESET:-$reset_color}%}"
   RESET_COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH_RESET:-$reset_color}%}"
+  RESET_COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$reset_color}%}"
 }
 
 in_current_dir() {
@@ -489,16 +496,9 @@ stashed_status() {
   printf '%s' "$(git stash list | wc -l 2>/dev/null)"
 }
 
-bash_stash_status() {
+stash_status() {
   local number_stashes="$(stashed_status)"
   if [ $number_stashes -gt 0 ]; then
-    printf " $number_stashes\x01\033[1;33m\x02=\x01\033[0m\x02"
-  fi
-}
-
-zsh_stash_status() {
-  local number_stashes="$(stashed_status)"
-  if [ $number_stashes -gt 0 ]; then
-    printf %s " $number_stashes%{$fg_bold[yellow]%}=%{$reset_color%}"
+    printf $PRINT_F_OPTION " $number_stashes$COLOR_STASH≡$RESET_COLOR_STASH"
   fi
 }
