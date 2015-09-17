@@ -500,16 +500,36 @@ render_prompt() {
   sed_post="\(\:\([^%^{^}]*\)\)\{0,1\}}"
 
   if [[ $output =~ ${if_pre}remote${if_post} ]]; then
-    remote_sed="s/${sed_pre}remote${sed_post}/\2$(color_remote_commits)\4/"
+    remote_result="$(color_remote_commits)"
+    if [[ -n "$remote_result" ]]; then
+      remote_sed="s/${sed_pre}remote${sed_post}/\2${remote_result}\4/"
+    else
+      remote_sed="s/${sed_pre}remote${sed_post}//"
+    fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}branch${if_post} ]]; then
-    branch_sed="s/${sed_pre}branch${sed_post}/\2$(readable_branch_name)\4/"
+    branch_result="$(readable_branch_name)"
+    if [[ -n "$branch_result" ]]; then
+      branch_sed="s/${sed_pre}branch${sed_post}/\2${branch_result}\4/"
+    else
+      branch_sed="s/${sed_pre}branch${sed_post}//"
+    fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}local${if_post} ]]; then
-    local_sed="s/${sed_pre}local${sed_post}/\2$(color_local_commits)\4/"
+    local_result="$(color_local_commits)"
+    if [[ -n "$local_result" ]]; then
+      local_sed="s/${sed_pre}local${sed_post}/\2$local_result\4/"
+    else
+      local_sed="s/${sed_pre}local${sed_post}//"
+    fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}changes${if_post} ]]; then
-    changes_sed="s/${sed_pre}changes${sed_post}/\2$(color_changes_status)\4/"
+    changes_result="$(color_changes_status)"
+    if [[ -n "$changes_result" ]]; then
+      changes_sed="s/${sed_pre}changes${sed_post}/\2${changes_result}\4/"
+    else
+      changes_sed="s/${sed_pre}changes${sed_post}//"
+    fi
   fi
 
   printf '%b' "$output" | sed \
