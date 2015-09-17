@@ -148,6 +148,13 @@ Prompt                     | Meaning
 
 If you don't rely on this status, you can always hide this part of the prompt by calling git-radar with `--no-remote-status`.
 
+### Stash status
+The prompt will show you whether and how many stashes you have stored.
+
+Prompt                     | Meaning
+---------------------------|---------------
+![git:(master) 1≡]         | We have one stash
+
 **Bash**
 ```bash
 export PS1="$PS1\$(git-radar --bash --fetch --no-remote-status) "
@@ -465,6 +472,18 @@ The colour to use for the letters that indicate files that are currently not
 tracked by git.
 
 It is unset by `GIT_RADAR_COLOR_CHANGES_RESET` which you can set if you want
+a different background colour to return to.
+
+##### Colouring the stash status
+
+**GIT_RADAR_COLOR_STASH='[colour code]'**
+```
+git:(my-branch) 1≡
+                 ^
+```
+The colour to use for the lines that indicates how many stashes you have stored.
+
+It is unset by `GIT_RADAR_COLOR_STASH_RESET` which you can set if you want
 a different background colour to return to.
 
 ## License
