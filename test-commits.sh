@@ -369,19 +369,16 @@ test_quiet_if_no_remote_master() {
   rm_tmp
 }
 
-test_zsh_and_bash_local_commits() {
-  local zsh_up="%{[green]%}↑%{%}"
-  local zsh_both="%{[yellow]%}⇵%{%}"
-  local zsh_down="%{[red]%}↓%{%}"
-
-  printf -v bash_up "\x01\033[1;32m\x02↑\x01\033[0m\x02"
-  printf -v bash_both "\x01\033[1;33m\x02⇵\x01\033[0m\x02"
-  printf -v bash_down "\x01\033[1;31m\x02↓\x01\033[0m\x02"
+test_local_commits() {
+  local up="↑"
+  local both="⇵"
+  local down="↓"
 
   cd_to_tmp "remote"
 
   assertEquals "" "$(zsh_color_local_commits)"
   assertEquals "" "$(bash_color_local_commits)"
+  assertEquals "" "$(color_local_commits)"
 
   git init --quiet
   touch README
@@ -398,14 +395,16 @@ test_zsh_and_bash_local_commits() {
 
   assertEquals "" "$(zsh_color_local_commits)"
   assertEquals "" "$(bash_color_local_commits)"
+  assertEquals "" "$(color_local_commits)"
 
   cd "$repo"
   echo "bar" > bar
   git add .
   git commit -m "test commit" --quiet
 
-  assertEquals " 1$zsh_up" "$(zsh_color_local_commits)"
-  assertEquals " 1$bash_up" "$(bash_color_local_commits)"
+  assertEquals " 1$up" "$(zsh_color_local_commits)"
+  assertEquals " 1$up" "$(bash_color_local_commits)"
+  assertEquals " 1$up" "$(color_local_commits)"
 
   cd "$remote"
   echo "foo" > foo
@@ -415,13 +414,15 @@ test_zsh_and_bash_local_commits() {
   cd "$repo"
   git fetch origin --quiet
 
-  assertEquals " 1${zsh_both}1" "$(zsh_color_local_commits)"
-  assertEquals " 1${bash_both}1" "$(bash_color_local_commits)"
+  assertEquals " 1${both}1" "$(zsh_color_local_commits)"
+  assertEquals " 1${both}1" "$(bash_color_local_commits)"
+  assertEquals " 1${both}1" "$(color_local_commits)"
 
   git reset --hard HEAD^ --quiet
 
-  assertEquals " 1$zsh_down" "$(zsh_color_local_commits)"
-  assertEquals " 1$bash_down" "$(bash_color_local_commits)"
+  assertEquals " 1$down" "$(zsh_color_local_commits)"
+  assertEquals " 1$down" "$(bash_color_local_commits)"
+  assertEquals " 1$down" "$(color_local_commits)"
 }
 
 . ./shunit/shunit2
