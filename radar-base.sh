@@ -31,6 +31,8 @@ prepare_bash_colors() {
   COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH:-"\\033[0m"}\x02"
   MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"\\x01\\033[0m\\x02\\xF0\\x9D\\x98\\xAE\\x01\\033[0m\\x02"}"
 
+  PROMPT_FORMAT="${GIT_RADAR_FORMAT:-" \\x01\\033[1;30m\\x02git:(\\x01\\033[0m\\x02%{remote}%{branch}%{local}\\x01\\033[1;30m\\x02)\\x01\\033[0m\\x02%{changes}"}"
+
   RESET_COLOR_LOCAL="\x01${GIT_RADAR_COLOR_LOCAL_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_REMOTE="\x01${GIT_RADAR_COLOR_REMOTE_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_CHANGES="\x01${GIT_RADAR_COLOR_CHANGES_RESET:-"\\033[0m"}\x02"
@@ -512,9 +514,9 @@ render_prompt() {
     changes_sed="s/${sed_pre}changes${sed_post}/\2$(color_changes_status)\4/"
   fi
 
-  sed \
-    -e "$remote_sed" \
-    -e "$branch_sed" \
-    -e "$changes_sed" \
-    -e "$local_sed" <<<"$output"
+  printf '%b' "$output" | sed \
+                            -e "$remote_sed" \
+                            -e "$branch_sed" \
+                            -e "$changes_sed" \
+                            -e "$local_sed"
 }
