@@ -502,8 +502,8 @@ render_prompt() {
   if [[ $PROMPT_FORMAT =~ ^.*%{local}.*$ ]]; then
     local_sed="s/%{local}/$(color_local_commits)/"
   fi
-  if [[ $PROMPT_FORMAT =~ ^.*%{changes}.*$ ]]; then
-    changes_sed="s/%{changes}/$(color_changes_status)/"
+  if [[ $PROMPT_FORMAT =~ %{([^%{}]{1,}:){0,1}changes(:[^%{}]{1,}){0,1}} ]]; then
+    changes_sed="s/%{\(\([^%^{^}]*\)\:\)\{0,1\}changes\(\:\([^%^{^}]*\)\)\{0,1\}}/\2$(color_changes_status)\4/"
   fi
 
   sed \
