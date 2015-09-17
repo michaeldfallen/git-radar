@@ -75,28 +75,28 @@ test_all_options_set_config() {
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "m 1 →foo1↑ 1A"
+  assertEquals "$prompt" "m 1 →foo1↑1A"
 
   export GIT_RADAR_FORMAT="%{remote}%{branch}%{changes}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "m 1 →foo 1A"
+  assertEquals "$prompt" "m 1 →foo1A"
 
   export GIT_RADAR_FORMAT="%{branch}%{local}%{changes}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "foo1↑ 1A"
+  assertEquals "$prompt" "foo1↑1A"
 
   export GIT_RADAR_FORMAT="%{branch}%{changes}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "foo 1A"
+  assertEquals "$prompt" "foo1A"
 
   export GIT_RADAR_FORMAT="%{branch}"
   prepare_zsh_colors
@@ -116,21 +116,21 @@ test_reorder_parts() {
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "foo1↑ 1Am 1 →" "$prompt"
+  assertEquals "foo1↑1Am 1 →" "$prompt"
 
   export GIT_RADAR_FORMAT="%{local}%{changes}%{remote}%{branch}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "1↑ 1Am 1 →foo" "$prompt"
+  assertEquals "1↑1Am 1 →foo" "$prompt"
 
   export GIT_RADAR_FORMAT="%{changes}%{remote}%{branch}%{local}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals " 1Am 1 →foo1↑" "$prompt"
+  assertEquals "1Am 1 →foo1↑" "$prompt"
 
   rm_tmp
 }
@@ -143,14 +143,14 @@ test_prefix_and_suffix_changes() {
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals " 1A" "$prompt"
+  assertEquals "1A" "$prompt"
 
   export GIT_RADAR_FORMAT="%{[:changes:]}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "[ 1A]" "$prompt"
+  assertEquals "[1A]" "$prompt"
 
   rm_tmp
 }

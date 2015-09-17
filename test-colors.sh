@@ -463,7 +463,7 @@ test_bash_colors_changes() {
   unstaged="1\x01changes-unstaged\x02M\x01change-reset\x02"
   staged="1\x01changes-staged\x02A\x01change-reset\x02"
 
-  printf -v expected " $staged $unstaged $untracked"
+  printf -v expected "$staged $unstaged $untracked"
   assertEquals "$expected" "$(bash_color_changes_status)"
   assertEquals "$expected" "$(color_changes_status)"
   rm_tmp
@@ -485,7 +485,7 @@ test_zsh_colors_changes() {
   unstaged="1%{changes-unstaged%}M%{change-reset%}"
   staged="1%{changes-staged%}A%{change-reset%}"
 
-  assertEquals " $staged $unstaged $untracked" "$(zsh_color_changes_status)"
+  assertEquals "$staged $unstaged $untracked" "$(zsh_color_changes_status)"
   rm_tmp
 }
 
