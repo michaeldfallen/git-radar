@@ -502,8 +502,8 @@ render_prompt() {
   if [[ $output =~ ^.*%{remote}.*$ ]]; then
     remote_sed="s/%{remote}/$(color_remote_commits)/"
   fi
-  if [[ $PROMPT_FORMAT =~ ^.*%{branch}.*$ ]]; then
-    branch_sed="s/%{branch}/$(readable_branch_name)/"
+  if [[ $PROMPT_FORMAT =~ ${if_pre}branch${if_post} ]]; then
+    branch_sed="s/${sed_pre}branch${sed_post}/\2$(readable_branch_name)\4/"
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}local${if_post} ]]; then
     local_sed="s/${sed_pre}local${sed_post}/\2$(color_local_commits)\4/"

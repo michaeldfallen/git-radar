@@ -175,4 +175,24 @@ test_prefix_and_suffix_local() {
   rm_tmp
 }
 
+test_prefix_and_suffix_branch() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{branch}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "foo" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:branch:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[foo]" "$prompt"
+
+  rm_tmp
+}
+
 . ./shunit/shunit2
