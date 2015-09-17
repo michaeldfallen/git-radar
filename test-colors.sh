@@ -291,14 +291,14 @@ test_bash_colors_local() {
   git add .
   git commit -m "test commit" --quiet
 
-  printf -v expected " 1\x01local-ahead\x02↑\x01local-reset\x02"
+  printf -v expected "1\x01local-ahead\x02↑\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
   assertEquals "$expected" "$(color_local_commits)"
 
   git push --quiet >/dev/null
   git reset --hard head^ --quiet >/dev/null
 
-  printf -v expected " 1\x01local-behind\x02↓\x01local-reset\x02"
+  printf -v expected "1\x01local-behind\x02↓\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
   assertEquals "$expected" "$(color_local_commits)"
 
@@ -306,7 +306,7 @@ test_bash_colors_local() {
   git add .
   git commit -m "new commit" --quiet
 
-  printf -v expected " 1\x01local-diverged\x02⇵\x01local-reset\x021"
+  printf -v expected "1\x01local-diverged\x02⇵\x01local-reset\x021"
   assertEquals "$expected" "$(bash_color_local_commits)"
   assertEquals "$expected" "$(color_local_commits)"
 
@@ -337,18 +337,18 @@ test_zsh_colors_local() {
   git add .
   git commit -m "test commit" --quiet
 
-  assertEquals " 1%{local-ahead%}↑%{local-reset%}" "$(zsh_color_local_commits)"
+  assertEquals "1%{local-ahead%}↑%{local-reset%}" "$(zsh_color_local_commits)"
 
   git push --quiet >/dev/null
   git reset --hard head^ --quiet >/dev/null
 
-  assertEquals " 1%{local-behind%}↓%{local-reset%}" "$(zsh_color_local_commits)"
+  assertEquals "1%{local-behind%}↓%{local-reset%}" "$(zsh_color_local_commits)"
 
   echo "foo" > foo
   git add .
   git commit -m "new commit" --quiet
 
-  assertEquals " 1%{local-diverged%}⇵%{local-reset%}1" "$(zsh_color_local_commits)"
+  assertEquals "1%{local-diverged%}⇵%{local-reset%}1" "$(zsh_color_local_commits)"
 
   rm_tmp
 }
