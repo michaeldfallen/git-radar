@@ -154,8 +154,7 @@ time_now() {
 time_to_update() {
   if is_repo; then
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
-    local fiveminutes="$((5 * 60))"
-    if (( $timesincelastupdate > $fiveminutes )); then
+    if (( $timesincelastupdate > $1 )); then
       # time to update return 0 (which is true)
       return 0
     else
@@ -168,7 +167,14 @@ time_to_update() {
 }
 
 fetch() {
-  if time_to_update; then
+  if [ -z "$1" ]; then
+    # Default 5 minutes
+    local timeToUpdate="$((5 * 60))"
+  else
+    local timeToUpdate="$1"
+  fi
+
+  if time_to_update $timeToUpdate; then
     record_timestamp
     git fetch --quiet > /dev/null 2>&1
   fi

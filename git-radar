@@ -56,10 +56,11 @@ if [[ -z $@ ]]; then
   echo "usage:"
   echo "  git-radar [--zsh|--bash|--fish] [--fetch]"
   echo ""
-  echo "  --fetch  # Fetches your repo asynchronously in the background every 5 mins"
-  echo "  --zsh    # Output prompt using Zsh style color characters"
-  echo "  --bash   # Output prompt using Bash style color characters"
-  echo "  --fish   # Output prompt using fish style color characters"
+  echo "  --fetch              # Fetches your repo asynchronously in the background every 5 mins"
+  echo "  --fetch_t <seconds>  # Fetches your repo asynchronously in the background every <seconds> seconds"
+  echo "  --zsh                # Output prompt using Zsh style color characters"
+  echo "  --bash               # Output prompt using Bash style color characters"
+  echo "  --fish               # Output prompt using fish style color characters"
   echo ""
   echo "Bash example:"
   echo "  export PS1=\"\\W\\\$(git-radar --bash --fetch) \""
@@ -83,18 +84,30 @@ if [[ -z $@ ]]; then
   echo "  end"
   echo ""
   echo "  Same as the Bash but for fish."
+  echo ""
+  echo "Fetch_t example:"
+  echo "  export PS1=\"\\W\\\$(git-radar --bash --fetch_t 45) \""
   exit
 fi
 while [[ $# > 0 ]];do
   command="$1"
   shift
 
+  # Default fetch of 5 min
   if [[ "$command" == "--fetch" ]]; then
     nohup $dot/fetch.sh >/dev/null 2>&1 &
   fi
+
+  # Custom fetch of whatever time interval the user wants
+  if [[ "$command" == "--fetch_t" ]]; then
+    # Now $1 is the value of fetch_t
+    nohup $dot/fetch.sh $1 >/dev/null 2>&1 &
+  fi
+
   if [[ "$command" == "--zsh" ]]; then
     $dot/prompt.zsh $args
   fi
+
   if [[ "$command" == "--bash" || "$command" == "--fish" ]]; then
     $dot/prompt.bash $args
   fi
