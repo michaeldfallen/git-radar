@@ -154,6 +154,55 @@ test_commits_local_and_remote_ahead() {
   rm_tmp
 }
 
+test_commits_local_and_remote_behind() {
+  cd_to_tmp "remote"
+  git init --bare --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "new"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout -b master --quiet
+  touch README
+  git add README
+  git commit -m "initial commit" --quiet
+
+  git push --quiet -u origin master >/dev/null
+  git reset --quiet --hard HEAD
+
+  git checkout -b foo --quiet
+  git push --quiet -u origin foo >/dev/null
+
+  git checkout master --quiet
+
+  table_headers
+
+  profile "0 commits zsh" "/.$scriptDir/prompt.zsh"
+  profile "0 commits bash" "/.$scriptDir/prompt.bash"
+
+  for (( i = 0; i < 100; i++ )); do
+    echo "foo$i" >> foo
+    git add .
+    git commit -m "foo $i" --quiet
+  done
+
+  git push --quiet
+  git checkout foo --quiet
+
+  profile "100 behind remote zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 behind remote bash" "/.$scriptDir/prompt.bash"
+
+  git checkout master --quiet
+  git checkout -b bar --quiet
+  git push --quiet -u origin bar >/dev/null
+  git reset --hard origin/foo --quiet
+
+  profile "100 behind mine zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 behind mine bash" "/.$scriptDir/prompt.bash"
+
+}
+
 test_large_repo() {
   cd_to_tmp
   git clone https://github.com/Homebrew/homebrew --quiet
