@@ -55,7 +55,7 @@ report() {
 }
 
 table_headers() {
-  printf "\t\tMean\tMedian\tMin\tMax\n"
+  printf "\t\tCount\tMean\tMedian\tMin\tMax\n"
 }
 
 profile () {
