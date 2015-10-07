@@ -55,18 +55,18 @@ report() {
 }
 
 table_headers() {
-  printf "\t\tCount\tMean\tMedian\tMin\tMax\n"
+  printf "                         Count\tMean\tMedian\tMin\tMax\n"
 }
 
 profile () {
   cmd="$2"
-  printf '%s\t' $1
   for (( i = 0; i < 100; i++ )); do
     start=$(gdate +%s.%N)
     eval $cmd > /dev/null
     duration=$(echo "$(gdate +%s.%N) - $start" | bc)
     timings[$i]=$duration
   done
+  printf '%-25s' "$1"
   report "${timings[@]}"
 }
 
@@ -77,6 +77,79 @@ test_empty_repo() {
   table_headers
   profile "prompt.zsh" "/.$scriptDir/prompt.zsh"
   profile "prompt.bash" "/.$scriptDir/prompt.bash"
+
+  rm_tmp
+}
+
+test_lots_of_file_changes() {
+  cd_to_tmp
+  git init --quiet
+
+  table_headers
+
+  profile "no changes zsh" "/.$scriptDir/prompt.zsh"
+  profile "no changes bash" "/.$scriptDir/prompt.bash"
+
+  for (( i = 0; i < 100; i++ )); do
+    touch foo$i
+  done
+
+  profile "100 untracked zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 untracked bash" "/.$scriptDir/prompt.bash"
+
+  for (( i = 0; i < 100; i++ )); do
+    touch bar$i
+    git add bar$i
+  done
+
+  profile "100 added zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 added bash" "/.$scriptDir/prompt.bash"
+
+  for (( i = 0; i < 100; i++ )); do
+    echo "bar$i" > bar$i
+  done
+
+  profile "100 modify zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 modify bash" "/.$scriptDir/prompt.bash"
+
+  rm_tmp
+}
+
+test_commits_local_and_remote_ahead() {
+  cd_to_tmp "remote"
+  git init --quiet
+  touch README
+  git add .
+  git commit -m "initial commit" --quiet
+  remoteLocation="$(pwd)"
+
+  cd_to_tmp "new"
+  git init --quiet
+  git remote add origin $remoteLocation
+  git fetch origin --quiet
+  git checkout master --quiet
+
+  git checkout -b foo --quiet
+  git push --quiet -u origin foo >/dev/null
+
+  table_headers
+
+  profile "0 commits zsh" "/.$scriptDir/prompt.zsh"
+  profile "0 commits bash" "/.$scriptDir/prompt.bash"
+
+  for (( i = 0; i < 100; i++ )); do
+    echo "foo$i" >> foo
+    git add .
+    git commit -m "foo $i" --quiet
+  done
+
+  profile "100 local zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 local bash" "/.$scriptDir/prompt.bash"
+
+  git push --quiet
+
+  profile "100 remote zsh" "/.$scriptDir/prompt.zsh"
+  profile "100 remote bash" "/.$scriptDir/prompt.bash"
 
   rm_tmp
 }
