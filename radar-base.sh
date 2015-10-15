@@ -197,7 +197,7 @@ branch_ref() {
 }
 
 remote_branch_name() {
-  local localRef="\/$(branch_name)$"
+  local localRef="$(branch_name)"
   if [[ -n "$localRef" ]]; then
     local remote="$(git config --get-regexp "^branch\.$localRef\.remote" | awk '{print $2}')"
     if [[ -n $remote ]]; then
