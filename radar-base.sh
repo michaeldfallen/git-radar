@@ -517,7 +517,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}branch${if_post} ]]; then
-    branch_result="$(readable_branch_name)"
+    branch_result="$(readable_branch_name | sed -e 's/\//\\\//')"
     if [[ -n "$branch_result" ]]; then
       branch_sed="s/${sed_pre}branch${sed_post}/\2${branch_result}\4/"
     else
