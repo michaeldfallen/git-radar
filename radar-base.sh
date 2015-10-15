@@ -1,6 +1,7 @@
 NO_REMOTE_STATUS='--no-remote-status'
 
 dot_git=""
+stat_type=""
 cwd=""
 remote=""
 rcfile_path="$HOME"
@@ -119,6 +120,15 @@ dot_git() {
   fi
 }
 
+stat_type() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    stat_type="gstat"
+  else
+    stat_type="stat"
+  fi
+  printf '%s' $stat_type
+}
+
 is_repo() {
   if [[ -n "$(dot_git)" ]]; then
     return 0
@@ -143,7 +153,7 @@ record_timestamp() {
 
 timestamp() {
   if is_repo; then
-    printf '%s' "$(stat -f%m "$(dot_git)/lastupdatetime" 2>/dev/null || printf '%s' "0")"
+    printf '%s' "$("$(stat_type)" -c%Z "$(dot_git)/lastupdatetime" 2>/dev/null || printf '%s' "0")"
   fi
 }
 
