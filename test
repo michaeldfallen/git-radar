@@ -7,3 +7,4 @@
 ./test-files.sh
 ./test-status.sh
 ./test-colors.sh
+./test-format-config.sh
