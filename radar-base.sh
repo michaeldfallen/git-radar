@@ -5,6 +5,14 @@ cwd=""
 remote=""
 rcfile_path="$HOME"
 
+timethis() {
+  cmd="$@"
+  start=$(gdate +%s.%N)
+  eval $cmd
+  dur=$(echo "$(gdate +%s.%N) - $start" | bc)
+  echo "$1 - $dur" >> $HOME/duration.dat
+}
+
 prepare_bash_colors() {
   if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
     source "$rcfile_path/.gitradarrc.bash"
