@@ -167,7 +167,7 @@ time_to_update() {
 }
 
 fetch() {
-  local timeToUpdate = ${"$1":-"$((5 * 60))"}
+  local timeToUpdate=${1:-"$((5 * 60))"}
 
   if time_to_update $timeToUpdate; then
     record_timestamp
