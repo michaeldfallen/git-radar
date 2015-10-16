@@ -16,6 +16,7 @@ last few years. Maybe it can help you too.
   - [Files status](#files-status)
   - [Local commits status](#local-commits-status)
   - [Remote commits status](#remote-commits-status)
+  - [Stash status](#stash-status)
   - [(Optional) Auto-fetch repos](#optional-auto-fetch-repos)
 - [Customise your prompt](#customise-your-prompt)
 - [Support](#support)
@@ -201,6 +202,7 @@ Remote commits | `%{remote}`
 Local commits  | `%{local}`
 Branch         | `%{branch}`
 File changes   | `%{changes}`
+Stashes        | `%{stash}`
 
 You can create any prompt shape you prefer by exporting `GIT_RADAR_FORMAT` with
 your preferred shape. The control strings above will be replaced with the output
@@ -536,6 +538,7 @@ Git Radar is licensed under the MIT license.
 See [LICENSE] for the full license text.
 
 [LICENSE]: https://github.com/michaeldfallen/git-radar/blob/master/LICENSE
+[git:(master) 1≡]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/stash.png
 [git:(master) 3A]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/untracked.png
 [git:(master) 2D2M]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/unstaged.png
 [git:(master) 1M1R]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/added.png
