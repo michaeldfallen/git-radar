@@ -509,7 +509,7 @@ stashed_status() {
 stash_status() {
   local number_stashes="$(stashed_status)"
   if [ $number_stashes -gt 0 ]; then
-    printf $PRINT_F_OPTION " $number_stashes$COLOR_STASH≡$RESET_COLOR_STASH"
+    printf $PRINT_F_OPTION "$number_stashes$COLOR_STASH≡$RESET_COLOR_STASH"
   fi
 }
 
@@ -519,6 +519,7 @@ render_prompt() {
   remote_sed=""
   local_sed=""
   changes_sed=""
+  stash_sed=""
 
 
   if_pre="%\{([^%{}]{1,}:){0,1}"
@@ -558,10 +559,19 @@ render_prompt() {
       changes_sed="s/${sed_pre}changes${sed_post}//"
     fi
   fi
+  if [[ $PROMPT_FORMAT =~ ${if_pre}stash${if_post} ]]; then
+    stash_result="$(stash_status)"
+    if [[ -n "$stash_result" ]]; then
+      stash_sed="s/${sed_pre}stash${sed_post}/\2${stash_result}\4/"
+    else
+      stash_sed="s/${sed_pre}stash${sed_post}//"
+    fi
+  fi
 
   printf '%b' "$output" | sed \
                             -e "$remote_sed" \
                             -e "$branch_sed" \
                             -e "$changes_sed" \
-                            -e "$local_sed"
+                            -e "$local_sed" \
+                            -e "$stash_sed"
 }
