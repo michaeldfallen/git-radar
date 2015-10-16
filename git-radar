@@ -30,6 +30,7 @@ if [[ -z $@ ]]; then
   _conflicted_them="\033[1;33mT\033[0m"
   _ahead_master="\xF0\x9D\x98\xAE \033[1;32m←\033[0m"
   _local_diverged="\033[1;33m⇵\033[0m"
+  _stash="\033[1;33m≡\033[0m"
   echo "git-radar - a heads up display for git"
   echo ""
   echo "examples:"
@@ -51,6 +52,8 @@ if [[ -z $@ ]]; then
   echo "   # rebase complete, our rewritten commits now need pushed up"
   printf "  $_git$_ahead_master 3 $_my_branch$_endgit"
   echo "         # origin/my-branch is up to date with master and has our 3 commits waiting merge"
+  printf "  $_git$_master$_endgit 3$_stash"
+  echo "               # You have 3 stashes stored"
 
   echo ""
   echo "usage:"

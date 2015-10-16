@@ -36,15 +36,19 @@ prepare_bash_colors() {
   COLOR_CHANGES_CONFLICTED="\x01${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-"\\033[1;33m"}\x02"
   COLOR_CHANGES_UNTRACKED="\x01${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-"\\033[1;37m"}\x02"
 
+  COLOR_STASH="\x01${GIT_RADAR_COLOR_STASH:-"\\033[1;33m"}\x02"
+
   COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH:-"\\033[0m"}\x02"
   MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"\\x01\\033[0m\\x02\\xF0\\x9D\\x98\\xAE\\x01\\033[0m\\x02"}"
 
-  PROMPT_FORMAT="${GIT_RADAR_FORMAT:-" \\x01\\033[1;30m\\x02git:(\\x01\\033[0m\\x02%{remote: }%{branch}%{ :local}\\x01\\033[1;30m\\x02)\\x01\\033[0m\\x02%{ :changes}"}"
+  PROMPT_FORMAT="${GIT_RADAR_FORMAT:-" \\x01\\033[1;30m\\x02git:(\\x01\\033[0m\\x02%{remote: }%{branch}%{ :local}\\x01\\033[1;30m\\x02)\\x01\\033[0m\\x02%{ :stash}%{ :changes}"}"
 
   RESET_COLOR_LOCAL="\x01${GIT_RADAR_COLOR_LOCAL_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_REMOTE="\x01${GIT_RADAR_COLOR_REMOTE_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_CHANGES="\x01${GIT_RADAR_COLOR_CHANGES_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH_RESET:-"\\033[0m"}\x02"
+  RESET_COLOR_STASH="\x01${GIT_RADAR_COLOR_STASH:-"\\033[0m"}\x02"
+  
 }
 
 prepare_zsh_colors() {
@@ -70,17 +74,20 @@ prepare_zsh_colors() {
   COLOR_CHANGES_CONFLICTED="%{${GIT_RADAR_COLOR_CHANGES_CONFLICTED:-$fg_bold[yellow]}%}"
   COLOR_CHANGES_UNTRACKED="%{${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}%}"
 
+  COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$fg_bold[yellow]}%}"
+  
   local italic_m="$(printf '\xF0\x9D\x98\xAE')"
 
   COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH:-$reset_color}%}"
   MASTER_SYMBOL="${GIT_RADAR_MASTER_SYMBOL:-"%{$reset_color%}$italic_m%{$reset_color%}"}"
 
-  PROMPT_FORMAT="${GIT_RADAR_FORMAT:-" %{$fg_bold[grey]%}git:(%{$reset_color%}%{remote: }%{branch}%{ :local}%{$fg_bold[grey]%})%{$reset_color%}%{ :changes}"}"
+  PROMPT_FORMAT="${GIT_RADAR_FORMAT:-" %{$fg_bold[grey]%}git:(%{$reset_color%}%{remote: }%{branch}%{ :local}%{$fg_bold[grey]%})%{$reset_color%}%{ :stash}%{ :changes}"}"
 
   RESET_COLOR_LOCAL="%{${GIT_RADAR_COLOR_LOCAL_RESET:-$reset_color}%}"
   RESET_COLOR_REMOTE="%{${GIT_RADAR_COLOR_REMOTE_RESET:-$reset_color}%}"
   RESET_COLOR_CHANGES="%{${GIT_RADAR_COLOR_CHANGES_RESET:-$reset_color}%}"
   RESET_COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH_RESET:-$reset_color}%}"
+  RESET_COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$reset_color}%}"
 }
 
 in_current_dir() {
@@ -495,12 +502,24 @@ show_remote_status() {
   return 0
 }
 
+stashed_status() {
+  printf '%s' "$(git stash list | wc -l 2>/dev/null | grep -oEi '[0-9][0-9]*')"
+}
+
+stash_status() {
+  local number_stashes="$(stashed_status)"
+  if [ $number_stashes -gt 0 ]; then
+    printf $PRINT_F_OPTION "$number_stashes$COLOR_STASH≡$RESET_COLOR_STASH"
+  fi
+}
+
 render_prompt() {
   output="$PROMPT_FORMAT"
   branch_sed=""
   remote_sed=""
   local_sed=""
   changes_sed=""
+  stash_sed=""
 
 
   if_pre="%\{([^%{}]{1,}:){0,1}"
@@ -540,10 +559,19 @@ render_prompt() {
       changes_sed="s/${sed_pre}changes${sed_post}//"
     fi
   fi
+  if [[ $PROMPT_FORMAT =~ ${if_pre}stash${if_post} ]]; then
+    stash_result="$(stash_status)"
+    if [[ -n "$stash_result" ]]; then
+      stash_sed="s/${sed_pre}stash${sed_post}/\2${stash_result}\4/"
+    else
+      stash_sed="s/${sed_pre}stash${sed_post}//"
+    fi
+  fi
 
   printf '%b' "$output" | sed \
                             -e "$remote_sed" \
                             -e "$branch_sed" \
                             -e "$changes_sed" \
-                            -e "$local_sed"
+                            -e "$local_sed" \
+                            -e "$stash_sed"
 }
