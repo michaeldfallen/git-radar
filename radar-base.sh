@@ -503,7 +503,7 @@ show_remote_status() {
 }
 
 stashed_status() {
-  printf '%s' "$(git stash list | wc -l 2>/dev/null)"
+  printf '%s' "$(git stash list | wc -l 2>/dev/null | grep -oEi '[0-9][0-9]*')"
 }
 
 stash_status() {
