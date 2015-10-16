@@ -100,8 +100,19 @@ while [[ $# > 0 ]];do
 
   # Custom fetch of whatever time interval the user wants
   if [[ "$command" == "--fetch_t" ]]; then
-    # Now $1 is the value of fetch_t
-    nohup $dot/fetch.sh $1 >/dev/null 2>&1 &
+    # Now $1 is the value for fetch_t
+    # If value is not a number produce an error
+    if ! [[ $1 =~ ^[0-9]+$ ]] ; then
+      echo ""
+      echo "Error: fetch_t did not receive a number"
+      echo "Defaulting to 5 min."
+      echo " "
+      nohup $dot/fetch.sh >/dev/null 2>&1 &
+    else
+      command="$1"
+      shift
+      nohup $dot/fetch.sh $command >/dev/null 2>&1 &
+    fi
   fi
 
   if [[ "$command" == "--zsh" ]]; then

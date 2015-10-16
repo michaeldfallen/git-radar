@@ -167,12 +167,7 @@ time_to_update() {
 }
 
 fetch() {
-  if [ -z "$1" ]; then
-    # Default 5 minutes
-    local timeToUpdate="$((5 * 60))"
-  else
-    local timeToUpdate="$1"
-  fi
+  local timeToUpdate = ${"$1":-"$((5 * 60))"}
 
   if time_to_update $timeToUpdate; then
     record_timestamp
