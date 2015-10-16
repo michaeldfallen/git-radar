@@ -203,8 +203,8 @@ of the corresponding feature.
 
 GIT_RADAR_FORMAT                      | Result
 --------------------------------------|---------------------
-`${branch}%{local}%{changes}`         | `master1↑1M`
-`[${branch}] - %{local} - %{changes}` | `[master] - 1↑ - 1M`
+`%{branch}%{local}%{changes}`         | `master1↑1M`
+`[%{branch}] - %{local} - %{changes}` | `[master] - 1↑ - 1M`
 
 ### Prefixing and Suffixing the features
 
