@@ -16,7 +16,9 @@ last few years. Maybe it can help you too.
   - [Files status](#files-status)
   - [Local commits status](#local-commits-status)
   - [Remote commits status](#remote-commits-status)
+  - [Stash status](#stash-status)
   - [(Optional) Auto-fetch repos](#optional-auto-fetch-repos)
+- [Customise your prompt](#customise-your-prompt)
 - [Support](#support)
   - [Ensuring prompt execution](#ensuring-prompt-execution)
   - [Configuring colours](#configuring-colours)
@@ -120,6 +122,9 @@ Red     | Unstaged, you'll need to `git add` them before you can commit
 Grey    | Untracked, these are new files git is unaware of
 Yellow  | Conflicted, these need resolved before they can be committed
 
+The use of feature is controlled by the `GIT_RADAR_FORMAT` environment variable.
+See [Customise your prompt](#customise-your-prompt) for how to personalise this.
+
 ### Local commits status
 
 The prompt will show you the difference in commits between your branch and the
@@ -131,6 +136,9 @@ Prompt              | Meaning
 ![git:(master 2↑)]  | We have 2 commits to push up
 ![git:(master 3↓)]  | We have 3 commits to pull down
 ![git:(master 3⇵5)] | Our version and origins version of `master` have diverged
+
+The use of feature is controlled by the `GIT_RADAR_FORMAT` environment variable.
+See [Customise your prompt](#customise-your-prompt) for how to personalise this.
 
 ### Remote commits status
 
@@ -146,7 +154,8 @@ Prompt                     | Meaning
 ![git:(m 4 → my-branch)]   | There are 4 commits on `origin/master` that aren't on `origin/my-branch`
 ![git:(m 1 ⇄ 2 my-branch)] | `origin/master` and `origin/my-branch` have diverged, we'll need to rebase or merge
 
-If you don't rely on this status, you can always hide this part of the prompt by calling git-radar with `--no-remote-status`.
+The use of feature is controlled by the `GIT_RADAR_FORMAT` environment variable.
+See [Customise your prompt](#customise-your-prompt) for how to personalise this.
 
 ### Stash status
 The prompt will show you whether and how many stashes you have stored.
@@ -155,17 +164,8 @@ Prompt                     | Meaning
 ---------------------------|---------------
 ![git:(master) 1≡]         | We have one stash
 
-**Bash**
-```bash
-export PS1="$PS1\$(git-radar --bash --fetch --no-remote-status) "
-```
-[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
-
-**Zsh**
-```zsh
-export PROMPT="$PROMPT\$(git-radar --zsh --fetch --no-remote-status) "
-```
-[(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
+If you don't rely on this status, you can always hide this part of the prompt by
+[customising your prompt](#customise-your-prompt)
 
 ### (Optional) Auto-fetch repos
 
@@ -189,6 +189,51 @@ export PS1="$PS1\$(git-radar --bash --fetch)"
 export PROMPT="$PROMPT\$(git-radar --zsh --fetch) "
 ```
 [(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
+
+## Customise your prompt
+
+Git Radar is highly customisable using a prompt format string. The 4 features
+above: remote commits, local commits, branch and file changes; are controlled
+by the prompt format string.
+
+Feature        | Control string
+---------------|---------------
+Remote commits | `%{remote}`
+Local commits  | `%{local}`
+Branch         | `%{branch}`
+File changes   | `%{changes}`
+Stashes        | `%{stash}`
+
+You can create any prompt shape you prefer by exporting `GIT_RADAR_FORMAT` with
+your preferred shape. The control strings above will be replaced with the output
+of the corresponding feature.
+
+**Examples**
+
+GIT_RADAR_FORMAT                      | Result
+--------------------------------------|---------------------
+`%{branch}%{local}%{changes}`         | `master1↑1M`
+`[%{branch}] - %{local} - %{changes}` | `[master] - 1↑ - 1M`
+
+### Prefixing and Suffixing the features
+
+Often you will want certain parts of the prompt to only appear when there is
+content to render. For example, when in a repo you want `[branch]` but when out
+of a repo you don't want the `[]` appearing.
+
+To do this the control strings support prefixes and suffixes. Prefixes and
+Suffixes are separated from the feature name by `:` and will only render if the
+feature would render:
+
+Format: `prompt > %{prefix - :changes: - suffix}`
+
+In a repo: `prompt > prefix - 1M - suffix`
+
+Outside a repo: `prompt > `
+
+The default prompt format uses this to add spaces only if the feature would
+render. In that way the prompt always looks well spaced out no matter how many
+features are rendering.
 
 ## Support
 
@@ -493,6 +538,7 @@ Git Radar is licensed under the MIT license.
 See [LICENSE] for the full license text.
 
 [LICENSE]: https://github.com/michaeldfallen/git-radar/blob/master/LICENSE
+[git:(master) 1≡]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/stash.png
 [git:(master) 3A]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/untracked.png
 [git:(master) 2D2M]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/unstaged.png
 [git:(master) 1M1R]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/added.png

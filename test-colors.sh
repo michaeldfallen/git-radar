@@ -291,14 +291,14 @@ test_bash_colors_local() {
   git add .
   git commit -m "test commit" --quiet
 
-  printf -v expected " 1\x01local-ahead\x02↑\x01local-reset\x02"
+  printf -v expected "1\x01local-ahead\x02↑\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
   assertEquals "$expected" "$(color_local_commits)"
 
   git push --quiet >/dev/null
   git reset --hard head^ --quiet >/dev/null
 
-  printf -v expected " 1\x01local-behind\x02↓\x01local-reset\x02"
+  printf -v expected "1\x01local-behind\x02↓\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
   assertEquals "$expected" "$(color_local_commits)"
 
@@ -306,7 +306,7 @@ test_bash_colors_local() {
   git add .
   git commit -m "new commit" --quiet
 
-  printf -v expected " 1\x01local-diverged\x02⇵\x01local-reset\x021"
+  printf -v expected "1\x01local-diverged\x02⇵\x01local-reset\x021"
   assertEquals "$expected" "$(bash_color_local_commits)"
   assertEquals "$expected" "$(color_local_commits)"
 
@@ -337,18 +337,18 @@ test_zsh_colors_local() {
   git add .
   git commit -m "test commit" --quiet
 
-  assertEquals " 1%{local-ahead%}↑%{local-reset%}" "$(zsh_color_local_commits)"
+  assertEquals "1%{local-ahead%}↑%{local-reset%}" "$(zsh_color_local_commits)"
 
   git push --quiet >/dev/null
   git reset --hard head^ --quiet >/dev/null
 
-  assertEquals " 1%{local-behind%}↓%{local-reset%}" "$(zsh_color_local_commits)"
+  assertEquals "1%{local-behind%}↓%{local-reset%}" "$(zsh_color_local_commits)"
 
   echo "foo" > foo
   git add .
   git commit -m "new commit" --quiet
 
-  assertEquals " 1%{local-diverged%}⇵%{local-reset%}1" "$(zsh_color_local_commits)"
+  assertEquals "1%{local-diverged%}⇵%{local-reset%}1" "$(zsh_color_local_commits)"
 
   rm_tmp
 }
@@ -380,7 +380,7 @@ test_bash_colors_remote() {
   git checkout -b mybranch --quiet
   git push --quiet -u origin mybranch >/dev/null
 
-  printf -v expected "m 1 \x01remote-behind\x02→\x01remote-reset\x02 "
+  printf -v expected "m 1 \x01remote-behind\x02→\x01remote-reset\x02"
   assertEquals "$expected" "$(bash_color_remote_commits)"
   assertEquals "$expected" "$(color_remote_commits)"
 
@@ -389,14 +389,14 @@ test_bash_colors_remote() {
   git commit -m "new commit" --quiet
   git push --quiet >/dev/null
 
-  printf -v expected "m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1 "
+  printf -v expected "m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1"
   assertEquals "$expected" "$(bash_color_remote_commits)"
   assertEquals "$expected" "$(color_remote_commits)"
 
   git pull origin master --quiet >/dev/null
   git push --quiet >/dev/null
 
-  printf -v expected "m \x01remote-ahead\x02←\x01remote-reset\x02 2 "
+  printf -v expected "m \x01remote-ahead\x02←\x01remote-reset\x02 2"
   assertEquals "$expected" "$(bash_color_remote_commits)"
   assertEquals "$expected" "$(color_remote_commits)"
 
@@ -430,19 +430,19 @@ test_zsh_colors_remote() {
   git checkout -b mybranch --quiet
   git push --quiet -u origin mybranch >/dev/null
 
-  assertEquals "m 1 %{remote-behind%}→%{remote-reset%} " "$(zsh_color_remote_commits)"
+  assertEquals "m 1 %{remote-behind%}→%{remote-reset%}" "$(zsh_color_remote_commits)"
 
   echo "bar" > bar
   git add .
   git commit -m "new commit" --quiet
   git push --quiet >/dev/null
 
-  assertEquals "m 1 %{remote-diverged%}⇄%{remote-reset%} 1 " "$(zsh_color_remote_commits)"
+  assertEquals "m 1 %{remote-diverged%}⇄%{remote-reset%} 1" "$(zsh_color_remote_commits)"
 
   git pull origin master --quiet >/dev/null
   git push --quiet >/dev/null
 
-  assertEquals "m %{remote-ahead%}←%{remote-reset%} 2 " "$(zsh_color_remote_commits)"
+  assertEquals "m %{remote-ahead%}←%{remote-reset%} 2" "$(zsh_color_remote_commits)"
 
   rm_tmp
 }
@@ -463,7 +463,7 @@ test_bash_colors_changes() {
   unstaged="1\x01changes-unstaged\x02M\x01change-reset\x02"
   staged="1\x01changes-staged\x02A\x01change-reset\x02"
 
-  printf -v expected " $staged $unstaged $untracked"
+  printf -v expected "$staged $unstaged $untracked"
   assertEquals "$expected" "$(bash_color_changes_status)"
   assertEquals "$expected" "$(color_changes_status)"
   rm_tmp
@@ -485,7 +485,7 @@ test_zsh_colors_changes() {
   unstaged="1%{changes-unstaged%}M%{change-reset%}"
   staged="1%{changes-staged%}A%{change-reset%}"
 
-  assertEquals " $staged $unstaged $untracked" "$(zsh_color_changes_status)"
+  assertEquals "$staged $unstaged $untracked" "$(zsh_color_changes_status)"
   rm_tmp
 }
 
