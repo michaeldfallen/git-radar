@@ -198,9 +198,9 @@ branch_ref() {
 
 remote_branch_name() {
   local localRef="$(branch_name)"
-  local remote="$(git config --get-regexp "^branch\.$localRef\.remote" | awk '{print $2}')"
+  local remote="$(git config --get "branch.$localRef.remote")"
   if [[ -n $remote ]]; then
-    local remoteBranch="$(git config --get-regexp "^branch\.${localRef}\.merge" | awk -F'/' '{print $NF}')"
+    local remoteBranch="$(git config --get "branch.${localRef}.merge" | sed -e 's/^refs\/heads\///')"
     if [[ -n $remoteBranch ]]; then
       printf '%s/%s' $remote $remoteBranch
       return 0
