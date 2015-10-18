@@ -57,7 +57,6 @@ if [[ -z $@ ]]; then
   echo "  git-radar [--zsh|--bash|--fish] [--fetch]"
   echo ""
   echo "  --fetch              # Fetches your repo asynchronously in the background every 5 mins"
-  echo "  --fetch_t <seconds>  # Fetches your repo asynchronously in the background every <seconds> seconds"
   echo "  --zsh                # Output prompt using Zsh style color characters"
   echo "  --bash               # Output prompt using Bash style color characters"
   echo "  --fish               # Output prompt using fish style color characters"
