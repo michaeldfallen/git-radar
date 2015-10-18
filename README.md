@@ -182,13 +182,23 @@ export PROMPT="$PROMPT\$(git-radar --zsh --fetch) "
 ```
 [(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
-You may also choose to use the `--fetch_t` option to specify your own fetch
-times. `--fetch` defaults to fetch automatically every 5 minutes. With
-`--fetch_t <seconds>` you can choose how often to fetch.
+You may also choose to fetch at a customized interval of time. To do so, add
+this to your .bashrc, .zshrc:
 
-eg.
 ```bash
-export PS1="$PS1\$(git-radar --bash --fetch_t 30)"
+export GIT_RADAR_FETCH_TIME=<seconds>
+```
+
+For example, to fetch every 30 seconds (instead of the default 5 minutes):
+
+```bash
+export GIT_RADAR_FETCH_TIME=30
+```
+
+You can also do this in the gitradarrc file:
+
+```bash
+GIT_RADAR_FETCH_TIME=30
 ```
 
 ## Customise your prompt

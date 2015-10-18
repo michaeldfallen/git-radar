@@ -13,6 +13,20 @@ timethis() {
   echo "$1 - $dur" >> $HOME/duration.dat
 }
 
+get_fetch_time() {
+  if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
+    source "$rcfile_path/.gitradarrc.bash"
+  elif [ -f "$rcfile_path/.gitradarrc.zsh" ]; then
+    source "$rcfile_path/.gitradarrc.zsh"
+  elif [ -f "$rcfile_path/.gitradarrc" ]; then
+    source "$rcfile_path/.gitradarrc"
+  fi
+
+  FETCH_TIME="${GIT_RADAR_FETCH_TIME:-"$((5 * 60))"}"
+  echo $FETCH_TIME
+
+}
+
 prepare_bash_colors() {
   if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
     source "$rcfile_path/.gitradarrc.bash"
@@ -167,7 +181,8 @@ time_to_update() {
 }
 
 fetch() {
-  local timeToUpdate=${1:-"$((5 * 60))"}
+  get_fetch_time
+  local timeToUpdate=${1:-$FETCH_TIME}
 
   if time_to_update $timeToUpdate; then
     record_timestamp

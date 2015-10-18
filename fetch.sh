@@ -10,8 +10,4 @@ dot="$(cd "$(dirname "$([ -L "$0" ] && $READLINK_CMD -f "$0" || echo "$0")")"; p
 
 source $dot/radar-base.sh
 
-if [[ -z "$@" ]]; then
-  fetch;
-else
-  fetch $1;
-fi
+fetch;
