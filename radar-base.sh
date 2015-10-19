@@ -181,10 +181,10 @@ time_to_update() {
 }
 
 fetch() {
+  # Gives $FETCH_TIME a value
   get_fetch_time
-  local timeToUpdate=${1:-$FETCH_TIME}
 
-  if time_to_update $timeToUpdate; then
+  if time_to_update $FETCH_TIME; then
     record_timestamp
     git fetch --quiet > /dev/null 2>&1
   fi
