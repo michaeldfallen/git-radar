@@ -183,9 +183,10 @@ time_now() {
 }
 
 time_to_update() {
+  last_time_updated="${1:-$FETCH_TIME}"
   if is_repo; then
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
-    if (( $timesincelastupdate > $1 )); then
+    if (( $timesincelastupdate > $last_time_updated )); then
       # time to update return 0 (which is true)
       return 0
     else
