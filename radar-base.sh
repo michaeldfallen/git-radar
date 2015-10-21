@@ -214,15 +214,18 @@ branch_ref() {
 }
 
 remote_branch_name() {
-  local localRef="\/$(branch_name)$"
-  if [[ -n "$localRef" ]]; then
-    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef 2>/dev/null | grep $localRef)"
+  local localRef="$(branch_name)"
+  local remote="$(git config --get "branch.$localRef.remote")"
+  if [[ -n $remote ]]; then
+    local remoteBranch="$(git config --get "branch.${localRef}.merge" | sed -e 's/^refs\/heads\///')"
     if [[ -n $remoteBranch ]]; then
-      printf '%s' $remoteBranch
+      printf '%s/%s' $remote $remoteBranch
       return 0
     else
-      return 1
+        return 1
     fi
+  else
+    return 1
   fi
 }
 
