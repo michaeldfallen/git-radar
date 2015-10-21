@@ -6,5 +6,6 @@
 ./test-branches.sh
 ./test-files.sh
 ./test-status.sh
+./test-stash.sh
 ./test-colors.sh
 ./test-format-config.sh

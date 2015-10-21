@@ -16,6 +16,7 @@ last few years. Maybe it can help you too.
   - [Files status](#files-status)
   - [Local commits status](#local-commits-status)
   - [Remote commits status](#remote-commits-status)
+  - [Stash status](#stash-status)
   - [(Optional) Auto-fetch repos](#optional-auto-fetch-repos)
 - [Customise your prompt](#customise-your-prompt)
 - [Support](#support)
@@ -77,7 +78,7 @@ Add to your `config.fish`
 function fish_prompt
     set_color $fish_color_cwd
     echo -n (prompt_pwd)
-    git-radar --fish -fetch
+    git-radar --fish --fetch
     set_color normal
     echo -n ' > '
 end
@@ -156,6 +157,13 @@ Prompt                     | Meaning
 The use of feature is controlled by the `GIT_RADAR_FORMAT` environment variable.
 See [Customise your prompt](#customise-your-prompt) for how to personalise this.
 
+### Stash status
+The prompt will show you whether and how many stashes you have stored.
+
+Prompt                     | Meaning
+---------------------------|---------------
+![git:(master) 1≡]         | We have one stash
+
 If you don't rely on this status, you can always hide this part of the prompt by
 [customising your prompt](#customise-your-prompt)
 
@@ -213,6 +221,7 @@ Remote commits | `%{remote}`
 Local commits  | `%{local}`
 Branch         | `%{branch}`
 File changes   | `%{changes}`
+Stashes        | `%{stash}`
 
 You can create any prompt shape you prefer by exporting `GIT_RADAR_FORMAT` with
 your preferred shape. The control strings above will be replaced with the output
@@ -222,8 +231,8 @@ of the corresponding feature.
 
 GIT_RADAR_FORMAT                      | Result
 --------------------------------------|---------------------
-`${branch}%{local}%{changes}`         | `master1↑1M`
-`[${branch}] - %{local} - %{changes}` | `[master] - 1↑ - 1M`
+`%{branch}%{local}%{changes}`         | `master1↑1M`
+`[%{branch}] - %{local} - %{changes}` | `[master] - 1↑ - 1M`
 
 ### Prefixing and Suffixing the features
 
@@ -530,6 +539,18 @@ tracked by git.
 It is unset by `GIT_RADAR_COLOR_CHANGES_RESET` which you can set if you want
 a different background colour to return to.
 
+##### Colouring the stash status
+
+**GIT_RADAR_COLOR_STASH='[colour code]'**
+```
+git:(my-branch) 1≡
+                 ^
+```
+The colour to use for the lines that indicates how many stashes you have stored.
+
+It is unset by `GIT_RADAR_COLOR_STASH_RESET` which you can set if you want
+a different background colour to return to.
+
 ## License
 
 Git Radar is licensed under the MIT license.
@@ -537,6 +558,7 @@ Git Radar is licensed under the MIT license.
 See [LICENSE] for the full license text.
 
 [LICENSE]: https://github.com/michaeldfallen/git-radar/blob/master/LICENSE
+[git:(master) 1≡]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/stash.png
 [git:(master) 3A]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/untracked.png
 [git:(master) 2D2M]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/unstaged.png
 [git:(master) 1M1R]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/added.png
