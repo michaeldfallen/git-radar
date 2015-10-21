@@ -25,7 +25,28 @@ get_fetch_time() {
 
   FETCH_TIME="${GIT_RADAR_FETCH_TIME:-"$((5 * 60))"}"
   echo $FETCH_TIME
+}
 
+function top_zsh_pid {
+  # Look up the parent of the given PID.
+  pid="${1:-$$}"
+  found_zsh="${2}"
+  ppid="$(ps -p $pid -o ppid=)"
+  ppid_name="$(ps -p $ppid -o comm=)"
+
+  #printf "${ppid}:${ppid_name} -> "
+
+  # /sbin/init always has a PID of 1, so if you reach that, the current PID is
+  # the top-level parent. Otherwise, keep looking.
+  if [[ ${ppid} -eq 1 ]] ; then
+    printf "${ppid}"
+  elif [[ ${ppid_name} == *zsh* ]]; then
+    top_zsh_pid "${ppid}" "true"
+  elif [[ $found_zsh == "true" ]]; then
+    printf "${pid}"
+  else
+    top_zsh_pid "${ppid}" "false"
+  fi
 }
 
 prepare_bash_colors() {
@@ -411,35 +432,52 @@ untracked_status() {
 }
 
 color_changes_status() {
-  local separator="${1:- }"
+  _async_changes() {
+    local zsh_parent_pid="$1"
+    local separator="${2:- }"
 
-  local porcelain="$(porcelain_status)"
-  local changes=""
+    local porcelain="$(porcelain_status)"
+    local changes=""
 
-  if [[ -n "$porcelain" ]]; then
-    local staged_changes="$(staged_status "$porcelain" "$COLOR_CHANGES_STAGED" "$RESET_COLOR_CHANGES")"
-    local unstaged_changes="$(unstaged_status "$porcelain" "$COLOR_CHANGES_UNSTAGED" "$RESET_COLOR_CHANGES")"
-    local untracked_changes="$(untracked_status "$porcelain" "$COLOR_CHANGES_UNTRACKED" "$RESET_COLOR_CHANGES")"
-    local conflicted_changes="$(conflicted_status "$porcelain" "$COLOR_CHANGES_CONFLICTED" "$RESET_COLOR_CHANGES")"
-    if [[ -n "$staged_changes" ]]; then
-      staged_changes="$separator$staged_changes"
+    if [[ -n "$porcelain" ]]; then
+      local staged_changes="$(staged_status "$porcelain" "$COLOR_CHANGES_STAGED" "$RESET_COLOR_CHANGES")"
+      local unstaged_changes="$(unstaged_status "$porcelain" "$COLOR_CHANGES_UNSTAGED" "$RESET_COLOR_CHANGES")"
+      local untracked_changes="$(untracked_status "$porcelain" "$COLOR_CHANGES_UNTRACKED" "$RESET_COLOR_CHANGES")"
+      local conflicted_changes="$(conflicted_status "$porcelain" "$COLOR_CHANGES_CONFLICTED" "$RESET_COLOR_CHANGES")"
+      if [[ -n "$staged_changes" ]]; then
+        staged_changes="$separator$staged_changes"
+      fi
+
+      if [[ -n "$unstaged_changes" ]]; then
+        unstaged_changes="$separator$unstaged_changes"
+      fi
+
+      if [[ -n "$conflicted_changes" ]]; then
+        conflicted_changes="$separator$conflicted_changes"
+      fi
+
+      if [[ -n "$untracked_changes" ]]; then
+        untracked_changes="$separator$untracked_changes"
+      fi
+
+      changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
     fi
 
-    if [[ -n "$unstaged_changes" ]]; then
-      unstaged_changes="$separator$unstaged_changes"
-    fi
+    printf $PRINT_F_OPTION "${changes:1}"
+    kill -s USR1 "$zsh_parent_pid"
+  }
 
-    if [[ -n "$conflicted_changes" ]]; then
-      conflicted_changes="$separator$conflicted_changes"
-    fi
+  zsh_parent_pid="$(top_zsh_pid "$PPID")"
 
-    if [[ -n "$untracked_changes" ]]; then
-      untracked_changes="$separator$untracked_changes"
-    fi
-
-    changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
+  if [[ -f $(dot_git)/git_radar_changes ]]; then
+    cat $(dot_git)/git_radar_changes
   fi
-  printf $PRINT_F_OPTION "${changes:1}"
+  if [[ ! -f $(dot_git)/git_radar_working ]]; then
+    (_async_changes "$zsh_parent_pid")&> $(dot_git)/git_radar_changes &
+    touch $(dot_git)/git_radar_working
+  else
+    rm $(dot_git)/git_radar_working
+  fi
 }
 
 bash_color_changes_status() {
