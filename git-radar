@@ -95,9 +95,11 @@ while [[ $# > 0 ]];do
   if [[ "$command" == "--fetch" ]]; then
     nohup $dot/fetch.sh >/dev/null 2>&1 &
   fi
+
   if [[ "$command" == "--zsh" ]]; then
     $dot/prompt.zsh $args
   fi
+
   if [[ "$command" == "--bash" || "$command" == "--fish" ]]; then
     $dot/prompt.bash $args
   fi

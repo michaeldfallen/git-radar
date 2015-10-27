@@ -14,6 +14,20 @@ timethis() {
   echo "$1 - $dur" >> $HOME/duration.dat
 }
 
+get_fetch_time() {
+  if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
+    source "$rcfile_path/.gitradarrc.bash"
+  elif [ -f "$rcfile_path/.gitradarrc.zsh" ]; then
+    source "$rcfile_path/.gitradarrc.zsh"
+  elif [ -f "$rcfile_path/.gitradarrc" ]; then
+    source "$rcfile_path/.gitradarrc"
+  fi
+
+  FETCH_TIME="${GIT_RADAR_FETCH_TIME:-"$((5 * 60))"}"
+  echo $FETCH_TIME
+
+}
+
 prepare_bash_colors() {
   if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
     source "$rcfile_path/.gitradarrc.bash"
@@ -169,10 +183,10 @@ time_now() {
 }
 
 time_to_update() {
+  last_time_updated="${1:-$FETCH_TIME}"
   if is_repo; then
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
-    local fiveminutes="$((5 * 60))"
-    if (( $timesincelastupdate > $fiveminutes )); then
+    if (( $timesincelastupdate > $last_time_updated )); then
       # time to update return 0 (which is true)
       return 0
     else
@@ -185,7 +199,10 @@ time_to_update() {
 }
 
 fetch() {
-  if time_to_update; then
+  # Gives $FETCH_TIME a value
+  get_fetch_time
+
+  if time_to_update $FETCH_TIME; then
     record_timestamp
     git fetch --quiet > /dev/null 2>&1
   fi

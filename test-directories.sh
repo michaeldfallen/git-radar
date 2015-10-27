@@ -63,12 +63,14 @@ test_record_timestamp_in_repo() {
 
 test_time_to_update_when_timestamp_is_old() {
   cd $scriptDir
+  FETCH_TIME="$((5 * 60))" # Fetch every 5 mins
   touch -A "-010000" "$(dot_git)/lastupdatetime"
   assertTrue time_to_update
 }
 
 test_not_time_to_update_when_just_recorded() {
   cd $scriptDir
+  FETCH_TIME="$((5 * 60))" # Fetch every 5 mins
   record_timestamp
   assertFalse time_to_update
 }
@@ -77,6 +79,7 @@ test_time_to_update_when_no_timestamp() {
   cd_to_tmp
   git init --quiet
 
+  FETCH_TIME="$((5 * 60))" # Fetch every 5 mins
   time_to_update
   assertTrue time_to_update
 

@@ -190,6 +190,25 @@ export PROMPT="$PROMPT\$(git-radar --zsh --fetch) "
 ```
 [(note: the `\` escaping the `$` is important)](#ensuring-prompt-execution)
 
+You may also choose to fetch at a customized interval of time. To do so, add
+this to your .bashrc, .zshrc:
+
+```bash
+export GIT_RADAR_FETCH_TIME=<seconds>
+```
+
+For example, to fetch every 30 seconds (instead of the default 5 minutes):
+
+```bash
+export GIT_RADAR_FETCH_TIME=30
+```
+
+You can also do this in the gitradarrc file:
+
+```bash
+GIT_RADAR_FETCH_TIME=30
+```
+
 ## Customise your prompt
 
 Git Radar is highly customisable using a prompt format string. The 4 features
@@ -234,6 +253,7 @@ Outside a repo: `prompt > `
 The default prompt format uses this to add spaces only if the feature would
 render. In that way the prompt always looks well spaced out no matter how many
 features are rendering.
+
 
 ## Support
 
