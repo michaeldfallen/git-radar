@@ -405,7 +405,7 @@ untracked_status() {
   local filesUntracked="$(printf '%s' "$gitStatus" | grep "?? " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesUntracked" ]; then
-    untracked_string="$untracked_string$filesUntracked${prefix}A${suffix}"
+    untracked_string="$untracked_string$filesUntracked${prefix}?${suffix}"
   fi
   printf '%s' "$untracked_string"
 }

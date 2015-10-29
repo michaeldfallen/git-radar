@@ -30,7 +30,7 @@ UU modified-both-conflicted
   assertEquals "line:${LINENO}" "1_U-1_T-1_B-"\
     "$(conflicted_status "$status" "$prefix" "$suffix")"
 
-  assertEquals "line:${LINENO}" "1_A-"\
+  assertEquals "line:${LINENO}" "1_?-"\
     "$(untracked_status "$status" "$prefix" "$suffix")"
 }
 

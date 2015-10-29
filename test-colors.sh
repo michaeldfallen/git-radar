@@ -459,7 +459,7 @@ test_bash_colors_changes() {
   touch bar
   git add bar
   echo "bar" > bar
-  untracked="1\x01changes-untracked\x02A\x01change-reset\x02"
+  untracked="1\x01changes-untracked\x02?\x01change-reset\x02"
   unstaged="1\x01changes-unstaged\x02M\x01change-reset\x02"
   staged="1\x01changes-staged\x02A\x01change-reset\x02"
 
@@ -481,7 +481,7 @@ test_zsh_colors_changes() {
   touch bar
   git add bar
   echo "bar" > bar
-  untracked="1%{changes-untracked%}A%{change-reset%}"
+  untracked="1%{changes-untracked%}?%{change-reset%}"
   unstaged="1%{changes-unstaged%}M%{change-reset%}"
   staged="1%{changes-staged%}A%{change-reset%}"
 

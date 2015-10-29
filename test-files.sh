@@ -22,7 +22,7 @@ test_untracked_files() {
   assertEquals "" "$(untracked_status)"
 
   touch foo
-  assertEquals "1A" "$(untracked_status)"
+  assertEquals "1?" "$(untracked_status)"
 
   git add .
   assertEquals "" "$(untracked_status)"

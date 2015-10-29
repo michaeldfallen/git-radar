@@ -91,28 +91,28 @@ test_all_options_set_config() {
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "m 1 →foo1↑1A"
+  assertEquals "$prompt" "m 1 →foo1↑1?"
 
   export GIT_RADAR_FORMAT="%{remote}%{branch}%{changes}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "m 1 →foo1A"
+  assertEquals "$prompt" "m 1 →foo1?"
 
   export GIT_RADAR_FORMAT="%{branch}%{local}%{changes}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "foo1↑1A"
+  assertEquals "$prompt" "foo1↑1?"
 
   export GIT_RADAR_FORMAT="%{branch}%{changes}"
   prepare_zsh_colors
   unset_colours
 
   prompt="$(render_prompt)"
-  assertEquals "$prompt" "foo1A"
+  assertEquals "$prompt" "foo1?"
 
   export GIT_RADAR_FORMAT="%{branch}"
   prepare_zsh_colors
