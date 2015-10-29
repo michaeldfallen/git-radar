@@ -124,111 +124,111 @@ test_all_options_set_config() {
   rm_tmp
 }
 
-#test_reorder_parts() {
-#  prepare_test_repo
-#
-#  export GIT_RADAR_FORMAT="%{branch}%{local}%{changes}%{remote}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "foo1↑1Am 1 →" "$prompt"
-#
-#  export GIT_RADAR_FORMAT="%{local}%{changes}%{remote}%{branch}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "1↑1Am 1 →foo" "$prompt"
-#
-#  export GIT_RADAR_FORMAT="%{changes}%{remote}%{branch}%{local}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "1Am 1 →foo1↑" "$prompt"
-#
-#  rm_tmp
-#}
-#
-#test_prefix_and_suffix_changes() {
-#  prepare_test_repo
-#
-#  export GIT_RADAR_FORMAT="%{changes}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "1A" "$prompt"
-#
-#  export GIT_RADAR_FORMAT="%{[:changes:]}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "[1A]" "$prompt"
-#
-#  rm_tmp
-#}
-#
-#test_prefix_and_suffix_local() {
-#  prepare_test_repo
-#
-#  export GIT_RADAR_FORMAT="%{local}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "1↑" "$prompt"
-#
-#  export GIT_RADAR_FORMAT="%{[:local:]}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "[1↑]" "$prompt"
-#
-#  rm_tmp
-#}
-#
-#test_prefix_and_suffix_branch() {
-#  prepare_test_repo
-#
-#  export GIT_RADAR_FORMAT="%{branch}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "foo" "$prompt"
-#
-#  export GIT_RADAR_FORMAT="%{[:branch:]}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "[foo]" "$prompt"
-#
-#  rm_tmp
-#}
-#
-#test_prefix_and_suffix_remote() {
-#  prepare_test_repo
-#
-#  export GIT_RADAR_FORMAT="%{remote}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "m 1 →" "$prompt"
-#
-#  export GIT_RADAR_FORMAT="%{[:remote:]}"
-#  prepare_zsh_colors
-#  unset_colours
-#
-#  prompt="$(render_prompt)"
-#  assertEquals "[m 1 →]" "$prompt"
-#
-#  rm_tmp
-#}
+test_reorder_parts() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{branch}%{local}%{changes}%{remote}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "foo1↑1?m 1 →" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{local}%{changes}%{remote}%{branch}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "1↑1?m 1 →foo" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{changes}%{remote}%{branch}%{local}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "1?m 1 →foo1↑" "$prompt"
+
+  rm_tmp
+}
+
+test_prefix_and_suffix_changes() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{changes}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "1?" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:changes:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[1?]" "$prompt"
+
+  rm_tmp
+}
+
+test_prefix_and_suffix_local() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{local}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "1↑" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:local:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[1↑]" "$prompt"
+
+  rm_tmp
+}
+
+test_prefix_and_suffix_branch() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{branch}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "foo" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:branch:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[foo]" "$prompt"
+
+  rm_tmp
+}
+
+test_prefix_and_suffix_remote() {
+  prepare_test_repo
+
+  export GIT_RADAR_FORMAT="%{remote}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "m 1 →" "$prompt"
+
+  export GIT_RADAR_FORMAT="%{[:remote:]}"
+  prepare_zsh_colors
+  unset_colours
+
+  prompt="$(render_prompt)"
+  assertEquals "[m 1 →]" "$prompt"
+
+  rm_tmp
+}
 
 . ./shunit/shunit2
