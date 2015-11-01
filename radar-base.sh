@@ -249,7 +249,7 @@ remote_branch_name() {
 commits_behind_of_remote() {
   remote_branch=${1:-"$(remote_branch_name)"}
   if [[ -n "$remote_branch" ]]; then
-    git rev-list --left-only --count ${remote_branch}...HEAD
+    git rev-list --left-only --count ${remote_branch}...HEAD 2>/dev/null
   else
     printf '%s' "0"
   fi
@@ -258,7 +258,7 @@ commits_behind_of_remote() {
 commits_ahead_of_remote() {
   remote_branch=${1:-"$(remote_branch_name)"}
   if [[ -n "$remote_branch" ]]; then
-    git rev-list --right-only --count ${remote_branch}...HEAD
+    git rev-list --right-only --count ${remote_branch}...HEAD 2>/dev/null
   else
     printf '%s' "0"
   fi
