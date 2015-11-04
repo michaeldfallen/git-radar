@@ -416,16 +416,17 @@ async_or_not() {
   if $GIT_RADAR_ASYNC_EXEC; then
     local file="$(dot_git)/async_git_radar_$1"
 
-    if [[ -f $file ]]; then
-      cat $file
-    fi
-
     GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
     if ! $GIT_RADAR_REDRAW; then
       (
-        eval $function_to_run > $file
+        output="$($function_to_run)"
+        printf '%s' "$output" > $file
         kill -s USR1 "$GIT_RADAR_ZSH_PID" # Tell the parent we are finished
       ) > /dev/null &
+    fi
+
+    if [[ -f $file ]]; then
+      cat $file
     fi
   else
     eval $function_to_run
