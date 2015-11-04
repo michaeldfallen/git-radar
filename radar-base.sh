@@ -615,7 +615,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}stash${if_post} ]]; then
-    stash_result="$(stash_status)"
+    stash_result="$(async_or_not "stash_status")"
     if [[ -n "$stash_result" ]]; then
       stash_sed="s/${sed_pre}stash${sed_post}/\2${stash_result}\4/"
     else
