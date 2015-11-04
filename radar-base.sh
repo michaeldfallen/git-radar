@@ -583,7 +583,7 @@ render_prompt() {
   sed_post="\(\:\([^%^{^}]*\)\)\{0,1\}}"
 
   if [[ $output =~ ${if_pre}remote${if_post} ]]; then
-    remote_result="$(color_remote_commits)"
+    remote_result="$(async_or_not "color_remote_commits")"
     if [[ -n "$remote_result" ]]; then
       remote_sed="s/${sed_pre}remote${sed_post}/\2${remote_result}\4/"
     else
