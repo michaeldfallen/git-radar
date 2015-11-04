@@ -409,6 +409,24 @@ untracked_status() {
   printf '%s' "$untracked_string"
 }
 
+async_or_not() {
+  local function_to_run="$1"
+  local file="$(dot_git)/async_git_radar_$2"
+  local working_file="$(dot_git)/async_git_radar_workers"
+
+  if [[ -f $file ]]; then
+    cat $file
+  fi
+
+  GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
+  if ! $GIT_RADAR_REDRAW; then
+    (
+      eval $function_to_run > $file
+      kill -s USR1 "$GIT_RADAR_ZSH_PID" # Tell the parent we are finished
+    ) > /dev/null &
+  fi
+}
+
 color_changes_status() {
   _async_changes() {
     local parent_pid="$1"
@@ -442,17 +460,9 @@ color_changes_status() {
     fi
 
     printf $PRINT_F_OPTION "${changes:1}"
-    kill -s USR1 "$parent_pid" # Tell the parent we are finished
   }
 
-  if [[ -f $(dot_git)/git_radar_changes ]]; then
-    cat $(dot_git)/git_radar_changes
-  fi
-
-  GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
-  if ! $GIT_RADAR_REDRAW; then
-    (_async_changes "$GIT_RADAR_ZSH_PID")&> $(dot_git)/git_radar_changes &
-  fi
+  async_or_not "_async_changes '$GIT_RADAR_ZSH_PID'" "changes"
 }
 
 bash_color_changes_status() {
