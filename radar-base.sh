@@ -468,7 +468,7 @@ color_changes_status() {
     printf $PRINT_F_OPTION "${changes:1}"
   }
 
-  async_or_not "_async_changes '$GIT_RADAR_ZSH_PID'" "changes"
+  async_or_not "_async_changes" "changes"
 }
 
 bash_color_changes_status() {
