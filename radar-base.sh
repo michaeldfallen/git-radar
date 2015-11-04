@@ -27,28 +27,6 @@ get_fetch_time() {
   echo $FETCH_TIME
 }
 
-function top_zsh_pid {
-  # Look up the parent of the given PID.
-  pid="${1:-$$}"
-  found_zsh="${2}"
-  ppid="$(ps -p $pid -o ppid=)"
-  ppid_name="$(ps -p $ppid -o comm=)"
-
-  #printf "${ppid}:${ppid_name} -> "
-
-  # /sbin/init always has a PID of 1, so if you reach that, the current PID is
-  # the top-level parent. Otherwise, keep looking.
-  if [[ ${ppid} -eq 1 ]] ; then
-    printf "${ppid}"
-  elif [[ ${ppid_name} == *zsh* ]]; then
-    top_zsh_pid "${ppid}" "true"
-  elif [[ $found_zsh == "true" ]]; then
-    printf "${pid}"
-  else
-    top_zsh_pid "${ppid}" "false"
-  fi
-}
-
 prepare_bash_colors() {
   if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
     source "$rcfile_path/.gitradarrc.bash"
