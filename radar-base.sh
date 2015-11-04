@@ -411,19 +411,25 @@ untracked_status() {
 
 async_or_not() {
   local function_to_run="$1"
-  local file="$(dot_git)/async_git_radar_$2"
-  local working_file="$(dot_git)/async_git_radar_workers"
 
-  if [[ -f $file ]]; then
-    cat $file
-  fi
+  GIT_RADAR_ASYNC_EXEC=${GIT_RADAR_ASYNC_EXEC:-false}
+  if $GIT_RADAR_ASYNC_EXEC; then
+    local file="$(dot_git)/async_git_radar_$2"
+    local working_file="$(dot_git)/async_git_radar_workers"
 
-  GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
-  if ! $GIT_RADAR_REDRAW; then
-    (
-      eval $function_to_run > $file
-      kill -s USR1 "$GIT_RADAR_ZSH_PID" # Tell the parent we are finished
-    ) > /dev/null &
+    if [[ -f $file ]]; then
+      cat $file
+    fi
+
+    GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
+    if ! $GIT_RADAR_REDRAW; then
+      (
+        eval $function_to_run > $file
+        kill -s USR1 "$GIT_RADAR_ZSH_PID" # Tell the parent we are finished
+      ) > /dev/null &
+    fi
+  else
+    eval $function_to_run
   fi
 }
 
