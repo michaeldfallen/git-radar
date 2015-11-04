@@ -599,7 +599,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}local${if_post} ]]; then
-    local_result="$(color_local_commits)"
+    local_result="$(async_or_not "color_local_commits")"
     if [[ -n "$local_result" ]]; then
       local_sed="s/${sed_pre}local${sed_post}/\2$local_result\4/"
     else
