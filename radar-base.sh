@@ -414,8 +414,7 @@ async_or_not() {
 
   GIT_RADAR_ASYNC_EXEC=${GIT_RADAR_ASYNC_EXEC:-false}
   if $GIT_RADAR_ASYNC_EXEC; then
-    local file="$(dot_git)/async_git_radar_$2"
-    local working_file="$(dot_git)/async_git_radar_workers"
+    local file="$(dot_git)/async_git_radar_$1"
 
     if [[ -f $file ]]; then
       cat $file
@@ -434,41 +433,37 @@ async_or_not() {
 }
 
 color_changes_status() {
-  _async_changes() {
-    local parent_pid="$1"
-    local separator="${2:- }"
+  local parent_pid="$1"
+  local separator="${2:- }"
 
-    local porcelain="$(porcelain_status)"
-    local changes=""
+  local porcelain="$(porcelain_status)"
+  local changes=""
 
-    if [[ -n "$porcelain" ]]; then
-      local staged_changes="$(staged_status "$porcelain" "$COLOR_CHANGES_STAGED" "$RESET_COLOR_CHANGES")"
-      local unstaged_changes="$(unstaged_status "$porcelain" "$COLOR_CHANGES_UNSTAGED" "$RESET_COLOR_CHANGES")"
-      local untracked_changes="$(untracked_status "$porcelain" "$COLOR_CHANGES_UNTRACKED" "$RESET_COLOR_CHANGES")"
-      local conflicted_changes="$(conflicted_status "$porcelain" "$COLOR_CHANGES_CONFLICTED" "$RESET_COLOR_CHANGES")"
-      if [[ -n "$staged_changes" ]]; then
-        staged_changes="$separator$staged_changes"
-      fi
-
-      if [[ -n "$unstaged_changes" ]]; then
-        unstaged_changes="$separator$unstaged_changes"
-      fi
-
-      if [[ -n "$conflicted_changes" ]]; then
-        conflicted_changes="$separator$conflicted_changes"
-      fi
-
-      if [[ -n "$untracked_changes" ]]; then
-        untracked_changes="$separator$untracked_changes"
-      fi
-
-      changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
+  if [[ -n "$porcelain" ]]; then
+    local staged_changes="$(staged_status "$porcelain" "$COLOR_CHANGES_STAGED" "$RESET_COLOR_CHANGES")"
+    local unstaged_changes="$(unstaged_status "$porcelain" "$COLOR_CHANGES_UNSTAGED" "$RESET_COLOR_CHANGES")"
+    local untracked_changes="$(untracked_status "$porcelain" "$COLOR_CHANGES_UNTRACKED" "$RESET_COLOR_CHANGES")"
+    local conflicted_changes="$(conflicted_status "$porcelain" "$COLOR_CHANGES_CONFLICTED" "$RESET_COLOR_CHANGES")"
+    if [[ -n "$staged_changes" ]]; then
+      staged_changes="$separator$staged_changes"
     fi
 
-    printf $PRINT_F_OPTION "${changes:1}"
-  }
+    if [[ -n "$unstaged_changes" ]]; then
+      unstaged_changes="$separator$unstaged_changes"
+    fi
 
-  async_or_not "_async_changes" "changes"
+    if [[ -n "$conflicted_changes" ]]; then
+      conflicted_changes="$separator$conflicted_changes"
+    fi
+
+    if [[ -n "$untracked_changes" ]]; then
+      untracked_changes="$separator$untracked_changes"
+    fi
+
+    changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
+  fi
+
+  printf $PRINT_F_OPTION "${changes:1}"
 }
 
 bash_color_changes_status() {
@@ -611,7 +606,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}changes${if_post} ]]; then
-    changes_result="$(color_changes_status)"
+    changes_result="$(async_or_not "color_changes_status")"
     if [[ -n "$changes_result" ]]; then
       changes_sed="s/${sed_pre}changes${sed_post}/\2${changes_result}\4/"
     else
