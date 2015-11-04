@@ -433,7 +433,7 @@ untracked_status() {
 
 color_changes_status() {
   _async_changes() {
-    local zsh_parent_pid="$1"
+    local parent_pid="$1"
     local separator="${2:- }"
 
     local porcelain="$(porcelain_status)"
@@ -464,19 +464,16 @@ color_changes_status() {
     fi
 
     printf $PRINT_F_OPTION "${changes:1}"
-    kill -s USR1 "$zsh_parent_pid"
+    kill -s USR1 "$parent_pid" # Tell the parent we are finished
   }
-
-  zsh_parent_pid="$(top_zsh_pid "$PPID")"
 
   if [[ -f $(dot_git)/git_radar_changes ]]; then
     cat $(dot_git)/git_radar_changes
   fi
-  if [[ ! -f $(dot_git)/git_radar_working ]]; then
-    (_async_changes "$zsh_parent_pid")&> $(dot_git)/git_radar_changes &
-    touch $(dot_git)/git_radar_working
-  else
-    rm $(dot_git)/git_radar_working
+
+  GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
+  if ! $GIT_RADAR_REDRAW; then
+    (_async_changes "$GIT_RADAR_ZSH_PID")&> $(dot_git)/git_radar_changes &
   fi
 }
 
