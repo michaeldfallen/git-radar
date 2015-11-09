@@ -539,7 +539,7 @@ stashed_status() {
 stash_status() {
   local number_stashes="$(stashed_status)"
   if [ $number_stashes -gt 0 ]; then
-    printf $PRINT_F_OPTION "$number_stashes${COLOR_STASH}≡$RESET_COLOR_STASH"
+    printf $PRINT_F_OPTION "${number_stashes}${COLOR_STASH}≡${RESET_COLOR_STASH}"
   fi
 }
 
