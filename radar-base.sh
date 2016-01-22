@@ -63,7 +63,7 @@ prepare_bash_colors() {
   RESET_COLOR_CHANGES="\x01${GIT_RADAR_COLOR_CHANGES_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_STASH="\x01${GIT_RADAR_COLOR_STASH:-"\\033[0m"}\x02"
-  
+
 }
 
 prepare_zsh_colors() {
@@ -90,7 +90,7 @@ prepare_zsh_colors() {
   COLOR_CHANGES_UNTRACKED="%{${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}%}"
 
   COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$fg_bold[yellow]}%}"
-  
+
   local italic_m="$(printf '\xF0\x9D\x98\xAE')"
 
   COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH:-$reset_color}%}"
@@ -536,10 +536,16 @@ stashed_status() {
   printf '%s' "$(git stash list | wc -l 2>/dev/null | grep -oEi '[0-9][0-9]*')"
 }
 
+is_cwd_a_dot_git_directory() {
+  test "$(basename $PWD)" == ".git"; return $?
+}
+
 stash_status() {
-  local number_stashes="$(stashed_status)"
-  if [ $number_stashes -gt 0 ]; then
-    printf $PRINT_F_OPTION "${number_stashes}${COLOR_STASH}≡${RESET_COLOR_STASH}"
+  if ! is_cwd_a_dot_git_directory; then
+    local number_stashes="$(stashed_status)"
+    if [ $number_stashes -gt 0 ]; then
+      printf $PRINT_F_OPTION "${number_stashes}${COLOR_STASH}≡${RESET_COLOR_STASH}"
+    fi
   fi
 }
 
