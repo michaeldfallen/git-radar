@@ -32,6 +32,7 @@ last few years. Maybe it can help you too.
       - [Colouring the remote commits status](#colouring-the-remote-commits-status)
       - [Colouring the file changes status](#colouring-the-file-changes-status)
 - [License](#license)
+- [Links](#links)
 
 ## Installation
 
@@ -556,6 +557,10 @@ a different background colour to return to.
 Git Radar is licensed under the MIT license.
 
 See [LICENSE] for the full license text.
+
+## Links
+
+* [mini-git-radar](https://github.com/bogem/mini-git-radar) - lightweight version of git-radar. Only for macOS and bash/fish.
 
 [LICENSE]: https://github.com/michaeldfallen/git-radar/blob/master/LICENSE
 [git:(master) 1≡]: https://raw.githubusercontent.com/michaeldfallen/git-radar/master/images/stash.png
